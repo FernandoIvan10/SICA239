@@ -14,7 +14,7 @@ export default function InicioAdmin(){
                 {titulo:"Agregar usuario", icono:TiUserAdd, link:'/SICA/administradores/agregar-usuario'},
                 {titulo:"Editar usuario", icono:FaUserEdit, link:'/SICA/administradores/editar-usuario'}
             ]},
-        {titulo: "Cerrar sesión", icono:IoLogOut}
+        {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'}
     ]
 
     return(

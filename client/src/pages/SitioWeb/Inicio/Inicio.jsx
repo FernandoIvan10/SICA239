@@ -1,4 +1,4 @@
-import BarraNavegacion from "../../components/sitio_web/BarraNavegacion/BarraNavegacion";
+import BarraNavegacion from "../../../components/sitio_web/BarraNavegacion/BarraNavegacion";
 
 // Página principal
 export default function Inicio(){

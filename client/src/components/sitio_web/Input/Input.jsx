@@ -1,3 +1,4 @@
+// Componente que renderiza un campo básico de entrada de datos
 export default function Input(props){
     return(
         <div className={props.className}>

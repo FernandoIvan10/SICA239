@@ -1,6 +1,6 @@
-import Input from '../../components/sitio_web/Input/Input'
-import BarraNavegacion from '../../components/sitio_web/BarraNavegacion/BarraNavegacion'
-import LogoCBTA from '../../assets/img/logo_cbta239.png'
+import Input from '../../../components/sitio_web/Input/Input'
+import BarraNavegacion from '../../../components/sitio_web/BarraNavegacion/BarraNavegacion'
+import LogoCBTA from '../../../assets/img/logo_cbta239.png'
 import { useState } from 'react'
 import './Login.css'
 
@@ -12,7 +12,7 @@ export default function Login(){
         <>
         {/* Barra de navegación principal */}
         <BarraNavegacion/>
-        <h1 className='h1-login'>Calificaciones</h1>
+        <h1 className='h1-login'>Sistema de Calificaciones</h1>
         {/* Tarjeta flotante que envuelve el login */}
         <div className='tarjeta-flotante'>
             {/* Pestañas que permiten alternar entre los formularios */}

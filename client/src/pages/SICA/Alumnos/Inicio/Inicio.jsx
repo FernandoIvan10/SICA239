@@ -5,7 +5,10 @@ import { PiMedalFill } from "react-icons/pi";
 import { FaHistory, FaUserCircle, FaKey } from "react-icons/fa";
 import { RiCalendarScheduleFill } from "react-icons/ri";
 import { IoLogOut } from "react-icons/io5";
+import Bienvenida from "../../../../components/sica/Bienvenida/Bienvenida";
+import './Inicio.css'
 
+// Página de inicio del SICA para alumnos
 export default function InicioAlumno(){
     const elementos=[
         {titulo:"Inicio", icono:FaHouseChimney, link:'/SICA/alumnos/inicio'},
@@ -21,9 +24,14 @@ export default function InicioAlumno(){
     ]
 
     return(
-        <div>
+        <div className="contenedor-inicio">
             <MenuLateral elementos={elementos}/>
-            <div></div>
+            <Bienvenida 
+                nombre="[NOMBRE]" 
+                descripcion="Este es el sistema de calificaciones, aquí podrás..."
+                boton1="Ver calificaciones"
+                boton2="Ver horario"
+            />
         </div>
     )
 }

@@ -3,6 +3,8 @@ import { FaHouseChimney } from "react-icons/fa6";
 import { FaFileUpload, FaUsers, FaUserEdit } from "react-icons/fa";
 import { TiUserAdd } from "react-icons/ti";
 import { IoLogOut } from "react-icons/io5";
+import Bienvenida from "../../../../components/sica/Bienvenida/Bienvenida";
+import "./Inicio.css"
 
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
@@ -18,9 +20,14 @@ export default function InicioAdmin(){
     ]
 
     return(
-        <div>
+        <div className="contenedor-inicio">
             <MenuLateral elementos={elementos}/>
-            <div></div>
+            <Bienvenida 
+                nombre="[NOMBRE]" 
+                descripcion="Este es el sistema de calificaciones, aquí podrás..."
+                boton1="Subir calificaciones"
+                boton2="Gestionar usuarios"
+            />
         </div>
     )
 }

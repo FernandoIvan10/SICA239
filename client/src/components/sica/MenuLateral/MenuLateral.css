@@ -46,7 +46,7 @@
 
 .elementos-menu ul li:hover {
     background-color: #e9ecef;
-    color: #007bff; 
+    color: #4CAF50; 
 }
 
 .elementos-menu ul li ul {
@@ -63,7 +63,7 @@
 
 .elementos-menu ul li ul li:hover {
     background-color: #f1f3f5;
-    color: #0056b3; 
+    color: #4CAF60; 
 }
 
 .elementos-menu ul li span svg {

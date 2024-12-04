@@ -9,15 +9,15 @@ export default function BarraNavegacion(){
             {/* Logo */}
             <img src={LogoCBTA} alt='Logo' className='img-barra-navegacion'/>
             {/* Elementos de navegación */}
-            <ul>
-                <li><Link to='/inicio'>Inicio</Link></li>
-                <li><Link to='/quienes-somos'>Quiénes somos</Link></li>
-                <li><Link to='/oferta-educativa'>Oferta educativa</Link></li>
-                <li><Link to='/contacto'>Contacto</Link></li>
-                <li><Link to='/noticias'>Noticias</Link></li>
-                <li>
-                    <Link to='/login'>
-                        <button>Acceso</button>
+            <ul className='ul-barra-navegacion'>
+                <li className='li-barra-navegacion'><Link to='/inicio'>Inicio</Link></li>
+                <li className='li-barra-navegacion'><Link to='/quienes-somos'>Quiénes somos</Link></li>
+                <li className='li-barra-navegacion'><Link to='/oferta-educativa'>Oferta educativa</Link></li>
+                <li className='li-barra-navegacion'><Link to='/contacto'>Contacto</Link></li>
+                <li className='li-barra-navegacion'><Link to='/noticias'>Noticias</Link></li>
+                <li className='li-barra-navegacion'>
+                    <Link to='/SICA/iniciar-sesion'>
+                        <button className='button-barra-navegacion'>Acceso</button>
                     </Link>
                 </li>
             </ul>

@@ -8,8 +8,8 @@ export default function AppRoutes(){
         <Router>
             <Routes>
                 {/* Ruta por defecto */}
-                <Route path="*" element={<Navigate to="/Inicio" />} />
-                <Route path="/Inicio" element={<Inicio/>}/>
+                <Route path="*" element={<Navigate to="/inicio" />} />
+                <Route path="/inicio" element={<Inicio/>}/>
             </Routes>
         </Router>
     )

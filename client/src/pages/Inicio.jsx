@@ -1,7 +1,10 @@
+import BarraNavegacion from "../components/sitio_web/BarraNavegacion/BarraNavegacion";
+
 export default function Inicio(){
     return (
         <>
-            <h1>Hola Mundo</h1>
+            {/* Barra de navegación superior */}
+            <BarraNavegacion/>
         </>
     )
 }

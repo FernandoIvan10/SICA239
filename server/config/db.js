@@ -7,10 +7,7 @@ const uri = process.env.MONGO_URI // Variable de conexión a MongoDB Atlas
 // Método para contectarnos a la BD
 const conectarBD = async()=>{
     try{
-        await mongoose.connect(uri,{
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        })
+        await mongoose.connect(uri,{})
     }catch(error){
         console.error('Error al conectar a MongoDB', error)
         process.exit(1)

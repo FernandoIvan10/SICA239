@@ -1,0 +1,43 @@
+// imports
+require('dotenv').config()
+const bcrypt = require('bcrypt')
+const Administrador = require('../models/administrador.model')
+
+// Método que crea usuarios administradores predefinidos
+async function crearAdministrador(){
+    try{
+        const superAdmin={ // Datos del superadmin
+            rfc: process.env.SUPERADMIN_RFC,
+            nombre: 'Super',
+            apellido: 'Administrador',
+            contraseña: process.env.SUPERADMIN_PASSWORD,
+            rol: 'superadmin'
+        }
+
+        // Se valida que no exista
+        const existe = await Administrador.findOne({rfc: superAdmin.rfc})
+        if(!existe){
+            console.log(`Creando superadministrador con RFC: ${superAdmin.rfc}`);
+            // La contraseña se encripta
+            const contraseñaEncriptada = await bcrypt.hash(superAdmin.contraseña, 10)
+            console.log(`Contraseña original: ${superAdmin.contraseña}`);
+            console.log(`Contraseña encriptada: ${contraseñaEncriptada}`);
+            // Se crea el superadmin
+            const nuevoAdmin = new Administrador({
+                rfc: superAdmin.rfc,
+                nombre: superAdmin.nombre,
+                apellido: superAdmin.apellido,
+                contraseña: contraseñaEncriptada,
+                rol: superAdmin.rol,
+            })
+            await nuevoAdmin.save()
+            console.log(`Superadministrador ${superAdmin.nombre} ${superAdmin.apellido} creado.`);
+        }else{
+            console.log('El superadministrador ya existe.')
+        }
+    }catch(error){
+        console.error('Error al crear el superadministrador', error)
+    }
+}
+
+module.exports = crearAdministrador // Se exporta la función

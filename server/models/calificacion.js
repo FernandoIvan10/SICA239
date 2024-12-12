@@ -1,8 +1,8 @@
-// exports
+// imports
 const mongoose = require('mongoose')
 
 // Esquema de la colección de Calificaciones del semestre actual
-const calificacionesEsquema = new mongoose.Schema({
+const calificacionEsquema = new mongoose.Schema({
     alumnoId: {type:mongoose.Schema.Types.ObjectId, ref:'Alumno'},
     materiaId: {type:mongoose.Schema.Types.ObjectId, ref:'Materia'},
     grupoId: {type:mongoose.Schema.Types.ObjectId, ref:'Grupo'},
@@ -16,4 +16,4 @@ const calificacionesEsquema = new mongoose.Schema({
 })
 
 // Se exporta el esquema
-module.exports = mongoose.model('Calificaciones',calificacionesEsquema)
+module.exports = mongoose.model('Calificacion',calificacionEsquema)

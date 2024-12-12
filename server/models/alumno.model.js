@@ -7,9 +7,9 @@ const alumnoEsquema = new mongoose.Schema({
     nombre:{type:String, required:true},
     apellido:{type:String, required:true},
     constraseña:{type:String, required:true},
-    grupoId:{type:moongose.Schema.Types.ObjectId, ref:'Grupo'},
+    grupoId:{type:mongoose.Schema.Types.ObjectId, ref:'Grupo'},
     fechaCreacion:{type:Date, default:Date.now},
-})
+}, { collection: 'alumnos' })
 
 // La contraseña por defecto es la matrícula
 alumnoEsquema.pre('save',function(next){

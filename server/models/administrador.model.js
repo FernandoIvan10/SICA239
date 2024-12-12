@@ -9,13 +9,7 @@ const administradorEsquema = new mongoose.Schema({
     contraseña:{type:String, required:true},
     rol:{type:String, enum:['superadmin','editor','lector'], required:true},
     fechaCreacion:{type:Date, default:Date.now},
-})
-
-// La contraseña por defecto es el rfc
-administradorEsquema.pre('save',function(next){
-    this.contraseña = this.rfc
-    next()
-})
+}, { collection: 'administradores' })
 
 // Se exporta el esquema
 module.exports = mongoose.model('Administrador',administradorEsquema)

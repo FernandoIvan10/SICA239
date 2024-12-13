@@ -32,24 +32,5 @@ app.get('/public', (req, res) => {
     res.json({ mensaje: 'Esta ruta es pública y no requiere autenticación.' })
 })
 
-// Rutas protegidas
-app.get(
-    '/admin-panel',
-    verificarToken, // Verifica el token
-    verificarRol(['superadmin']), // Verifica el rol
-    (req, res) => {
-        res.json({ mensaje: 'Bienvenido al panel de administración.' })
-    }
-)
-
-app.get(
-    '/gestionar-contenido',
-    verificarToken, // Verifica el token
-    verificarRol(['superadmin', 'editor']), // Verifica el rol
-    (req, res) => {
-        res.json({ mensaje: 'Puedes gestionar el contenido.' })
-    }
-)
-
 // Iniciar el servidor
 app.listen(puerto, () => {});

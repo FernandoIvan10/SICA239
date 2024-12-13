@@ -10,7 +10,7 @@ const grupoEsquema = new mongoose.Schema({
             ref:'Materia',
         },
     ]
-})
+}, { collection: 'grupos' })
 
 // Se exporta el esquema
 module.exports = mongoose.model('Grupo',grupoEsquema)

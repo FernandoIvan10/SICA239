@@ -1,6 +1,6 @@
 import Input from '../../../components/sitio_web/Input/Input'
 import BarraNavegacion from '../../../components/sitio_web/BarraNavegacion/BarraNavegacion'
-import LogoCBTA from '../../../assets/img/logo_cbta239.png'
+import { FaUserCircle } from "react-icons/fa"
 import { useState } from 'react'
 import './Login.css'
 
@@ -30,7 +30,7 @@ export default function Login(){
                 {activarPestaña==='alumno' ?(
                     // Formulario de alumnos
                     <form className='formulario'>
-                        <img src={LogoCBTA} alt='Logo'/>
+                        <FaUserCircle className='formulario-icono'/>
                         <div className='campos-formulario'>
                             <Input
                                 className='input-formulario'
@@ -50,7 +50,7 @@ export default function Login(){
                 ):(
                     // Formulario de administradores
                     <form className='formulario'>
-                        <img src={LogoCBTA} alt='Logo'/>
+                        <FaUserCircle className='formulario-icono'/>
                         <div className='campos-formulario'>
                             <Input
                                 className='input-formulario'

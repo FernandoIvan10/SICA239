@@ -5,6 +5,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #f9f9f9;
 }
 
 .contenedor-bienvenida h2{
@@ -13,6 +14,7 @@
 
 .contenedor-bienvenida p{
     font-family: 'Roboto';
+    white-space: pre-line;
 }
 
 .botones{

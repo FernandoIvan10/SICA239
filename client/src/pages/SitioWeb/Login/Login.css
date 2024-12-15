@@ -58,9 +58,10 @@
     align-items: center;
 }
 
-.formulario img{
+.formulario-icono{
     width: 100px;
     height: 100px;
+    color: #28a745;
 }
 
 .campos-formulario{

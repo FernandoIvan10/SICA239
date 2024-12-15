@@ -44,6 +44,11 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.elementos-menu ul li.active {
+    background-color: #28a745; /* Color de fondo cuando está activo */
+    color: white; /* Cambia el color del texto cuando está activo */
+}
+
 .elementos-menu ul li:hover {
     background-color: #e9ecef;
     color: #4CAF50; 
@@ -59,6 +64,11 @@
 .elementos-menu ul li ul li {
     font-size: 16px;
     padding: 5px 0;
+}
+
+.elementos-menu ul li ul li.active {
+    background-color: #28a745; /* Color de fondo cuando está activo */
+    color: white; /* Cambia el color del texto cuando está activo */
 }
 
 .elementos-menu ul li ul li:hover {

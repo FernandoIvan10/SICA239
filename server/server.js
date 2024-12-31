@@ -14,7 +14,7 @@ const puerto = 3000 // Puerto del servidor
 
 app.use(express.json()) // El servidor acepta solicitudes JSON
 
-app.use(express.static(path.join(__dirname, 'dist'))) // Sirve los archivos del frontend
+app.use(express.static(path.join(__dirname, '../client/dist'))) // Sirve los archivos del frontend
 
 // Ruta para las autenticaciones
 app.use('/api/auth', authRoutes)
@@ -24,7 +24,7 @@ app.use('/api/admins', adminsRoutes)
 
 // Se sirven las rutas de React para las demás rutas
 app.get('*', (req, res)=>{
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'))
 })
 
 // Ruta pública (no necesita autenticación)

@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt')
 
 // Controlador que valida el inicio de sesión
 const loginController = async(req,res)=>{
-    console.log('Se llamó a loginController con:', req.body);
     try{
         const {tipoUsuario, usuario, contraseña} = req.body // Datos del formulario de login
 

@@ -64,25 +64,25 @@
     color: #28a745;
 }
 
-.campos-formulario{
+.formulario-campos{
     width: 80%;
     margin-top: 10px;
 }
 
-.input-formulario{
+.formulario-campo{
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
     width: 100%;
 }
 
-.input-formulario p{
+.formulario-campo p{
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     margin-bottom: 5px;
 }
 
-.input-formulario input{
+.formulario-campo input{
     font-family: 'Roboto';
     padding: 10px;
     border: 1px solid #ccc;
@@ -93,7 +93,7 @@
     width: 100%;
 }
 
-.input-formulario input:focus {
+.formulario-campo input:focus {
     border-color: #4CAF50;
     box-shadow: 0 0 4px rgba(0, 255, 42, 0.5);
 }

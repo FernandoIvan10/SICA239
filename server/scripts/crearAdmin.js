@@ -8,8 +8,8 @@ async function crearAdministrador(){
     try{
         const superAdmin={ // Datos del superadmin
             rfc: process.env.SUPERADMIN_RFC,
-            nombre: 'Super',
-            apellido: 'Administrador',
+            nombre: process.env.SUPERADMIN_NOMBRE,
+            apellido: process.env.SUPERADMIN_APELLIDO,
             contraseña: process.env.SUPERADMIN_PASSWORD,
             rol: 'superadmin'
         }
@@ -17,11 +17,8 @@ async function crearAdministrador(){
         // Se valida que no exista
         const existe = await Administrador.findOne({rfc: superAdmin.rfc})
         if(!existe){
-            console.log(`Creando superadministrador con RFC: ${superAdmin.rfc}`);
             // La contraseña se encripta
             const contraseñaEncriptada = await bcrypt.hash(superAdmin.contraseña, 10)
-            console.log(`Contraseña original: ${superAdmin.contraseña}`);
-            console.log(`Contraseña encriptada: ${contraseñaEncriptada}`);
             // Se crea el superadmin
             const nuevoAdmin = new Administrador({
                 rfc: superAdmin.rfc,

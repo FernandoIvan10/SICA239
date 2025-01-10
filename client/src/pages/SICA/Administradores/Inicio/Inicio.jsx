@@ -1,4 +1,4 @@
-import jwtDecode from "jwt-decode"
+import {jwtDecode} from "jwt-decode"
 import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral";
 import { FaHouseChimney } from "react-icons/fa6";
 import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";

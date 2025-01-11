@@ -8,20 +8,17 @@ import Bienvenida from "../../../../components/sica/Bienvenida/Bienvenida";
 import "./Inicio.css"
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";
 
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const [nombre, setNombre] = useState('') // Nombre del usuario
 
-    useEffect(() => {
-        const token = localStorage.getItem('token') // Token de inicio de sesión
+    useValidarToken() // Se valida que el usuario haya iniciado sesión
 
-        // Se valida que el usuario haya iniciado sesión
-        if(!token){
-            // Si el usuario no ha iniciado sesión es redirigido al login
-            navigate('/SICA/iniciar-sesion')
-        } else {
+    useEffect(() => {
+        const token = localStorage.getItem('token') // Token de inicio de sesión        
             try{
                 const tokenDecodificado = jwtDecode(token) // Se decodifica el token
                 setNombre(tokenDecodificado.nombre); // Se almacena el nombre en el estado
@@ -36,7 +33,6 @@ export default function InicioAdmin(){
                 // Si hay algún error se redirige al usuario al inicio de sesión
                 navigate('/SICA/iniciar-sesion')
             }
-        }
     }, [navigate])
 
     const elementos=[ // Elementos del menú

@@ -38,7 +38,7 @@ const loginController = async(req,res)=>{
 
         // Se genera un token de sesión
         const token = jwt.sign(
-            {id:user._id, rol},
+            {id:user._id, rol, nombre: user.nombre, apellido: user.apellido},
             process.env.CLAVE_SECRETA,
             {expiresIn:'3h'} // Tiempo de expiración
         )

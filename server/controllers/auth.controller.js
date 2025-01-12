@@ -47,7 +47,7 @@ const loginController = async(req,res)=>{
         res.status(200).json({
             message: 'Inicio de sesión exitoso',
             token,
-            tipoUsuario,
+            rol,
             nombre: user.nombre,
             apellido: user.apellido, 
         }) 

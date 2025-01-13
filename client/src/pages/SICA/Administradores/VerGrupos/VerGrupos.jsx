@@ -4,11 +4,11 @@ import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa"
 import { TiUserAdd } from "react-icons/ti";
 import { IoLogOut } from "react-icons/io5";
 import { MdEdit, MdDelete } from "react-icons/md";
-import "./GestionarGrupos.css"
+import "./VerGrupos.css"
 import { useState } from "react";
 
-// Página del SICA para gestionar los grupos
-export default function GestionarGrupos(){
+// Página del sica para ver la lista de usuarios
+export default function VerGrupos(){
     const elementos=[ // Elementos del menú
         {titulo: "Inicio", icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
         {titulo: "Subir calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},

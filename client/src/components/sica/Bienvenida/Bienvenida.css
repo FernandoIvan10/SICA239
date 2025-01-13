@@ -23,7 +23,7 @@
     justify-content: space-around;
 }
 
-.botones button{
+.boton{
     font-family: 'Roboto';
     font-size: 15px;
     background-color: #4CAF50; 
@@ -38,6 +38,6 @@
     transition: background-color 0.3s ease;
 }
 
-.botones button:hover {
+.boton:hover {
     background-color: #45a049;
   }

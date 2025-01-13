@@ -1,0 +1,74 @@
+.contenedor-inicio{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.contenedor-lista-usuarios {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background-color: #f9f9f9;
+}
+
+.contenido-principal {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.tabla-usuarios {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.tabla-usuarios th, .tabla-usuarios td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.tabla-usuarios th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.tabla-usuarios tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabla-usuarios tr:hover {
+    background-color: #f1f1f1;
+}
+
+.btn-editar, .btn-eliminar {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.btn-editar {
+    background-color: #007bff;
+}
+
+.btn-eliminar {
+    background-color: #dc3545;
+}
+
+.btn-editar:hover {
+    background-color: #0056b3;
+}
+
+.btn-eliminar:hover {
+    background-color: #c82333;
+}

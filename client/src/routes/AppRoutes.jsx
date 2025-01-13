@@ -9,9 +9,9 @@ import EnCurso from "../pages/SICA/Alumnos/EnCurso/EnCurso"
 import Historial from "../pages/SICA/Alumnos/Historial/Historial"
 import Horario from "../pages/SICA/Alumnos/Horario/Horario"
 import CambiarContraseña from "../pages/SICA/Alumnos/CambiarContraseña/CambiarContraseña"
-import GestionarGrupos from "../pages/SICA/Administradores/GestionarGrupos/GestionarGrupos"
 import AgregarGrupo from "../pages/SICA/Administradores/AgregarGrupo/AgregarGrupo"
-import VerUsuarios from "../pages/SICA/Administradores/EditarUsuario/VerUsuarios"
+import VerUsuarios from "../pages/SICA/Administradores/VerUsuarios/VerUsuarios"
+import VerGrupos from "../pages/SICA/Administradores/VerGrupos/VerGrupos"
 
 // Clase que maneja las rutas (URL) de la App
 export default function AppRoutes(){
@@ -28,8 +28,8 @@ export default function AppRoutes(){
                 <Route path="/SICA/administradores/subir-calificaciones" element={<SubirCalificaciones/>}/>
                 <Route path="/SICA/administradores/agregar-usuario" element={<AgregarUsuario/>}/>
                 <Route path="/SICA/administradores/ver-usuarios" element={<VerUsuarios/>}/>
-                <Route path="/SICA/administradores/gestionar-grupos" element={<GestionarGrupos/>}/>
                 <Route path="/SICA/administradores/agregar-grupo" element={<AgregarGrupo/>}/>
+                <Route path="/SICA/administradores/ver-grupos" element={<VerGrupos/>}/>
                 <Route path="/SICA/alumnos/en-curso" element={<EnCurso/>}/>
                 <Route path="/SICA/alumnos/historial" element={<Historial/>}/>
                 <Route path="/SICA/alumnos/horario" element={<Horario/>}/>

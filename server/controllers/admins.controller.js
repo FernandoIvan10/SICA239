@@ -273,4 +273,55 @@ const modificarAlumno = async (req, res) => {
     }
 }
 
-module.exports = {agregarAdmin, agregarAlumno, agregarGrupo, agregarCalificacion, modificarAdmin, modificarAlumno} // Se exporta el controlador
+const modificarGrupo = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const { nombre, materias } = req.body
+
+        // Valida que el ID sea proporcionado
+        if (!id) {
+            return res.status(400).json({ mensaje: 'El ID del grupo es obligatorio.' })
+        }        
+
+        // Valida que el grupo exista
+        const grupoExistente = await Grupo.findById(id)
+        if (!grupoExistente) {
+            return res.status(404).json({ mensaje: 'Grupo no encontrado.' })
+        }
+
+        const actualizaciones = {}
+
+        // Actualiza los campos proporcionados
+        if (nombre) actualizaciones.nombre = nombre
+        if (materias && materias.length > 0) {
+            let materiasIds = []
+
+            for (const materiaNombre of materias) {
+                // Se busca si la materia existe
+                let materiaExistente = await Materia.findOne({ nombre: materiaNombre })
+                // Si la materia no existe, entonces se crea
+                if (!materiaExistente) {
+                    const nuevaMateria = new Materia({ nombre: materiaNombre })
+                    await nuevaMateria.save()
+                    materiaExistente = nuevaMateria
+                }
+                materiasIds.push(materiaExistente._id)
+            }
+            actualizaciones.materias = materiasIds
+        }
+
+        // Actualizar el grupo en la base de datos
+        const grupoActualizado = await Grupo.findByIdAndUpdate(id, actualizaciones, { new: true })
+
+        return res.status(200).json({
+            mensaje: 'Grupo actualizado exitosamente.',
+            grupo: grupoActualizado,
+        })
+    } catch (error) {
+        console.error('Error al modificar el grupo:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarAdmin, agregarAlumno, agregarGrupo, agregarCalificacion, modificarAdmin, modificarAlumno, modificarGrupo} // Se exporta el controlador

@@ -13,7 +13,7 @@ const calificacionEsquema = new mongoose.Schema({
         },
     ],
     promedio: {type:Number},
-})
+}, { collection: 'calificaciones' })
 
 // Se exporta el esquema
 module.exports = mongoose.model('Calificacion',calificacionEsquema)

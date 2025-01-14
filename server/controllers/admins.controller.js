@@ -3,6 +3,7 @@ const Administrador = require('../models/administrador.model')
 const Alumno = require('../models/alumno.model')
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
+const Calificacion = require('../models/calificacion.model')
 const bcrypt = require('bcrypt')
 
 // Controlador que agrega un nuevo usuario administrador
@@ -42,40 +43,40 @@ const agregarAdmin = async(req,res)=>{
 // Controlador para agregar un nuevo alumno
 const agregarAlumno = async (req, res) => {
     try {
-        const { matricula, nombre, apellido, contraseña, grupoNombre } = req.body;
+        const { matricula, nombre, apellido, contraseña, grupoNombre } = req.body
 
         // Valida que los campos estén rellenados
         if (!matricula || !nombre || !apellido || !contraseña || !grupoNombre) {
-            return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
+            return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' })
         }
 
         // Valida que el grupo exista
-        const grupoExistente = await Grupo.findOne({ nombre: grupoNombre });
+        const grupoExistente = await Grupo.findOne({ nombre: grupoNombre })
         if (!grupoExistente) {
-            return res.status(400).json({ mensaje: 'El grupo especificado no existe.' });
+            return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
         }
 
         // Valida que el alumno no exista
-        const existeAlumno = await Alumno.findOne({ matricula });
+        const existeAlumno = await Alumno.findOne({ matricula })
         if (existeAlumno) {
-            return res.status(400).json({ mensaje: 'El alumno ya existe.' });
+            return res.status(400).json({ mensaje: 'El alumno ya existe.' })
         }
 
         // Se crea el nuevo alumno
-        const contraseñaEncriptada = await bcrypt.hash(contraseña, 10);
+        const contraseñaEncriptada = await bcrypt.hash(contraseña, 10)
         const nuevoAlumno = new Alumno({
             matricula,
             nombre,
             apellido,
             contraseña: contraseñaEncriptada,
             grupoId: grupoExistente._id,
-        });
+        })
 
         await nuevoAlumno.save(); // Guarda el nuevo alumno
-        return res.status(201).json({ mensaje: 'Alumno creado exitosamente.' });
+        return res.status(201).json({ mensaje: 'Alumno creado exitosamente.' })
     } catch (error) {
-        console.error('Error al agregar el alumno:', error);
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' });
+        console.error('Error al agregar el alumno:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
     }
 }
 
@@ -132,4 +133,66 @@ const agregarGrupo = async (req, res) => {
     }
 }
 
-module.exports = {agregarAdmin, agregarAlumno, agregarGrupo} // Se exporta el controlador
+// Controlador para agregar una nueva calificación
+const agregarCalificacion = async (req, res) => {
+    try {
+        const { alumnoId, materiaId, grupoId, parciales } = req.body
+
+        // Validar que todos los campos obligatorios estén presentes
+        if (!alumnoId || !materiaId || !grupoId || !parciales || parciales.length === 0) {
+            return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' })
+        }
+
+        // Validar que el alumno exista
+        const alumnoExistente = await Alumno.findById(alumnoId)
+        if (!alumnoExistente) {
+            return res.status(400).json({ mensaje: 'El alumno especificado no existe.' })
+        }
+
+        // Validar que la materia exista
+        const materiaExistente = await Materia.findById(materiaId)
+        if (!materiaExistente) {
+            return res.status(400).json({ mensaje: 'La materia especificada no existe.' })
+        }
+
+        // Validar que el grupo exista
+        const grupoExistente = await Grupo.findById(grupoId)
+        if (!grupoExistente) {
+            return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
+        }
+
+        // Validar que las notas sean válidas
+        for (const parcial of parciales) {
+            if (!parcial.parcial || typeof parcial.nota !== 'number' || parcial.nota < 0 || parcial.nota > 10) {
+                return res.status(400).json({
+                    mensaje: 'Cada parcial debe tener un nombre y una nota válida entre 0 y 10.',
+                })
+            }
+        }
+
+        // Calcular el promedio de las calificaciones
+        const sumaNotas = parciales.reduce((acum, parcial) => acum + parcial.nota, 0)
+        const promedio = sumaNotas / parciales.length
+
+        // Crear la nueva calificación
+        const nuevaCalificacion = new Calificacion({
+            alumnoId,
+            materiaId,
+            grupoId,
+            parciales,
+            promedio,
+        })
+
+        await nuevaCalificacion.save() // Guardar en la base de datos
+
+        return res.status(201).json({
+            mensaje: 'Calificación agregada exitosamente.',
+            calificacion: nuevaCalificacion,
+        })
+    } catch (error) {
+        console.error('Error al agregar la calificación:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarAdmin, agregarAlumno, agregarGrupo, agregarCalificacion} // Se exporta el controlador

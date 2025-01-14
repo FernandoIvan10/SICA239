@@ -6,7 +6,7 @@ const alumnoEsquema = new mongoose.Schema({
     matricula:{type:String, unique:true, required:true},
     nombre:{type:String, required:true},
     apellido:{type:String, required:true},
-    constraseña:{type:String, required:true},
+    contraseña:{type:String, required:true},
     grupoId:{type:mongoose.Schema.Types.ObjectId, ref:'Grupo'},
     fechaCreacion:{type:Date, default:Date.now},
 }, { collection: 'alumnos' })

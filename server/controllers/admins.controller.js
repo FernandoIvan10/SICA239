@@ -195,4 +195,40 @@ const agregarCalificacion = async (req, res) => {
     }
 }
 
-module.exports = {agregarAdmin, agregarAlumno, agregarGrupo, agregarCalificacion} // Se exporta el controlador
+// Controlador para modificar un administrador
+const modificarAdmin = async (req, res) => {
+    try {
+        const { id } = req.params // ID del administrador a modificar
+        const { nombre, apellido, rol } = req.body
+
+        // Valida que el ID sea proporcionado
+        if (!id) {
+            return res.status(400).json({ mensaje: 'El ID del administrador es obligatorio.' })
+        }
+
+        // Valida que el administrador exista
+        const adminExistente = await Administrador.findById(id)
+        if (!adminExistente) {
+            return res.status(404).json({ mensaje: 'El administrador especificado no existe.' })
+        }
+
+        // Se actualizan sólo los campos proporcionados
+        if (nombre) adminExistente.nombre = nombre
+        if (apellido) adminExistente.apellido = apellido
+        if (rol) adminExistente.rol = rol;
+
+        // Se guardan los cambios en la base de datos
+        await adminExistente.save();
+
+        return res.status(200).json({ 
+            mensaje: 'Administrador modificado exitosamente.',
+            admin: adminExistente 
+        });
+    } catch (error) {
+        console.error('Error al modificar el administrador:', error);
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' });
+    }
+};
+
+
+module.exports = {agregarAdmin, agregarAlumno, agregarGrupo, agregarCalificacion, modificarAdmin} // Se exporta el controlador

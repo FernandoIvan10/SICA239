@@ -1,7 +1,7 @@
 // imports
 const express = require('express')
 const {agregarAdmin, modificarAdmin, listarAdmins} = require('../controllers/admins.controller')
-const {agregarAlumno, modificarAlumno} = require('../controllers/alumnos.controller')
+const {agregarAlumno, modificarAlumno, listarAlumnos} = require('../controllers/alumnos.controller')
 const {agregarGrupo, modificarGrupo} = require('../controllers/grupos.controller')
 const {agregarCalificacion} = require('../controllers/calificaciones.controller')
 const verificarToken = require('../middleware/verificarToken')
@@ -81,6 +81,13 @@ router.get(
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin']), // Se valida el rol
     listarAdmins // Se llama al controlador
+)
+
+router.get(
+    '/panel/alumnos/listar',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin']), // Se valida el rol
+    listarAlumnos // Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

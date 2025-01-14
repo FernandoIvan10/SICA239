@@ -87,4 +87,39 @@ const modificarAlumno = async (req, res) => {
     }
 }
 
-module.exports = {agregarAlumno, modificarAlumno} // Se exporta el controlador
+// Controlador para listar todos los alumnos, con opciones de filtros
+const listarAlumnos = async (req, res) => {
+    try {
+        const { buscador, grupo, semestre } = req.query // Filtro por búsqueda
+
+        let query = {} // Consulta
+
+        // Búsqueda por texto
+        if (buscador) {
+            query.$or = [
+                { matricula: { $regex: buscador, $options: 'i' } }, // Búsqueda por matrícula
+                { nombre: { $regex: buscador, $options: 'i' } }, // Búsqueda por nombre
+                { apellido: { $regex: buscador, $options: 'i' } }, // Búsqueda por apellido                
+            ]
+        }
+
+        // Filtro por grupo
+        if (grupo) {
+            query.grupo = grupo
+        }
+
+        // Filtro por semestre
+        if (semestre){
+            query.semestre = semestre
+        }
+
+        // Se ejecuta la consulta
+        const alumnos = await Alumno.find(query).select('-contraseña'); // Se excluye la contraseña en la consulta
+        return res.status(200).json(alumnos)
+    } catch (error) {
+        console.error('Error al listar alumnos:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarAlumno, modificarAlumno, listarAlumnos} // Se exporta el controlador

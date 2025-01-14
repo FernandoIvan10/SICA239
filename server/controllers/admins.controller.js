@@ -228,7 +228,49 @@ const modificarAdmin = async (req, res) => {
         console.error('Error al modificar el administrador:', error);
         return res.status(500).json({ mensaje: 'Error interno del servidor.' });
     }
-};
+}
 
+const modificarAlumno = async (req, res) => {
+    try {
+        const { id } = req.params;
 
-module.exports = {agregarAdmin, agregarAlumno, agregarGrupo, agregarCalificacion, modificarAdmin} // Se exporta el controlador
+        const { nombre, apellido, contraseña, grupoNombre } = req.body;
+
+        // Valida que el ID sea proporcionado
+        if (!id) {
+            return res.status(400).json({ mensaje: 'El ID del alumno es obligatorio.' })
+        }
+
+        // Valida que el alumno exista
+        const alumnoExistente = await Alumno.findById(id)
+        if (!alumnoExistente) {
+            return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
+        }
+
+        // Actualiza los campos proporcionados
+        const actualizaciones = {}
+        if (nombre) actualizaciones.nombre = nombre
+        if (apellido) actualizaciones.apellido = apellido
+        if (grupoNombre) {
+            // Se valida que el nuevo grupo exista
+            const grupoExistente = await Grupo.findOne({ nombre: grupoNombre })
+            if (!grupoExistente) {
+                return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
+            }
+            actualizaciones.grupoId = grupoExistente._id
+        }
+
+        // Se actualiza el alumno
+        const alumnoActualizado = await Alumno.findByIdAndUpdate(id, actualizaciones, { new: true })
+
+        return res.status(200).json({
+            mensaje: 'Alumno actualizado exitosamente.',
+            alumno: alumnoActualizado,
+        })
+    } catch (error) {
+        console.error('Error al modificar el alumno:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarAdmin, agregarAlumno, agregarGrupo, agregarCalificacion, modificarAdmin, modificarAlumno} // Se exporta el controlador

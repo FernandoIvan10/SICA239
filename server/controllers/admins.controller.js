@@ -1,9 +1,5 @@
 // imports
 const Administrador = require('../models/administrador.model')
-const Alumno = require('../models/alumno.model')
-const Grupo = require('../models/grupo.model')
-const Materia = require('../models/materia.model')
-const Calificacion = require('../models/calificacion.model')
 const bcrypt = require('bcrypt')
 
 // Controlador que agrega un nuevo usuario administrador
@@ -40,161 +36,6 @@ const agregarAdmin = async(req,res)=>{
     }
 }
 
-// Controlador para agregar un nuevo alumno
-const agregarAlumno = async (req, res) => {
-    try {
-        const { matricula, nombre, apellido, contraseña, grupoNombre } = req.body
-
-        // Valida que los campos estén rellenados
-        if (!matricula || !nombre || !apellido || !contraseña || !grupoNombre) {
-            return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' })
-        }
-
-        // Valida que el grupo exista
-        const grupoExistente = await Grupo.findOne({ nombre: grupoNombre })
-        if (!grupoExistente) {
-            return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
-        }
-
-        // Valida que el alumno no exista
-        const existeAlumno = await Alumno.findOne({ matricula })
-        if (existeAlumno) {
-            return res.status(400).json({ mensaje: 'El alumno ya existe.' })
-        }
-
-        // Se crea el nuevo alumno
-        const contraseñaEncriptada = await bcrypt.hash(contraseña, 10)
-        const nuevoAlumno = new Alumno({
-            matricula,
-            nombre,
-            apellido,
-            contraseña: contraseñaEncriptada,
-            grupoId: grupoExistente._id,
-        })
-
-        await nuevoAlumno.save(); // Guarda el nuevo alumno
-        return res.status(201).json({ mensaje: 'Alumno creado exitosamente.' })
-    } catch (error) {
-        console.error('Error al agregar el alumno:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
-    }
-}
-
-// Controlador para agregar un nuevo grupo
-const agregarGrupo = async (req, res) => {
-    try {
-        const { nombre, materias } = req.body
-
-        // Valida que el campo nombre no esté vacío
-        if (!nombre) {
-            return res.status(400).json({ mensaje: 'El nombre del grupo es obligatorio.' })
-        }
-
-        // Verifica que las materias estén definidas en un arreglo
-        if (!materias || !Array.isArray(materias) || materias.length === 0) {
-            return res.status(400).json({ mensaje: 'Debe proporcionar al menos una materia.' })
-        }
-
-        let materiasIds = []
-
-        // Recorre la lista de materias
-        for (const materia of materias) {
-            const materiaNombre = materia.nombre
-            if (!materiaNombre) { // Valida que el nombre de la materia no esté vacío
-                return res.status(400).json({ mensaje: 'El nombre de cada materia es obligatorio.' })
-            }
-
-            // Valida que la materia no exista
-            let materiaExistente = await Materia.findOne({ nombre: materiaNombre })
-
-            if (!materiaExistente) {
-                // Si no existe, crea una nueva materia
-                const nuevaMateria = new Materia({
-                    nombre: materiaNombre,
-                })
-                await nuevaMateria.save()
-                materiaExistente = nuevaMateria
-            }
-            // Se agrega el ID de la materia a la lista
-            materiasIds.push(materiaExistente._id)
-        }
-
-        // Crear el grupo
-        const nuevoGrupo = new Grupo({
-            nombre,
-            materias: materiasIds,
-        })
-
-        await nuevoGrupo.save() // Guarda el grupo
-        return res.status(201).json({ message: 'Grupo creado exitosamente con materias.', grupo: nuevoGrupo })
-    } catch (error) {
-        console.error('Error al agregar el grupo con materias:', error)
-        return res.status(500).json({ menssage: 'Error interno del servidor.' })
-    }
-}
-
-// Controlador para agregar una nueva calificación
-const agregarCalificacion = async (req, res) => {
-    try {
-        const { alumnoId, materiaId, grupoId, parciales } = req.body
-
-        // Validar que todos los campos obligatorios estén presentes
-        if (!alumnoId || !materiaId || !grupoId || !parciales || parciales.length === 0) {
-            return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' })
-        }
-
-        // Validar que el alumno exista
-        const alumnoExistente = await Alumno.findById(alumnoId)
-        if (!alumnoExistente) {
-            return res.status(400).json({ mensaje: 'El alumno especificado no existe.' })
-        }
-
-        // Validar que la materia exista
-        const materiaExistente = await Materia.findById(materiaId)
-        if (!materiaExistente) {
-            return res.status(400).json({ mensaje: 'La materia especificada no existe.' })
-        }
-
-        // Validar que el grupo exista
-        const grupoExistente = await Grupo.findById(grupoId)
-        if (!grupoExistente) {
-            return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
-        }
-
-        // Validar que las notas sean válidas
-        for (const parcial of parciales) {
-            if (!parcial.parcial || typeof parcial.nota !== 'number' || parcial.nota < 0 || parcial.nota > 10) {
-                return res.status(400).json({
-                    mensaje: 'Cada parcial debe tener un nombre y una nota válida entre 0 y 10.',
-                })
-            }
-        }
-
-        // Calcular el promedio de las calificaciones
-        const sumaNotas = parciales.reduce((acum, parcial) => acum + parcial.nota, 0)
-        const promedio = sumaNotas / parciales.length
-
-        // Crear la nueva calificación
-        const nuevaCalificacion = new Calificacion({
-            alumnoId,
-            materiaId,
-            grupoId,
-            parciales,
-            promedio,
-        })
-
-        await nuevaCalificacion.save() // Guardar en la base de datos
-
-        return res.status(201).json({
-            mensaje: 'Calificación agregada exitosamente.',
-            calificacion: nuevaCalificacion,
-        })
-    } catch (error) {
-        console.error('Error al agregar la calificación:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
-    }
-}
-
 // Controlador para modificar un administrador
 const modificarAdmin = async (req, res) => {
     try {
@@ -215,113 +56,50 @@ const modificarAdmin = async (req, res) => {
         // Se actualizan sólo los campos proporcionados
         if (nombre) adminExistente.nombre = nombre
         if (apellido) adminExistente.apellido = apellido
-        if (rol) adminExistente.rol = rol;
+        if (rol) adminExistente.rol = rol
 
         // Se guardan los cambios en la base de datos
-        await adminExistente.save();
+        await adminExistente.save()
 
         return res.status(200).json({ 
             mensaje: 'Administrador modificado exitosamente.',
             admin: adminExistente 
-        });
-    } catch (error) {
-        console.error('Error al modificar el administrador:', error);
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' });
-    }
-}
-
-const modificarAlumno = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const { nombre, apellido, contraseña, grupoNombre } = req.body;
-
-        // Valida que el ID sea proporcionado
-        if (!id) {
-            return res.status(400).json({ mensaje: 'El ID del alumno es obligatorio.' })
-        }
-
-        // Valida que el alumno exista
-        const alumnoExistente = await Alumno.findById(id)
-        if (!alumnoExistente) {
-            return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
-        }
-
-        // Actualiza los campos proporcionados
-        const actualizaciones = {}
-        if (nombre) actualizaciones.nombre = nombre
-        if (apellido) actualizaciones.apellido = apellido
-        if (grupoNombre) {
-            // Se valida que el nuevo grupo exista
-            const grupoExistente = await Grupo.findOne({ nombre: grupoNombre })
-            if (!grupoExistente) {
-                return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
-            }
-            actualizaciones.grupoId = grupoExistente._id
-        }
-
-        // Se actualiza el alumno
-        const alumnoActualizado = await Alumno.findByIdAndUpdate(id, actualizaciones, { new: true })
-
-        return res.status(200).json({
-            mensaje: 'Alumno actualizado exitosamente.',
-            alumno: alumnoActualizado,
         })
     } catch (error) {
-        console.error('Error al modificar el alumno:', error)
+        console.error('Error al modificar el administrador:', error)
         return res.status(500).json({ mensaje: 'Error interno del servidor.' })
     }
 }
 
-const modificarGrupo = async (req, res) => {
+// Controlador para listar todos los admins con opciones de filtros
+const listarAdmins = async (req, res) => {
     try {
-        const { id } = req.params
+        const { buscador, rol } = req.query // Filtro por búsqueda y por rol
 
-        const { nombre, materias } = req.body
+        let query = {} // Consulta
 
-        // Valida que el ID sea proporcionado
-        if (!id) {
-            return res.status(400).json({ mensaje: 'El ID del grupo es obligatorio.' })
-        }        
-
-        // Valida que el grupo exista
-        const grupoExistente = await Grupo.findById(id)
-        if (!grupoExistente) {
-            return res.status(404).json({ mensaje: 'Grupo no encontrado.' })
+        // Búsqueda por texto
+        if (buscador) {
+            query.$or = [
+                { nombre: { $regex: buscador, $options: 'i' } }, // Búsqueda por nombre
+                { apellido: { $regex: buscador, $options: 'i' } }, // Búsqueda por apellido
+                { rfc: { $regex: buscador, $options: 'i' } } // Búsqueda por RFC
+            ]
         }
 
-        const actualizaciones = {}
-
-        // Actualiza los campos proporcionados
-        if (nombre) actualizaciones.nombre = nombre
-        if (materias && materias.length > 0) {
-            let materiasIds = []
-
-            for (const materiaNombre of materias) {
-                // Se busca si la materia existe
-                let materiaExistente = await Materia.findOne({ nombre: materiaNombre })
-                // Si la materia no existe, entonces se crea
-                if (!materiaExistente) {
-                    const nuevaMateria = new Materia({ nombre: materiaNombre })
-                    await nuevaMateria.save()
-                    materiaExistente = nuevaMateria
-                }
-                materiasIds.push(materiaExistente._id)
-            }
-            actualizaciones.materias = materiasIds
+        // Filtro por rol
+        if (rol) {
+            query.rol = rol
         }
 
-        // Actualizar el grupo en la base de datos
-        const grupoActualizado = await Grupo.findByIdAndUpdate(id, actualizaciones, { new: true })
-
-        return res.status(200).json({
-            mensaje: 'Grupo actualizado exitosamente.',
-            grupo: grupoActualizado,
-        })
+        // Se ejecuta la consulta
+        const admins = await Administrador.find(query).select('-contraseña'); // Se excluye la contraseña en la consulta
+        return res.status(200).json(admins)
     } catch (error) {
-        console.error('Error al modificar el grupo:', error)
+        console.error('Error al listar administradores:', error)
         return res.status(500).json({ mensaje: 'Error interno del servidor.' })
     }
 }
 
-module.exports = {agregarAdmin, agregarAlumno, agregarGrupo, agregarCalificacion, modificarAdmin, modificarAlumno, modificarGrupo} // Se exporta el controlador
+
+module.exports = {agregarAdmin, modificarAdmin, listarAdmins} // Se exporta el controlador

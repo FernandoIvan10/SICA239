@@ -1,6 +1,9 @@
 // imports
 const express = require('express')
-const {agregarAlumno, agregarAdmin, agregarGrupo, agregarCalificacion, modificarAdmin, modificarAlumno, modificarGrupo} = require('../controllers/admins.controller')
+const {agregarAdmin, modificarAdmin, listarAdmins} = require('../controllers/admins.controller')
+const {agregarAlumno, modificarAlumno} = require('../controllers/alumnos.controller')
+const {agregarGrupo, modificarGrupo} = require('../controllers/grupos.controller')
+const {agregarCalificacion} = require('../controllers/calificaciones.controller')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 
@@ -67,9 +70,17 @@ router.put(
 // Ruta para modificar un grupo (para "superadmin" y "editor")
 router.put(
     '/panel/grupos/modificar/:id',
-    verificarToken,
-    verificarRol(['superadmin', 'editor']),
-    modificarGrupo
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin', 'editor']), // Se valida el rol
+    modificarGrupo // Se llama al controlador
+)
+
+// Ruta para listar administradores
+router.get(
+    '/panel/admins/listar',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin']), // Se valida el rol
+    listarAdmins // Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

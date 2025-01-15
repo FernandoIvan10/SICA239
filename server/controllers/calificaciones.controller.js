@@ -134,4 +134,36 @@ const modificarCalificacion = async (req, res) => {
     }
 }
 
-module.exports = {agregarCalificacion, modificarCalificacion} // Se exporta el controlador
+// Controlador para listar todas las calificaciones, con opciones de filtros
+const listarCalificaciones = async (req, res) => {
+    try {
+        const {alumnoId, materiaId, grupoId} = req.query
+
+        // Se aplican los filtros en caso de que existan
+        const query = {}
+        if (grupoId) query.grupoId = grupoId
+        if (alumnoId) query.alumnoId = alumnoId
+        if (materiaId) query.materiaId = materiaId
+
+        // Realiza la consulta con los filtros aplicados
+        const calificaciones = await Calificacion.find(query)
+            .populate('alumnoId', 'nombre apellido') // Incluye información del alumno
+            .populate('materiaId', 'nombre') // Incluye información de la materia
+            .populate('grupoId', 'nombre') // Incluye información del grupo
+            .exec()
+
+        if (calificaciones.length === 0) {
+            return res.status(404).json({ mensaje: 'No se encontraron calificaciones con los filtros especificados.' })
+        }
+
+        return res.status(200).json({
+            mensaje: 'Calificaciones obtenidas exitosamente.',
+            calificaciones,
+        })
+    } catch (error) {
+        console.error('Error al listar las calificaciones:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarCalificacion, modificarCalificacion, listarCalificaciones} // Se exporta el controlador

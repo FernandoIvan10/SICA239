@@ -48,7 +48,7 @@ const modificarAlumno = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const { nombre, apellido, contraseña, grupoNombre } = req.body;
+        const { nombre, apellido, grupoNombre } = req.body;
 
         // Valida que el ID sea proporcionado
         if (!id) {

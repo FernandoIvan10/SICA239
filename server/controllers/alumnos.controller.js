@@ -3,7 +3,7 @@ const Alumno = require('../models/alumno.model')
 const Grupo = require('../models/grupo.model')
 const bcrypt = require('bcrypt')
 
-// Controlador para agregar un nuevo alumno
+// Función para agregar un nuevo alumno
 const agregarAlumno = async (req, res) => {
     try {
         const { matricula, nombre, apellido, contraseña, grupoNombre } = req.body
@@ -43,7 +43,7 @@ const agregarAlumno = async (req, res) => {
     }
 }
 
-// Controlador para modificar un alumno
+// Función para modificar un alumno
 const modificarAlumno = async (req, res) => {
     try {
         const { id } = req.params;
@@ -87,7 +87,7 @@ const modificarAlumno = async (req, res) => {
     }
 }
 
-// Controlador para listar todos los alumnos, con opciones de filtros
+// Función para listar todos los alumnos, con opciones de filtros
 const listarAlumnos = async (req, res) => {
     try {
         const { buscador, grupo, semestre } = req.query // Filtro por búsqueda

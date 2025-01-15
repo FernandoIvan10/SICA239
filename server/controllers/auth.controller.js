@@ -5,7 +5,7 @@ const Alumno = require('../models/alumno.model')
 const Administrador = require('../models/administrador.model')
 const bcrypt = require('bcrypt')
 
-// Controlador que valida el inicio de sesión
+// Función que valida el inicio de sesión
 const loginController = async(req,res)=>{
     try{
         const {tipoUsuario, usuario, contraseña} = req.body // Datos del formulario de login

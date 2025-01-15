@@ -2,7 +2,7 @@
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
 
-// Controlador para agregar un nuevo grupo
+// Función para agregar un nuevo grupo
 const agregarGrupo = async (req, res) => {
     try {
         const { nombre, materias } = req.body
@@ -55,7 +55,7 @@ const agregarGrupo = async (req, res) => {
     }
 }
 
-// Controlador para modificar un grupo
+// Función para modificar un grupo
 const modificarGrupo = async (req, res) => {
     try {
         const { id } = req.params
@@ -107,4 +107,21 @@ const modificarGrupo = async (req, res) => {
     }
 }
 
-module.exports = {agregarGrupo, modificarGrupo} // Se exporta el controlador
+// Función para listar todos los grupos
+const listarGrupos = async (req, res) => {
+    try {
+        // Consulta los grupos con sus datos
+        const grupos = await Grupo.find().populate('materias', 'nombre').exec()
+
+        // Retorna la lista de grupos
+        return res.status(200).json({
+            mensaje: 'Grupos obtenidos exitosamente.',
+            grupos,
+        })
+    } catch (error) {
+        console.error('Error al listar los grupos:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarGrupo, modificarGrupo, listarGrupos} // Se exporta el controlador

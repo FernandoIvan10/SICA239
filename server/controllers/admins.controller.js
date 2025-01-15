@@ -2,7 +2,7 @@
 const Administrador = require('../models/administrador.model')
 const bcrypt = require('bcrypt')
 
-// Controlador que agrega un nuevo usuario administrador
+// Función que agrega un nuevo usuario administrador
 const agregarAdmin = async(req,res)=>{
     try{
         const {rfc, nombre, apellido, contraseña, rol} = req.body
@@ -36,7 +36,7 @@ const agregarAdmin = async(req,res)=>{
     }
 }
 
-// Controlador para modificar un administrador
+// Función para modificar un administrador
 const modificarAdmin = async (req, res) => {
     try {
         const { id } = req.params // ID del administrador a modificar
@@ -71,7 +71,7 @@ const modificarAdmin = async (req, res) => {
     }
 }
 
-// Controlador para listar todos los admins con opciones de filtros
+// Función para listar todos los admins con opciones de filtros
 const listarAdmins = async (req, res) => {
     try {
         const { buscador, rol } = req.query // Filtro por búsqueda y por rol

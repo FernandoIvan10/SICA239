@@ -4,7 +4,7 @@ const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
 const Calificacion = require('../models/calificacion.model')
 
-// Controlador para agregar una nueva calificación
+// Función para agregar una nueva calificación
 const agregarCalificacion = async (req, res) => {
     try {
         const { alumnoId, materiaId, grupoId, parciales } = req.body
@@ -66,7 +66,7 @@ const agregarCalificacion = async (req, res) => {
     }
 }
 
-// Controlador para modificar una calificación
+// Función para modificar una calificación
 const modificarCalificacion = async (req, res) => {
     try {
         const { id } = req.params
@@ -134,7 +134,7 @@ const modificarCalificacion = async (req, res) => {
     }
 }
 
-// Controlador para listar todas las calificaciones, con opciones de filtros
+// Función para listar todas las calificaciones, con opciones de filtros
 const listarCalificaciones = async (req, res) => {
     try {
         const {alumnoId, materiaId, grupoId} = req.query

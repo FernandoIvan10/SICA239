@@ -1,34 +1,50 @@
 // imports
-require('dotenv').config()
 const bcrypt = require('bcrypt')
+const readline = require('readline')
 const Administrador = require('../models/administrador.model')
 
-// Método que crea usuarios administradores predefinidos
+// Interfaz para interactuar con la consola
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+
+// Método que recaba los datos del nuevo superadmin
+const preguntarDatos = () =>{
+    return new Promise((resolve, reject) => {
+        rl.question('Ingrese el RFC del superadministrador: ', (rfc) => {
+            rl.question('Ingrese el nombre del superadministrador: ', (nombre) => {
+                rl.question('Ingrese el apellido del superadministrador: ', (apellido) => {
+                    rl.question('Ingrese la contraseña del superadministrador: ', (contraseña) => {
+                        resolve({rfc, nombre, apellido, contraseña})
+                        rl.close()
+                    })
+                })
+            })
+        })
+    })
+}
+
+// Método que crea el superadministrado si no existe
 async function crearAdministrador(){
     try{
-        const superAdmin={ // Datos del superadmin
-            rfc: process.env.SUPERADMIN_RFC,
-            nombre: process.env.SUPERADMIN_NOMBRE,
-            apellido: process.env.SUPERADMIN_APELLIDO,
-            contraseña: process.env.SUPERADMIN_PASSWORD,
-            rol: 'superadmin'
-        }
-
-        // Se valida que no exista
-        const existe = await Administrador.findOne({rfc: superAdmin.rfc})
+        // Se valida que no exista un superadministrador
+        const existe = await Administrador.findOne({rol: 'superadmin'})
         if(!existe){
+            console.log('¡Bienvenido! Ingrese los datos del usuario superadministrador. Este paso sólo se realiza la primera vez que se enciende el servidor')
+            const {rfc, nombre, apellido, contraseña} = await preguntarDatos() // Se piden los datos del superadministrador
             // La contraseña se encripta
-            const contraseñaEncriptada = await bcrypt.hash(superAdmin.contraseña, 10)
+            const contraseñaEncriptada = await bcrypt.hash(contraseña, 10)
             // Se crea el superadmin
             const nuevoAdmin = new Administrador({
-                rfc: superAdmin.rfc,
-                nombre: superAdmin.nombre,
-                apellido: superAdmin.apellido,
+                rfc,
+                nombre,
+                apellido,
                 contraseña: contraseñaEncriptada,
-                rol: superAdmin.rol,
+                rol: 'superadmin',
             })
             await nuevoAdmin.save()
-            console.log(`Superadministrador ${superAdmin.nombre} ${superAdmin.apellido} creado.`);
+            console.log(`Superadministrador ${nuevoAdmin.nombre} ${nuevoAdmin.apellido} creado.`);
         }else{
             console.log('El superadministrador ya existe.')
         }

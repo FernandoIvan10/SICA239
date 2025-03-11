@@ -16,7 +16,7 @@ export default function AgregarGrupo() {
     const [nombreGrupo, setNombreGrupo] = useState('') // Nombre del nuevo grupo
     const [materias, setMaterias] = useState([]) // Lista de materias del nuevo grupo
     const [nuevaMateria, setNuevaMateria] = useState('') // Nombre de la nueva materia
-    const [menu, setMenu] = useState('') // Elementos del menú
+    const [menu, setMenu] = useState([]) // Elementos del menú
 
     useValidarToken() // Se válida que el usuario haya iniciado sesión
 

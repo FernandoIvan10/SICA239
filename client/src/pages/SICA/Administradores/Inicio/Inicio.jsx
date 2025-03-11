@@ -14,7 +14,7 @@ import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarTok
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
     const navigate = useNavigate() // Para redireccionar a los usuarios
-    const [nombre, setNombre] = useState('') // Nombre del usuario
+    const [nombreUsuario, setNombreUsuario] = useState('') // Nombre del usuario
     const [menu, setMenu] = useState([]) // Elementos del menú
     const [mensaje, setMensaje] = useState('') // Mensaje de bienvenida
     // Botones para acciones rápidas
@@ -33,7 +33,7 @@ export default function InicioAdmin(){
                         navigate('/SICA/alumnos/inicio')
                 }
 
-                setNombre(tokenDecodificado.nombre); // Se almacena el nombre en el estado
+                setNombreUsuario(tokenDecodificado.nombre); // Se almacena el nombre en el estado
 
                 if(tokenDecodificado.rol === 'superadmin'){
                     // Si el usuario es superadmin
@@ -107,7 +107,7 @@ export default function InicioAdmin(){
         <div className="contenedor-inicio">
             <MenuLateral elementos={menu}/>
             <Bienvenida 
-                nombre={nombre} 
+                nombre={nombreUsuario} 
                 descripcion={mensaje}
                 textoBoton1={boton1.texto}
                 linkBoton1={boton1.link}

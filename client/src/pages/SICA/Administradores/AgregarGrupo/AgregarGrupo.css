@@ -1,4 +1,6 @@
-.contenedor-gestionar-grupos{
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+.contenedor-formulario{
     display: flex;
     flex-direction: row;
     width: 100%;

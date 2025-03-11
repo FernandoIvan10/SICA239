@@ -3,6 +3,7 @@ import { FaHouseChimney } from "react-icons/fa6";
 import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";
 import { TiUserAdd } from "react-icons/ti";
 import { IoLogOut } from "react-icons/io5";
+import { MdGroupAdd, MdGroups } from "react-icons/md";
 import { useEffect, useState } from "react";
 import "./AgregarGrupo.css"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";

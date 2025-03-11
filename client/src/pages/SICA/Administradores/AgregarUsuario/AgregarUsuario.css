@@ -62,7 +62,6 @@ h1 {
     margin: 0; /* Asegura que no haya márgenes que causen el desplazamiento */
 }
 
-/* Eliminar cualquier regla :hover */
 .formulario-agregar {
     background-color: white;
     padding: 20px;

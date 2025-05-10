@@ -1,4 +1,5 @@
 import Input from "../../sitio_web/Input/Input"
+import "./Formulario.css"
 
 // Componente que renderiza un formulario
 export default function Formulario(props){

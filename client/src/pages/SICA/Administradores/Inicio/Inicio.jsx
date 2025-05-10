@@ -1,15 +1,17 @@
 import {jwtDecode} from "jwt-decode"
 import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral";
-import { FaHouseChimney } from "react-icons/fa6";
-import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";
-import { TiUserAdd } from "react-icons/ti";
-import { IoLogOut } from "react-icons/io5";
-import { MdGroupAdd, MdGroups } from "react-icons/md";
 import Bienvenida from "../../../../components/sica/Bienvenida/Bienvenida";
 import "./Inicio.css"
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";
+
+import { FaHouseChimney } from "react-icons/fa6";
+import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";
+import { TiUserAdd } from "react-icons/ti";
+import { IoLogOut } from "react-icons/io5";
+import { MdGroupAdd, MdGroups } from "react-icons/md";
+import { RiCalendarScheduleFill } from "react-icons/ri";
 
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
@@ -51,6 +53,7 @@ export default function InicioAdmin(){
                                 {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
                                 {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
                             ]},
+                        {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/subir-horarios'},
                         {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
                     ])
                     // Se asigna el siguiente mensaje de bienvenida

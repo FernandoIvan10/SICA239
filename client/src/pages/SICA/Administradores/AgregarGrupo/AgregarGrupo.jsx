@@ -1,14 +1,16 @@
 import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { FaHouseChimney } from "react-icons/fa6";
-import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";
-import { TiUserAdd } from "react-icons/ti";
-import { IoLogOut } from "react-icons/io5";
-import { MdGroupAdd, MdGroups } from "react-icons/md";
 import { useEffect, useState } from "react";
 import "./AgregarGrupo.css"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+
+import { FaHouseChimney } from "react-icons/fa6";
+import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";
+import { TiUserAdd } from "react-icons/ti";
+import { IoLogOut } from "react-icons/io5";
+import { MdGroupAdd, MdGroups } from "react-icons/md";
+import { RiCalendarScheduleFill } from "react-icons/ri";
 
 // Página del SICA para agregar grupos
 export default function AgregarGrupo() {
@@ -46,6 +48,7 @@ export default function AgregarGrupo() {
                             {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
                             {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
                         ]},
+                    {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/subir-horarios'},
                     {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
                 ])
         }else if(tokenDecodificado.rol === 'editor'){
@@ -67,6 +70,7 @@ export default function AgregarGrupo() {
                 {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
             ])
         }else if(tokenDecodificado.rol === 'lector'){
+            // Si el usuario es lector se redirige al panel para ver grupos
             navigate('/SICA/administradores/gestionar-grupos')
         }
 

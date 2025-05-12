@@ -80,18 +80,61 @@ export default function AgregarGrupo() {
         }
     }, [navigate])
 
-    // Función para agregar una materia a la lista
+    // Método para agregar una materia a la lista
     const agregarMateria = () => {
         if (nuevaMateria.trim() && !materias.includes(nuevaMateria)) {
             // Si la materia no está vacía y la materia no está en la lista
             setMaterias([...materias, nuevaMateria])
             setNuevaMateria("")
+
         }
     }
 
-    // Función para eliminar una materia de la lista
+    // Método para eliminar una materia de la lista
     const eliminarMateria = (materia) => {
         setMaterias(materias.filter((m) => m !== materia))
+    }
+
+    // Función para guardar el grupo y las materias en la BD
+    const guardarGrupo = () => {
+        if(!nombreGrupo.trim() || materias.length === 0){
+            // No se puede guardar el grupo sin un nombre de grupo y por lo menos una materia
+            alert("Debes ingresar un nombre de grupo y al menos una materia")
+        }else{
+
+        const token = localStorage.getItem('token') //Token de inicio de sesión
+
+    	const materiasFormateadas = materias.map(nombre => ({ nombre })) //Formato correcto para la API
+
+        // Se envian los datos a la API para guardarlos en la BD
+        fetch('http://localhost:3000/api/grupos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+        		nombre: nombreGrupo,
+		        materias: materiasFormateadas
+	        })
+        }).then(async res => {
+            if(res.ok){
+                alert("Grupo guardado exitosamente")
+                setNombreGrupo("")
+                setMaterias([])
+                return
+            }else{
+                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
+                alert("Ocurrió un error al guardar el grupo")
+                return
+            }
+        })
+        }
+    }
+
+    // Método para cancelar la creación del nuevo grupo
+    const cancelar = () => {
+        navigate('/SICA/administradores/gestionar-grupos')
     }
 
     return (
@@ -130,8 +173,8 @@ export default function AgregarGrupo() {
                     </div>
                 </label>
                 <div className="botones-formulario">
-                    <button>Guardar Grupo</button>
-                    <button>Cancelar</button>
+                    <button onClick={guardarGrupo}>Guardar Grupo</button>
+                    <button onClick={cancelar}>Cancelar</button>
                 </div>
             </div>
         </div>

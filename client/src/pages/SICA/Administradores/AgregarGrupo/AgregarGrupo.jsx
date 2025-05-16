@@ -138,46 +138,46 @@ export default function AgregarGrupo() {
     }
 
     return (
-        <>
-        <MenuLateral elementos={menu}/>
-        <div className="contenedor-formulario">
-            <h1>Agregar Nuevo Grupo</h1>
-            <div className="formulario-grupo">
-                <label>
-                    Nombre del Grupo:
-                    <input
-                        type="text"
-                        value={nombreGrupo}
-                        onChange={(e) => setNombreGrupo(e.target.value)}
-                        placeholder="Escribe el nombre del grupo"
-                    />
-                </label>
-                <label>
-                    Materias:
-                    <div className="materias-lista">
-                        {materias.map((materia, index) => (
-                            <div key={index} className="materia-item">
-                                {materia}
-                                <button onClick={() => eliminarMateria(materia)}>X</button>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="agregar-materia">
+        <div className="contenedor-agregar-grupo">
+            <MenuLateral elementos={menu}/>
+            <div className="contenedor-formulario">
+                <h1>Agregar Nuevo Grupo</h1>
+                <div className="formulario-grupo">
+                    <label>
+                        Nombre del Grupo:
                         <input
                             type="text"
-                            value={nuevaMateria}
-                            onChange={(e) => setNuevaMateria(e.target.value)}
-                            placeholder="Nueva materia"
+                            value={nombreGrupo}
+                            onChange={(e) => setNombreGrupo(e.target.value)}
+                            placeholder="Escribe el nombre del grupo"
                         />
-                        <button onClick={agregarMateria}>Agregar</button>
+                    </label>
+                    <label>
+                        Materias:
+                        <div className="materias-lista">
+                            {materias.map((materia, index) => (
+                                <div key={index} className="materia-item">
+                                    {materia}
+                                    <button onClick={() => eliminarMateria(materia)}>X</button>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="agregar-materia">
+                            <input
+                                type="text"
+                                value={nuevaMateria}
+                                onChange={(e) => setNuevaMateria(e.target.value)}
+                                placeholder="Nueva materia"
+                            />
+                            <button onClick={agregarMateria}>Agregar</button>
+                        </div>
+                    </label>
+                    <div className="botones-formulario">
+                        <button onClick={guardarGrupo}>Guardar Grupo</button>
+                        <button onClick={cancelar}>Cancelar</button>
                     </div>
-                </label>
-                <div className="botones-formulario">
-                    <button onClick={guardarGrupo}>Guardar Grupo</button>
-                    <button onClick={cancelar}>Cancelar</button>
                 </div>
             </div>
         </div>
-        </>
     )
 }

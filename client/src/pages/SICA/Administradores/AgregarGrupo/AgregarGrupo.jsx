@@ -19,6 +19,8 @@ export default function AgregarGrupo() {
     const [materias, setMaterias] = useState([]) // Lista de materias del nuevo grupo
     const [nuevaMateria, setNuevaMateria] = useState('') // Nombre de la nueva materia
     const [menu, setMenu] = useState([]) // Elementos del menú
+    const [sugerencias, setSugerencias] = useState([]) // Sugerencias de materias de la BD
+    const [enfocado, setEnfocado] = useState(false) // Estado del campo para agregar materias (enfocado o no enfocado)
 
     useValidarToken() // Se válida que el usuario haya iniciado sesión
 
@@ -79,6 +81,37 @@ export default function AgregarGrupo() {
             navigate('/SICA/iniciar-sesion')
         }
     }, [navigate])
+
+    useEffect(() => {
+        const fetchSugerencias = async () => {
+        if (!enfocado) { // Si el campo no está enfocado no se envían sugerencias
+            setSugerencias([]);
+            return;
+        }
+        const token = localStorage.getItem('token');
+        try {
+            // Si el campo está vacío muestra todas las sugerencias
+            const query = nuevaMateria.trim() === '' ? '' : `?q=${encodeURIComponent(nuevaMateria)}`;
+            const res = await fetch(`http://localhost:3000/api/materias${query}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (res.ok) {
+                // Si el backend devuelve sugerencias se muestran las sugerencias
+                const data = await res.json();
+                setSugerencias(data.materias.map(m => m.nombre));
+            } else {
+			console.log("Error en fetch, status:", res.status);
+            setSugerencias([]);
+            }
+        } catch (error){
+		console.log("Error en fetch:", error);
+            setSugerencias([]);
+        }
+        };
+        fetchSugerencias();
+    }, [nuevaMateria, materias, enfocado]);
 
     // Método para agregar una materia a la lista
     const agregarMateria = () => {
@@ -168,8 +201,26 @@ export default function AgregarGrupo() {
                                 value={nuevaMateria}
                                 onChange={(e) => setNuevaMateria(e.target.value)}
                                 placeholder="Nueva materia"
+                                onFocus={() => setEnfocado(true)}
+                                onBlur={() => setTimeout(() => setEnfocado(false), 150)}
                             />
                             <button onClick={agregarMateria}>Agregar</button>
+                            {enfocado && sugerencias.length > 0 && (
+                                <ul className="sugerencias-materias">
+                                    {sugerencias.map((s, index) => (
+                                        <li
+                                            key={index}
+                                            onMouseDown={() => {
+                                                setNuevaMateria(s);
+                                                setEnfocado(false);
+                                            }}
+                                            className="sugerencia-item"
+                                        >
+                                            {s}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     </label>
                     <div className="botones-formulario">

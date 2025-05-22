@@ -76,6 +76,7 @@ input[type="text"] {
 .agregar-materia {
   margin-top: 0.5rem;
   display: flex;
+  position: relative;
   gap: 0.5rem;
 }
 
@@ -129,7 +130,33 @@ input[type="text"] {
   background-color: #c82333;
 }
 
-/* RESPONSIVE */
+.sugerencias-materias {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  list-style: none;
+  margin: 0;
+  padding: 0.3rem 0;
+  z-index: 1000;
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.sugerencia-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.sugerencia-item:hover {
+  background-color: #f0f0f0;
+}
+
 @media (max-width: 768px) {
 
   .contenedor-agregar-grupo {

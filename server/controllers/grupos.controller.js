@@ -1,6 +1,7 @@
 // imports
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
+const Calificacion = require('../models/calificacion.model')
 
 // Función para agregar un nuevo grupo
 const agregarGrupo = async (req, res) => {
@@ -59,7 +60,6 @@ const agregarGrupo = async (req, res) => {
 const modificarGrupo = async (req, res) => {
     try {
         const { id } = req.params
-
         const { nombre, materias } = req.body
 
         // Valida que el ID sea proporcionado
@@ -78,6 +78,11 @@ const modificarGrupo = async (req, res) => {
         // Actualiza los campos proporcionados
         if (nombre) actualizaciones.nombre = nombre
         if (materias && materias.length > 0) {
+            const calificacionesExistentes = await Calificacion.findOne({grupo: id})
+            if(calificacionesExistentes){ // No se pueden modificar materias si hay calificaciones capturadas
+                return res.status(400).json({ mensaje: 'No se pueden modificar las materias porque el grupo ya tiene calificaciones registradas.' })
+            }
+
             let materiasIds = []
 
             for (const materiaNombre of materias) {

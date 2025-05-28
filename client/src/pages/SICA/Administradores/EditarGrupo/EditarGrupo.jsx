@@ -127,8 +127,8 @@ export default function EditarGrupo() {
                 tituloFormulario="Editar Grupo"
                 guardar={guardarCambios}
                 cancelar={cancelar}
-                nombreInicial={grupo.nombre}
-                materiasIniciales={grupo.materias.map(m => m.nombre)}
+                nombre={grupo.nombre}
+                materias={grupo.materias.map(m => m.nombre)}
             />
         </div>
     );

@@ -11,16 +11,13 @@ import { TiUserAdd } from "react-icons/ti";
 import { IoLogOut } from "react-icons/io5";
 import { MdGroupAdd, MdGroups } from "react-icons/md";
 import { RiCalendarScheduleFill } from "react-icons/ri";
+import FormularioGrupo from "../../../../components/sica/FormularioGrupo/FormularioGrupo";
 
 // Página del SICA para agregar grupos
 export default function AgregarGrupo() {
     const navigate = useNavigate() // Para redireccionar a los usuarios
-    const [nombreGrupo, setNombreGrupo] = useState('') // Nombre del nuevo grupo
-    const [materias, setMaterias] = useState([]) // Lista de materias del nuevo grupo
-    const [nuevaMateria, setNuevaMateria] = useState('') // Nombre de la nueva materia
     const [menu, setMenu] = useState([]) // Elementos del menú
-    const [sugerencias, setSugerencias] = useState([]) // Sugerencias de materias de la BD
-    const [enfocado, setEnfocado] = useState(false) // Estado del campo para agregar materias (enfocado o no enfocado)
+    const [resetForm, setResetForm] = useState(false) // Estado para reiniciar el formulario
 
     useValidarToken() // Se válida que el usuario haya iniciado sesión
 
@@ -82,54 +79,8 @@ export default function AgregarGrupo() {
         }
     }, [navigate])
 
-    useEffect(() => {
-        const fetchSugerencias = async () => {
-        if (!enfocado) { // Si el campo no está enfocado no se envían sugerencias
-            setSugerencias([]);
-            return;
-        }
-        const token = localStorage.getItem('token');
-        try {
-            // Si el campo está vacío muestra todas las sugerencias
-            const query = nuevaMateria.trim() === '' ? '' : `?q=${encodeURIComponent(nuevaMateria)}`;
-            const res = await fetch(`http://localhost:3000/api/materias${query}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            if (res.ok) {
-                // Si el backend devuelve sugerencias se muestran las sugerencias
-                const data = await res.json();
-                setSugerencias(data.materias.map(m => m.nombre));
-            } else {
-			console.log("Error en fetch, status:", res.status);
-            setSugerencias([]);
-            }
-        } catch (error){
-		console.log("Error en fetch:", error);
-            setSugerencias([]);
-        }
-        };
-        fetchSugerencias();
-    }, [nuevaMateria, materias, enfocado]);
-
-    // Método para agregar una materia a la lista
-    const agregarMateria = () => {
-        if (nuevaMateria.trim() && !materias.includes(nuevaMateria)) {
-            // Si la materia no está vacía y la materia no está en la lista
-            setMaterias([...materias, nuevaMateria])
-            setNuevaMateria("")
-
-        }
-    }
-
-    // Método para eliminar una materia de la lista
-    const eliminarMateria = (materia) => {
-        setMaterias(materias.filter((m) => m !== materia))
-    }
-
     // Función para guardar el grupo y las materias en la BD
-    const guardarGrupo = () => {
+    const guardarGrupo = (nombreGrupo, materias) => {
         if(!nombreGrupo.trim() || materias.length === 0){
             // No se puede guardar el grupo sin un nombre de grupo y por lo menos una materia
             alert("Debes ingresar un nombre de grupo y al menos una materia")
@@ -153,8 +104,8 @@ export default function AgregarGrupo() {
         }).then(async res => {
             if(res.ok){
                 alert("Grupo guardado exitosamente")
-                setNombreGrupo("")
-                setMaterias([])
+                setResetForm(true);   // reinicia el formulario
+                setTimeout(() => setResetForm(false), 0)
                 return
             }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
@@ -167,68 +118,19 @@ export default function AgregarGrupo() {
 
     // Método para cancelar la creación del nuevo grupo
     const cancelar = () => {
-        navigate('/SICA/administradores/gestionar-grupos')
+        setResetForm(true);   // reinicia el formulario
+        setTimeout(() => setResetForm(false), 0)
     }
 
     return (
         <div className="contenedor-agregar-grupo">
             <MenuLateral elementos={menu}/>
-            <div className="contenedor-formulario">
-                <h1>Agregar Nuevo Grupo</h1>
-                <div className="formulario-grupo">
-                    <label>
-                        Nombre del Grupo:
-                        <input
-                            type="text"
-                            value={nombreGrupo}
-                            onChange={(e) => setNombreGrupo(e.target.value)}
-                            placeholder="Escribe el nombre del grupo"
-                        />
-                    </label>
-                    <label>
-                        Materias:
-                        <div className="materias-lista">
-                            {materias.map((materia, index) => (
-                                <div key={index} className="materia-item">
-                                    {materia}
-                                    <button onClick={() => eliminarMateria(materia)}>X</button>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="agregar-materia">
-                            <input
-                                type="text"
-                                value={nuevaMateria}
-                                onChange={(e) => setNuevaMateria(e.target.value)}
-                                placeholder="Nueva materia"
-                                onFocus={() => setEnfocado(true)}
-                                onBlur={() => setTimeout(() => setEnfocado(false), 150)}
-                            />
-                            <button onClick={agregarMateria}>Agregar</button>
-                            {enfocado && sugerencias.length > 0 && (
-                                <ul className="sugerencias-materias">
-                                    {sugerencias.map((s, index) => (
-                                        <li
-                                            key={index}
-                                            onMouseDown={() => {
-                                                setNuevaMateria(s);
-                                                setEnfocado(false);
-                                            }}
-                                            className="sugerencia-item"
-                                        >
-                                            {s}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    </label>
-                    <div className="botones-formulario">
-                        <button onClick={guardarGrupo}>Guardar Grupo</button>
-                        <button onClick={cancelar}>Cancelar</button>
-                    </div>
-                </div>
-            </div>
+            <FormularioGrupo
+                tituloFormulario = "Agregar Nuevo Grupo"
+                guardar = {guardarGrupo}
+                cancelar = {cancelar}
+                reset= {resetForm}
+            />
         </div>
     )
 }

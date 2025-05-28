@@ -2,7 +2,7 @@
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarGrupo, modificarGrupo, listarGrupos} = require('../controllers/grupos.controller')
+const {agregarGrupo, modificarGrupo, listarGrupos, eliminarGrupo} = require('../controllers/grupos.controller')
 
 const router = express.Router() // Se crea un router
 
@@ -28,6 +28,14 @@ router.get(
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     listarGrupos // Se llama al controlador
+)
+
+// Ruta para eliminar un grupo (para "superadmin" y "editor")
+router.delete(
+    '/grupos/:id',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin', 'editor']), // Se valida el rol
+    eliminarGrupo // Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

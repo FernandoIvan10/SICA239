@@ -129,4 +129,36 @@ const listarGrupos = async (req, res) => {
     }
 }
 
-module.exports = {agregarGrupo, modificarGrupo, listarGrupos} // Se exporta el controlador
+// Función para eliminar un grupo
+const eliminarGrupo = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!id) { // Valida que hayan enviado el id del grupo
+            return res.status(400).json({ mensaje: 'El ID del grupo es obligatorio.' })
+        }
+
+        // Verifica que el grupo exista
+        const grupoExistente = await Grupo.findById(id);
+        if (!grupoExistente) {
+            return res.status(404).json({ mensaje: 'Grupo no encontrado.' })
+        }
+
+        // No se puede eliminar el grupo si hay calificaciones capturadas
+        const calificacionesExistentes = await Calificacion.findOne({ grupo: id })
+        if (calificacionesExistentes) {
+            return res.status(400).json({ mensaje: 'No se puede eliminar el grupo porque tiene calificaciones registradas.' })
+        }
+
+        // Elimina el grupo
+        await Grupo.findByIdAndDelete(id)
+
+        return res.status(200).json({ mensaje: 'Grupo eliminado exitosamente.' })
+    } catch (error) {
+        console.error('Error al eliminar el grupo:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+
+module.exports = {agregarGrupo, modificarGrupo, listarGrupos, eliminarGrupo} // Se exporta el controlador

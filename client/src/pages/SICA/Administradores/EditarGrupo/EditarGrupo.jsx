@@ -93,7 +93,6 @@ export default function EditarGrupo() {
         }
 
         const token = localStorage.getItem('token')
-        const materiasFormateadas = nuevasMaterias.map(nombre => ({ nombre }))
 
         fetch(`http://localhost:3000/api/grupos/${grupo._id}`, {
             method: 'PUT',
@@ -103,7 +102,7 @@ export default function EditarGrupo() {
             },
             body: JSON.stringify({
                 nombre: nuevoNombre,
-                materias: materiasFormateadas
+                materias: nuevasMaterias
             })
         }).then(async res => {
             if(res.ok){

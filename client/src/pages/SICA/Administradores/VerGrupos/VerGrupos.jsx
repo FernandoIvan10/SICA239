@@ -128,7 +128,10 @@ export default function VerGrupos(){
                                 <td>{grupo.nombre}</td>
                                 <td>{grupo.materias.map((materia) => materia.nombre).join(', ')}</td>
                                 <td>
-                                    <MdEdit className="btn-editar"/>
+                                    <MdEdit 
+                                        className="btn-editar"
+                                        onClick={() => navigate('/SICA/administradores/editar-grupo', { state: { grupo } })}
+                                    />
                                     <MdDelete className="btn-eliminar"/>
                                 </td>
                             </tr>

@@ -107,6 +107,35 @@ export default function VerGrupos(){
         })
     }
 
+    // Método para eliminar un grupo
+    const eliminarGrupo = async (idGrupo) => {
+        const token = localStorage.getItem("token")
+        const confirmar = window.confirm("¿Estás seguro de que quieres eliminar este grupo? (Esta acción es irreversible)") // Mensaje de advertencia
+        if (!confirmar) return
+
+        try {
+            const respuesta = await fetch(`http://localhost:3000/api/grupos/${idGrupo}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+
+            if (respuesta.ok) {
+                alert("Grupo eliminado correctamente")
+		        obtenerGrupos() // Se vuelve a cargar la lista de grupos
+            } else {
+                const data = await respuesta.json()
+                console.error(`Error ${respuesta.status}`, data)
+                alert("Error al eliminar el grupo")
+            }
+        } catch (error) {
+            console.error("Error al eliminar el grupo:", error)
+            alert("Error del servidor al eliminar el grupo")
+        }
+    }
+
     return(
         <div className="contenedor-gestionar-grupos">
             <MenuLateral elementos={menu}/>
@@ -123,7 +152,7 @@ export default function VerGrupos(){
                     </thead>
                     <tbody>
                         {grupos.map((grupo, index) => (
-                            <tr key={grupo.id}>
+                            <tr key={grupo._id}>
                                 <td>{index + 1}</td>
                                 <td>{grupo.nombre}</td>
                                 <td>{grupo.materias.map((materia) => materia.nombre).join(', ')}</td>
@@ -132,7 +161,10 @@ export default function VerGrupos(){
                                         className="btn-editar"
                                         onClick={() => navigate('/SICA/administradores/editar-grupo', { state: { grupo } })}
                                     />
-                                    <MdDelete className="btn-eliminar"/>
+                                    <MdDelete 
+                                        className="btn-eliminar"
+                                        onClick={() => eliminarGrupo(grupo._id)}
+                                    />
                                 </td>
                             </tr>
                         ))}

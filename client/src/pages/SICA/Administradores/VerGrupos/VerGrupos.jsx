@@ -172,6 +172,7 @@ export default function VerGrupos(){
                 </table>
                 <button
                     className="btn-agregar-grupo"
+                    onClick={() => navigate('/SICA/administradores/agregar-grupo')}
                 >
                     Agregar Grupo
                 </button>

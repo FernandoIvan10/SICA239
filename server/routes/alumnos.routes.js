@@ -6,19 +6,19 @@ const {agregarAlumno, modificarAlumno, listarAlumnos} = require('../controllers/
 
 const router = express.Router() // Se crea un router
 
-// Ruta para agregar un alumno (solo para "superadmin")
+// Ruta para agregar un alumno (solo para "superadmin" y "editor")
 router.post(
     '/alumnos',
     verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
+    verificarRol(['superadmin', 'editor']), // Se valida el rol
     agregarAlumno // Se llama al controlador
 )
 
-// Ruta para modificar un usuario alumno (solo para "superadmin")
+// Ruta para modificar un usuario alumno (solo para "superadmin" y "editor")
 router.put(
     '/alumnos/:id',
     verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
+    verificarRol(['superadmin', 'editor']), // Se valida el rol
     modificarAlumno // Se llama al controlador
 )
 

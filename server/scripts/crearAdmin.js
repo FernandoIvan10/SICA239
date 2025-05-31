@@ -15,8 +15,8 @@ const preguntarDatos = () =>{
         rl.question('Ingrese el RFC del superadministrador: ', (rfc) => {
             rl.question('Ingrese el nombre del superadministrador: ', (nombre) => {
                 rl.question('Ingrese el apellido del superadministrador: ', (apellido) => {
-                    rl.question('Ingrese la contraseña del superadministrador: ', (contraseña) => {
-                        resolve({rfc, nombre, apellido, contraseña})
+                    rl.question('Ingrese la contraseña del superadministrador: ', (contrasena) => {
+                        resolve({rfc, nombre, apellido, contrasena})
                         rl.close()
                     })
                 })
@@ -32,16 +32,17 @@ async function crearAdministrador(){
         const existe = await Administrador.findOne({rol: 'superadmin'})
         if(!existe){
             console.log('¡Bienvenido! Ingrese los datos del usuario superadministrador. Este paso sólo se realiza la primera vez que se enciende el servidor')
-            const {rfc, nombre, apellido, contraseña} = await preguntarDatos() // Se piden los datos del superadministrador
+            const {rfc, nombre, apellido, contrasena} = await preguntarDatos() // Se piden los datos del superadministrador
             // La contraseña se encripta
-            const contraseñaEncriptada = await bcrypt.hash(contraseña, 10)
+            const contrasenaEncriptada = await bcrypt.hash(contrasena, 10)
             // Se crea el superadmin
             const nuevoAdmin = new Administrador({
                 rfc,
                 nombre,
                 apellido,
-                contraseña: contraseñaEncriptada,
+                contrasena: contrasenaEncriptada,
                 rol: 'superadmin',
+                requiereCambioContrasena: false
             })
             await nuevoAdmin.save()
             console.log(`Superadministrador ${nuevoAdmin.nombre} ${nuevoAdmin.apellido} creado.`);

@@ -5,10 +5,10 @@ const bcrypt = require('bcrypt')
 // Función que agrega un nuevo usuario administrador
 const agregarAdmin = async(req,res)=>{
     try{
-        const {rfc, nombre, apellido, contraseña, rol} = req.body
+        const {rfc, nombre, apellido, contrasena, rol, requiereCambioContrasena = true} = req.body
 
         // Valida que todos los campos estén rellenados
-        if(!rfc || !nombre || !contraseña || !rol){
+        if(!rfc || !nombre || !contrasena || !rol){
             return res.status(400).json({message:"Faltan campos obligatorios"})
         }
 
@@ -19,13 +19,14 @@ const agregarAdmin = async(req,res)=>{
         }
 
         // Se crea el nuevo admin
-        const contraseñaEncriptada = await bcrypt.hash(contraseña, 10)
+        const contrasenaEncriptada = await bcrypt.hash(contrasena, 10)
         const nuevoAdmin = new Administrador({
             rfc,
             nombre,
             apellido,
-            contraseña: contraseñaEncriptada,
+            contrasena: contrasenaEncriptada,
             rol,
+            requiereCambioContrasena
         })
 
         await nuevoAdmin.save() // Se guarda el nuevo admin
@@ -93,7 +94,7 @@ const listarAdmins = async (req, res) => {
         }
 
         // Se ejecuta la consulta
-        const admins = await Administrador.find(query).select('-contraseña'); // Se excluye la contraseña en la consulta
+        const admins = await Administrador.find(query).select('-contrasena'); // Se excluye la contraseña en la consulta
         return res.status(200).json(admins)
     } catch (error) {
         console.error('Error al listar administradores:', error)

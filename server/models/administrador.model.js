@@ -6,9 +6,10 @@ const administradorEsquema = new mongoose.Schema({
     rfc:{type:String, unique:true, required:true},
     nombre:{type:String},
     apellido:{type:String},
-    contraseña:{type:String, required:true},
+    contrasena:{type:String, required:true},
     rol:{type:String, enum:['superadmin','editor','lector'], required:true},
     fechaCreacion:{type:Date, default:Date.now},
+    requiereCambioContrasena:{type:Boolean, default:true}
 }, { collection: 'administradores' })
 
 // Se exporta el esquema

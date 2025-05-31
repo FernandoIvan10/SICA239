@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt')
 // Función que valida el inicio de sesión
 const loginController = async(req,res)=>{
     try{
-        const {tipoUsuario, usuario, contraseña} = req.body // Datos del formulario de login
+        const {tipoUsuario, usuario, contrasena} = req.body // Datos del formulario de login
 
         let user = null
         let rol = null
@@ -31,7 +31,7 @@ const loginController = async(req,res)=>{
         }
 
         // Se valida que la contraseña sea correcta
-        const esValido = await bcrypt.compare(contraseña, user.contraseña)
+        const esValido = await bcrypt.compare(contrasena, user.contrasena)
         if(!esValido){
             return res.status(401).json({message: 'Contraseña incorrecta'})
         }

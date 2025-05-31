@@ -37,29 +37,22 @@ export default function Login(){
     const [activarPestaña, setActivarPestaña] = useState('alumno') // Alternar entre formularios
     const [usuarioAlumno, setUsuarioAlumno] = useState('') // Número de control
     const [usuarioAdmin, setUsuarioAdmin] = useState('') // RFC
-    const [contraseñaAlumno, setContraseñaAlumno] = useState('') // Contraseña del alumno
-    const [contraseñaAdmin, setContraseñaAdmin] = useState('') // Contraseña del administrador
+    const [contrasenaAlumno, setContrasenaAlumno] = useState('') // Contraseña del alumno
+    const [contrasenaAdmin, setContrasenaAdmin] = useState('') // Contraseña del administrador
     const [error, setError] = useState('') // Manejo de errores
 
     // Campos del formulario de administradores
 
     // Método para iniciar sesión
     const iniciarSesion = async (e) => {
-        console.log('Pestaña activa:', activarPestaña);
-        console.log('Usuario:', usuarioAdmin);
-        console.log('Contraseña:', contraseñaAdmin);
         e.preventDefault()
         try{
             const endpoint = 'http://localhost:3000/api/auth/login' // Ruta de la API para iniciar sesión
             const payload = {
                 tipoUsuario:activarPestaña,
                 usuario: activarPestaña === 'alumno' ? usuarioAlumno : usuarioAdmin,
-                contraseña: activarPestaña === 'alumno' ? contraseñaAlumno : contraseñaAdmin,
+                contrasena: activarPestaña === 'alumno' ? contrasenaAlumno : contrasenaAdmin,
             }
-
-            console.log(payload.activarPestaña)
-            console.log(payload.usuario)
-            console.log(payload.contraseña)
 
             // Se usa la api para iniciar sesión
             const response = await fetch(endpoint,{
@@ -125,8 +118,8 @@ export default function Login(){
                             texto:"Contraseña:",
                             type:"password",
                             placeholder:"Ingrese su contraseña",
-                            value:contraseñaAlumno,
-                            onChange:(e)=>setContraseñaAlumno(e.target.value),
+                            value:contrasenaAlumno,
+                            onChange:(e)=>setContrasenaAlumno(e.target.value),
                         },]}
                         botones={[{texto:"Entrar"}]}
                         error={error}
@@ -148,8 +141,8 @@ export default function Login(){
                             texto:"Contraseña:",
                             type:"password",
                             placeholder:"Ingrese su contraseña",
-                            value:contraseñaAdmin,
-                            onChange:(e)=>setContraseñaAdmin(e.target.value),
+                            value:contrasenaAdmin,
+                            onChange:(e)=>setContrasenaAdmin(e.target.value),
                         },]}
                         botones={[{texto:"Entrar"}]}
                         error={error}

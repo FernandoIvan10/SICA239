@@ -220,6 +220,8 @@ export default function AgregarUsuario(){
                     <button
                         className={`btn-selector ${tipoUsuario === "administrador" ? "activo" : ""}`}
                         onClick={() => setTipoUsuario("administrador")}
+                        disabled={rolUsuario === "editor"} // No puede agregar administradores si es editor
+                        style={rolUsuario === "editor" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
                     >
                         Administrador
                     </button>

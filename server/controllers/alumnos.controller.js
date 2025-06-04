@@ -6,10 +6,10 @@ const bcrypt = require('bcrypt')
 // Función para agregar un nuevo alumno
 const agregarAlumno = async (req, res) => {
     try {
-        const { matricula, nombre, apellido, contraseña, grupoNombre } = req.body
+        const { matricula, nombre, apellido, contrasena, grupoNombre } = req.body
 
         // Valida que los campos estén rellenados
-        if (!matricula || !nombre || !apellido || !contraseña || !grupoNombre) {
+        if (!matricula || !nombre || !apellido || !contrasena || !grupoNombre) {
             return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' })
         }
 
@@ -26,12 +26,12 @@ const agregarAlumno = async (req, res) => {
         }
 
         // Se crea el nuevo alumno
-        const contraseñaEncriptada = await bcrypt.hash(contraseña, 10)
+        const contrasenaEncriptada = await bcrypt.hash(contrasena, 10)
         const nuevoAlumno = new Alumno({
             matricula,
             nombre,
             apellido,
-            contraseña: contraseñaEncriptada,
+            contrasena: contrasenaEncriptada,
             grupoId: grupoExistente._id,
         })
 

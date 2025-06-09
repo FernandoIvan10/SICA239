@@ -12,11 +12,5 @@ const alumnoEsquema = new mongoose.Schema({
     requiereCambioContrasena:{type:Boolean, default:true}
 }, { collection: 'alumnos' })
 
-// La contraseña por defecto es la matrícula
-alumnoEsquema.pre('save',function(next){
-    this.contrasena = this.matricula
-    next();
-})
-
 // Se exporta el esquema
 module.exports = mongoose.model('Alumno',alumnoEsquema)

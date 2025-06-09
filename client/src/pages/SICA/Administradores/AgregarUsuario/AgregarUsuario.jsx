@@ -18,12 +18,19 @@ export default function AgregarUsuario(){
     const [menu, setMenu] = useState([]) // Elementos del menú
     const [rolUsuario, setRolUsuario] = useState(null)
     const [tipoUsuario, setTipoUsuario] = useState("alumno"); // Estado para el tipo de usuario
+    const [grupos, setGrupos] = useState([]) // Lista de grupos en la BD
 
     // Hooks para el formulario de administradores
     const [RFC, setRFC] = useState("")
     const [nombreAdmin, setNombreAdmin] = useState("")
     const [apellidoAdmin, setApellidoAdmin] = useState("")
     const [rolAdmin, setRolAdmin] = useState("lector")
+
+    // Hooks para el formulario de alumnos
+    const [matricula, setMatricula] = useState("")
+    const [nombreAlumno, setNombreAlumno] = useState("")
+    const [apellidoAlumno, setApellidoAlumno] = useState("")
+    const [grupo, setGrupo] = useState("")
 
     useValidarToken() // Se valida que el usuario haya iniciado sesión
 
@@ -86,6 +93,23 @@ export default function AgregarUsuario(){
             }
     }, [navigate])
 
+    useEffect(() => { // Se obtienen los grupos de la BD para mostrarlos en el formulario
+        const token = localStorage.getItem('token')
+        fetch('http://localhost:3000/api/grupos', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            setGrupos(data.grupos)
+        })
+        .catch(err => {
+            console.error("Error al obtener grupos:", err)
+            setGrupos([])
+        })
+    }, [])
+
     // Función para guardar el nuevo administrador en la BD
     const agregarAdmin = () => {
         if(!RFC.trim() || !nombreAdmin.trim() || !apellidoAdmin.trim() || !rolAdmin.trim()){
@@ -107,21 +131,60 @@ export default function AgregarUsuario(){
                 contrasena: RFC, //La contraseña por default es el RFC
                 rol: rolAdmin
 	        })
-        }).then(async res => {
-            if(res.ok){
-                alert("Administrador agregado exitosamente")
-                setRFC("")
-                setNombreAdmin("")
-                setApellidoAdmin("")
-                setRolAdmin("lector")
-                return
-            }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al guardar el administrador")
-                return
-            }
-        })
+            }).then(async res => {
+                if(res.ok){
+                    alert("Administrador agregado exitosamente")
+                    // Se limpian los campos del formulario
+                    setRFC("")
+                    setNombreAdmin("")
+                    setApellidoAdmin("")
+                    setRolAdmin("lector")
+                    return
+                }else{
+                    console.error(`Error ${res.status}`, await res.json().catch(()=>null))
+                    alert("Ocurrió un error al guardar el administrador")
+                    return
+                }
+            })
+        }
+    }
 
+    // Función para guardar el nuevo alumno en la BD
+    const agregarAlumno = () => {
+        if(!matricula.trim() || !nombreAlumno.trim() || !apellidoAlumno.trim() || !grupo.trim()){
+            // No se puede guardar el alumno si no se ha llenado todo el formulario
+            alert("Debes ingresar todos los datos del formulario")
+        }else{
+            const token = localStorage.getItem('token') // Token de inicio de sesión
+            
+            fetch('http://localhost:3000/api/alumnos', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+        		matricula: matricula,
+		        nombre: nombreAlumno,
+                apellido: apellidoAlumno,
+                contrasena: matricula, //La contraseña por default es la matrícula
+                grupoNombre: grupo
+	        })
+            }).then(async res => {
+                if(res.ok){
+                    alert("Alumno agregado exitosamente")
+                    // Se limpian los campos del formulario
+                    setMatricula("")
+                    setNombreAlumno("")
+                    setApellidoAlumno("")
+                    setGrupo("")
+                    return
+                }else{
+                    console.error(`Error ${res.status}`, await res.json().catch(()=>null))
+                    alert("Ocurrió un error al guardar el alumno")
+                    return
+                }
+            })
         }
     }
 
@@ -133,21 +196,58 @@ export default function AgregarUsuario(){
                     <h2>Agregar Alumno</h2>
                     <label>
                         Matrícula:
-                        <input type="text" placeholder="Ingrese la matrícula" required />
+                        <input 
+                            type="text" 
+                            placeholder="Ingrese la matrícula" 
+                            value={matricula}
+                            onChange={(e) => setMatricula(e.target.value)}
+                            required 
+                        />
                     </label>
                     <label>
                         Nombre:
-                        <input type="text" placeholder="Ingrese el nombre" required />
+                        <input 
+                            type="text" 
+                            placeholder="Ingrese el nombre" 
+                            value={nombreAlumno}
+                            onChange={(e) => setNombreAlumno(e.target.value)}
+                            required 
+                        />
                     </label>
                     <label>
                         Apellido:
-                        <input type="text" placeholder="Ingrese el apellido" required />
+                        <input 
+                            type="text" 
+                            placeholder="Ingrese el apellido" 
+                            value={apellidoAlumno}
+                            onChange={(e) => setApellidoAlumno(e.target.value)}
+                            required 
+                        />
                     </label>
                     <label>
                         Grupo:
-                        <input type="text" placeholder="Ingrese el ID del grupo" required />
+                        <select
+                            type="text" 
+                            placeholder="Ingrese el ID del grupo" 
+                            value={grupo}
+                            onChange={(e) => setGrupo(e.target.value)}
+                            required 
+                        >
+                            <option value="">Seleccionar grupo</option>
+                                {grupos.map(grupo => (
+                                    <option key={grupo.id} value={grupo.nombre}>
+                                        {grupo.nombre}
+                                    </option>
+                                ))}
+                        </select>
                     </label>
-                    <button type="button" className="btn-guardar">Guardar Alumno</button>
+                    <button 
+                        type="button" 
+                        className="btn-guardar"
+                        onClick={agregarAlumno}
+                    >
+                        Guardar Alumno
+                    </button>
                 </form>
             )
         } else if (tipoUsuario === "administrador") {

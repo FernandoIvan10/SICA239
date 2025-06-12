@@ -114,7 +114,9 @@ const listarAlumnos = async (req, res) => {
         }
 
         // Se ejecuta la consulta
-        const alumnos = await Alumno.find(query).select('-contraseña'); // Se excluye la contraseña en la consulta
+        const alumnos = await Alumno.find(query)
+            .select('-contrasena') // Se excluye la contraseña en la consulta
+            .populate('grupoId', 'nombre') // Obtiene el nombre del grupo al que pertenece el alumno
         return res.status(200).json(alumnos)
     } catch (error) {
         console.error('Error al listar alumnos:', error)

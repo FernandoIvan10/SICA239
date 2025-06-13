@@ -125,7 +125,15 @@ export default function VerUsuarios(){
         const adminsConTipo = admins.map(a => ({ ...a, tipo: "Administrador" }))
         setUsuarios([...alumnosConTipo, ...adminsConTipo]) // Se les agrega el tipo antes de almacenarlos
     }, [alumnos, admins])
-    
+
+    // Método para redirigir al usuario a la página de edición del usuario seleccionado
+    const redirigirAEdicion = (usuario) => {
+        if (usuario.tipo === "Alumno") {
+        navigate(`/SICA/administradores/editar-alumno/${usuario._id}`)
+        } else if (usuario.tipo === "Administrador") {
+        navigate(`/SICA/administradores/editar-administrador/${usuario._id}`)
+        }
+    }
 
     return(
         <div className="contenedor-inicio">
@@ -154,7 +162,7 @@ export default function VerUsuarios(){
                                 <td>{usuario.apellido}</td>
                                 <td>{usuario.tipo === "Alumno" ? usuario.grupoId.nombre : usuario.rol}</td>
                                 <td>
-                                    <MdEdit className="btn-editar"/>
+                                    <MdEdit className="btn-editar" onClick={() => redirigirAEdicion(usuario)}/>
                                 </td>
                             </tr>
                         ))} 

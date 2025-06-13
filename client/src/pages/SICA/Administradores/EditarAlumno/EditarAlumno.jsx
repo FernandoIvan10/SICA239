@@ -1,8 +1,8 @@
 import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
 import { useEffect, useState } from "react";
-import "./EditarGrupo.css"
+import "./EditarAlumno.css"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 import { FaHouseChimney } from "react-icons/fa6";
@@ -11,14 +11,14 @@ import { TiUserAdd } from "react-icons/ti";
 import { IoLogOut } from "react-icons/io5";
 import { MdGroupAdd, MdGroups } from "react-icons/md";
 import { RiCalendarScheduleFill } from "react-icons/ri";
-import FormularioGrupo from "../../../../components/sica/FormularioGrupo/FormularioGrupo";
 
-// Página del SICA para editar grupos
+// Página del SICA para editar alumnos
 export default function EditarGrupo() {
     const navigate = useNavigate() // Para redireccionar a los usuarios
-    const location = useLocation() // Para obtener los datos del grupo a editar
-    const grupo = location.state?.grupo // Grupo a editar
     const [menu, setMenu] = useState([]) // Elementos del menú
+    const { id } = useParams() // ID enviado por parámetro
+    const [alumno, setAlumno] = useState(null) // Contiene todos los datos del formulario
+    const [grupos, setGrupos] = useState([]) // Guarda los grupos del backend
     
     useValidarToken() // Se válida que el usuario haya iniciado sesión
 
@@ -71,7 +71,7 @@ export default function EditarGrupo() {
             ])
         }else if(tokenDecodificado.rol === 'lector'){
             // Si el usuario es lector se redirige al panel para ver grupos
-            navigate('/SICA/administradores/gestionar-grupos')
+            navigate('/SICA/administradores/ver-usuarios')
         }
 
         }catch(error){
@@ -80,55 +80,121 @@ export default function EditarGrupo() {
         }
     }, [navigate])
 
-    if (!grupo) {
-        // Si no se recibe grupo se redirige a la vista de grupos
-        navigate("/SICA/administradores/ver-grupos")
-        return null
-    }
+    useEffect(() => { // Se obtienen los grupos de la BD para mostrarlos en el formulario
+        const token = localStorage.getItem('token')
+        fetch('http://localhost:3000/api/grupos', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            setGrupos(data.grupos)
+        })
+        .catch(err => {
+            console.error("Error al obtener grupos:", err)
+            setGrupos([])
+        })
+    }, [])
 
-    const guardarCambios = (nuevoNombre, nuevasMaterias) => {
-        if(!nuevoNombre.trim() || nuevasMaterias.length === 0){
-            alert("Debes ingresar un nombre de grupo y al menos una materia")
+    useEffect(() => { // Se obtienen los datos del alumno
+        if (grupos.length === 0) return // Espera a que los grupos estén cargados
+
+        const token = localStorage.getItem('token')
+
+        fetch(`http://localhost:3000/api/alumnos/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            const grupo = grupos.find(g => g._id === data.grupoId)
+            setAlumno({
+                matricula: data.matricula,
+                nombre: data.nombre,
+                apellido: data.apellido,
+                grupoNombre: grupo ? grupo.nombre : ''
+            })
+        })
+        .catch(err => {
+            console.error("Error al obtener alumno:", err)
+        })
+    }, [id, grupos])
+
+    // Método para editar el alumno con los nuevos datos
+    const guardarCambios = () => {
+        if(!alumno.nombre.trim() || !alumno.apellido.trim() || !alumno.grupoNombre.trim()){
+            alert("Todos los campos son obligatorios")
             return
         }
 
         const token = localStorage.getItem('token')
+        const {nombre, apellido, grupoNombre} = alumno // Se obtienen los datos del formulario
 
-        fetch(`http://localhost:3000/api/grupos/${grupo._id}`, {
-            method: 'PUT',
+        fetch(`http://localhost:3000/api/alumnos/${id}`, {
+            method: "PUT",
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({
-                nombre: nuevoNombre,
-                materias: nuevasMaterias
-            })
+            body: JSON.stringify(nombre, apellido. grupoNombre)
         }).then(async res => {
             if(res.ok){
-                alert("Grupo actualizado correctamente")
-                navigate("/SICA/administradores/ver-grupos")
+                alert("Alumno actualizado correctamente")
+                navigate("/SICA/administradores/ver-usuarios")
             } else {
                 console.error(await res.json().catch(()=>null))
-                alert("Ocurrió un error al actualizar el grupo")
+                alert("Ocurrió un error al actualizar el alumno")
             }
         })
     }
 
-    const cancelar = () => {
-        navigate("/SICA/administradores/ver-grupos")
-    }
-
     return (
-        <div className="contenedor-agregar-grupo">
-            <MenuLateral elementos={menu} />
-            <FormularioGrupo
-                tituloFormulario="Editar Grupo"
-                guardar={guardarCambios}
-                cancelar={cancelar}
-                nombre={grupo.nombre}
-                materias={grupo.materias.map(m => m.nombre)}
-            />
-        </div>
-    );
+        <form className="formulario-editar">
+            <h2>Editar Alumno</h2>
+            <label>
+                Matrícula:
+                <input
+                type="text"
+                value={alumno.matricula}
+                readOnly
+                />
+            </label>
+            <label>
+                Nombre:
+                <input
+                type="text"
+                value={alumno.nombre}
+                onChange={(e) => setAlumno({ ...alumno, nombre: e.target.value })}
+                />
+            </label>
+            <label>
+                Apellido:
+                <input
+                type="text"
+                value={alumno.apellido}
+                onChange={(e) => setAlumno({ ...alumno, apellido: e.target.value })}
+                />
+            </label>
+            <label>
+                Grupo:
+                <select
+                    value={alumno.grupoNombre}
+                    onChange={(e) => setAlumno({ ...alumno, grupoNombre: e.target.value })}
+                >
+                    <option value="">Seleccionar grupo</option>
+                    {grupos.map((g) => (
+                        <option key={g._id} value={g.nombre}>
+                            {g.nombre}
+                        </option>
+                    ))}
+                </select>
+            </label>
+            <button type="button" className="btn-guardar" onClick={guardarCambios}>
+                Guardar cambios
+            </button>
+        </form>
+    )
 }

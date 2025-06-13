@@ -124,4 +124,24 @@ const listarAlumnos = async (req, res) => {
     }
 }
 
-module.exports = {agregarAlumno, modificarAlumno, listarAlumnos} // Se exporta el controlador
+// Función para obtener un alumno por ID
+const obtenerAlumnoPorID = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const alumno = await Alumno.findById(id)
+            .select('-contrasena') // No enviar contraseña
+
+        if (!alumno) {
+            return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
+        }
+
+        return res.status(200).json(alumno)
+    } catch (error) {
+        console.error('Error al obtener el alumno:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+
+module.exports = {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID} // Se exporta el controlador

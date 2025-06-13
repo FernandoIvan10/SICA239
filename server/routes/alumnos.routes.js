@@ -2,7 +2,7 @@
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarAlumno, modificarAlumno, listarAlumnos} = require('../controllers/alumnos.controller')
+const {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID} = require('../controllers/alumnos.controller')
 
 const router = express.Router() // Se crea un router
 
@@ -28,6 +28,14 @@ router.get(
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     listarAlumnos // Se llama al controlador
+)
+
+// Ruta para obtener un alumno con su ID (sólo para administradores)
+router.get(
+    '/alumnos/:id',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
+    obtenerAlumnoPorID// Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

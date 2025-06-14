@@ -13,12 +13,12 @@ import { MdGroupAdd, MdGroups } from "react-icons/md";
 import { RiCalendarScheduleFill } from "react-icons/ri";
 
 // Página del SICA para editar alumnos
-export default function EditarGrupo() {
+export default function EditarAlumno() {
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const [menu, setMenu] = useState([]) // Elementos del menú
     const { id } = useParams() // ID enviado por parámetro
     const [alumno, setAlumno] = useState(null) // Contiene todos los datos del formulario
-    const [grupos, setGrupos] = useState([]) // Guarda los grupos del backend
+    const [grupos, setGrupos] = useState([]) // Contiene los grupos del backend
     
     useValidarToken() // Se válida que el usuario haya iniciado sesión
 
@@ -97,9 +97,7 @@ export default function EditarGrupo() {
         })
     }, [])
 
-    useEffect(() => { // Se obtienen los datos del alumno
-        if (grupos.length === 0) return // Espera a que los grupos estén cargados
-
+    useEffect(() => { // Se obtienen los datos del alumno a editar
         const token = localStorage.getItem('token')
 
         fetch(`http://localhost:3000/api/alumnos/${id}`, {
@@ -115,7 +113,7 @@ export default function EditarGrupo() {
                 matricula: data.matricula,
                 nombre: data.nombre,
                 apellido: data.apellido,
-                grupoNombre: grupo ? grupo.nombre : ''
+                grupoNombre: grupo ? grupo.nombre : '' // Se necesita el nombre del grupo en el formulario
             })
         })
         .catch(err => {
@@ -125,7 +123,7 @@ export default function EditarGrupo() {
 
     // Método para editar el alumno con los nuevos datos
     const guardarCambios = () => {
-        if(!alumno.nombre.trim() || !alumno.apellido.trim() || !alumno.grupoNombre.trim()){
+        if(!alumno.nombre.trim() || !alumno.apellido.trim() || !alumno.grupoNombre.trim()){ // Se valida que hayan rellenado todos los campos del formulario
             alert("Todos los campos son obligatorios")
             return
         }
@@ -139,7 +137,7 @@ export default function EditarGrupo() {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(nombre, apellido. grupoNombre)
+            body: JSON.stringify({nombre, apellido, grupoNombre})
         }).then(async res => {
             if(res.ok){
                 alert("Alumno actualizado correctamente")
@@ -151,50 +149,54 @@ export default function EditarGrupo() {
         })
     }
 
+    if (!alumno) return <p>Cargando alumno...</p>
     return (
-        <form className="formulario-editar">
-            <h2>Editar Alumno</h2>
-            <label>
-                Matrícula:
-                <input
-                type="text"
-                value={alumno.matricula}
-                readOnly
-                />
-            </label>
-            <label>
-                Nombre:
-                <input
-                type="text"
-                value={alumno.nombre}
-                onChange={(e) => setAlumno({ ...alumno, nombre: e.target.value })}
-                />
-            </label>
-            <label>
-                Apellido:
-                <input
-                type="text"
-                value={alumno.apellido}
-                onChange={(e) => setAlumno({ ...alumno, apellido: e.target.value })}
-                />
-            </label>
-            <label>
-                Grupo:
-                <select
-                    value={alumno.grupoNombre}
-                    onChange={(e) => setAlumno({ ...alumno, grupoNombre: e.target.value })}
-                >
-                    <option value="">Seleccionar grupo</option>
-                    {grupos.map((g) => (
-                        <option key={g._id} value={g.nombre}>
-                            {g.nombre}
-                        </option>
-                    ))}
-                </select>
-            </label>
-            <button type="button" className="btn-guardar" onClick={guardarCambios}>
-                Guardar cambios
-            </button>
-        </form>
+        <>
+            <MenuLateral elementos={menu}/>
+            <form className="formulario-editar">
+                <h2>Editar Alumno</h2>
+                <label>
+                    Matrícula:
+                    <input
+                    type="text"
+                    value={alumno.matricula}
+                    readOnly
+                    />
+                </label>
+                <label>
+                    Nombre:
+                    <input
+                    type="text"
+                    value={alumno.nombre}
+                    onChange={(e) => setAlumno({ ...alumno, nombre: e.target.value })}
+                    />
+                </label>
+                <label>
+                    Apellido:
+                    <input
+                    type="text"
+                    value={alumno.apellido}
+                    onChange={(e) => setAlumno({ ...alumno, apellido: e.target.value })}
+                    />
+                </label>
+                <label>
+                    Grupo:
+                    <select
+                        value={alumno.grupoNombre}
+                        onChange={(e) => setAlumno({ ...alumno, grupoNombre: e.target.value })}
+                    >
+                        <option value="">Seleccionar grupo</option>
+                        {grupos.map((g) => (
+                            <option key={g._id} value={g.nombre}>
+                                {g.nombre}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <button type="button" className="btn-guardar" onClick={guardarCambios}>
+                    Guardar cambios
+                </button>
+            </form>
+        </>
     )
 }

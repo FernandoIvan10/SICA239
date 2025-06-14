@@ -22,8 +22,7 @@ export default function AppRoutes(){
         // Ruta con su página asociada
         <Router>
             <Routes>
-                {/* Ruta por defecto */}
-                <Route path="*" element={<Navigate to="/inicio" />} />
+                <Route path="*" element={<Navigate to="/inicio" />} /> {/* Ruta por defecto */}
                 <Route path="/inicio" element={<Inicio/>}/>
                 <Route path="/SICA/iniciar-sesion" element={<Login/>}/>
                 <Route path="/SICA/administradores/inicio" element={<InicioAdmin/>}/>
@@ -39,7 +38,7 @@ export default function AppRoutes(){
                 <Route path="/SICA/alumnos/cambiar-contraseña" element={<CambiarContraseña/>}/>
                 <Route path="/SICA/administradores/subir-horarios" element={<SubirHorarios/>}/>
                 <Route path="/SICA/administradores/editar-grupo" element={<EditarGrupo/>}/>
-                <Route path="/SICA/administradores/editar-alumno" element={<EditarAlumno/>}/>
+                <Route path="/SICA/administradores/editar-alumno/:id" element={<EditarAlumno/>}/>
             </Routes>
         </Router>
     )

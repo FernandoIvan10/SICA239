@@ -1,6 +1,6 @@
 import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
 import { useEffect, useState } from "react";
-import "./EditarAlumno.css"
+import "./EditarAdministrador.css"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";
 import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -12,13 +12,12 @@ import { IoLogOut } from "react-icons/io5";
 import { MdGroupAdd, MdGroups } from "react-icons/md";
 import { RiCalendarScheduleFill } from "react-icons/ri";
 
-// Página del SICA para editar alumnos
-export default function EditarAlumno() {
+// Página del SICA para editar administradores
+export default function EditarAdministrador() {
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const [menu, setMenu] = useState([]) // Elementos del menú
     const { id } = useParams() // ID enviado por parámetro
-    const [alumno, setAlumno] = useState(null) // Contiene todos los datos del formulario
-    const [grupos, setGrupos] = useState([]) // Contiene los grupos del backend
+    const [admin, setAdmin] = useState(null) // Contiene todos los datos del formulario
     
     useValidarToken() // Se válida que el usuario haya iniciado sesión
 
@@ -80,27 +79,10 @@ export default function EditarAlumno() {
         }
     }, [navigate])
 
-    useEffect(() => { // Se obtienen los grupos de la BD para mostrarlos en el formulario
-        const token = localStorage.getItem('token')
-        fetch('http://localhost:3000/api/grupos', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            setGrupos(data.grupos)
-        })
-        .catch(err => {
-            console.error("Error al obtener grupos:", err)
-            setGrupos([])
-        })
-    }, [])
-
-    useEffect(() => { // Se obtienen los datos del alumno a editar
+    useEffect(() => { // Se obtienen los datos del administrador a editar
         const token = localStorage.getItem('token')
 
-        fetch(`http://localhost:3000/api/alumnos/${id}`, {
+        fetch(`http://localhost:3000/api/admins/${id}`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -108,58 +90,57 @@ export default function EditarAlumno() {
         })
         .then(res => res.json())
         .then(data => {
-            const grupo = grupos.find(g => g._id === data.grupoId)
-            setAlumno({
-                matricula: data.matricula,
+            setAdmin({
+                rfc: data.rfc,
                 nombre: data.nombre,
                 apellido: data.apellido,
-                grupoNombre: grupo ? grupo.nombre : '' // Se necesita el nombre del grupo en el formulario
+                rol: data.rol
             })
         })
         .catch(err => {
-            console.error("Error al obtener alumno:", err)
+            console.error("Error al obtener administrador:", err)
         })
-    }, [id, grupos])
+    }, [id])
 
-    // Método para editar el alumno con los nuevos datos
+    // Método para editar el administrador con los nuevos datos
     const guardarCambios = () => {
-        if(!alumno.nombre.trim() || !alumno.apellido.trim() || !alumno.grupoNombre.trim()){ // Se valida que hayan rellenado todos los campos del formulario
+        if(!admin.nombre.trim() || !admin.apellido.trim() || !admin.rol.trim()){ // Se valida que hayan rellenado todos los campos del formulario
             alert("Todos los campos son obligatorios")
             return
         }
 
         const token = localStorage.getItem('token')
-        const {nombre, apellido, grupoNombre} = alumno // Se obtienen los datos del formulario
+        const {nombre, apellido, rol} = admin // Se obtienen los datos del formulario
 
-        fetch(`http://localhost:3000/api/alumnos/${id}`, {
+        fetch(`http://localhost:3000/api/admins/${id}`, {
             method: "PUT",
             headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({nombre, apellido, grupoNombre})
+            body: JSON.stringify({nombre, apellido, rol})
         }).then(async res => {
             if(res.ok){
-                alert("Alumno actualizado correctamente")
+                alert("Administrador actualizado correctamente")
                 navigate("/SICA/administradores/ver-usuarios")
             } else {
                 console.error(await res.json().catch(()=>null))
-                alert("Ocurrió un error al actualizar el alumno")
+                alert("Ocurrió un error al actualizar el admin")
             }
         })
     }
 
-    if (!alumno) return <p>Cargando alumno...</p>
+    if (!admin) return <p>Cargando administrador...</p>
     return (
         <>
             <MenuLateral elementos={menu}/>
             <form className="formulario-editar">
-                <h2>Editar Alumno</h2>
+                <h2>Editar Administrador</h2>
                 <label>
-                    Matrícula:
+                    RFC:
                     <input
                     type="text"
-                    value={alumno.matricula}
+                    value={admin.rfc}
                     readOnly
                     />
                 </label>
@@ -167,8 +148,8 @@ export default function EditarAlumno() {
                     Nombre:
                     <input
                     type="text"
-                    value={alumno.nombre}
-                    onChange={(e) => setAlumno({ ...alumno, nombre: e.target.value })}
+                    value={admin.nombre}
+                    onChange={(e) => setAdmin({ ...admin, nombre: e.target.value })}
                     required
                     />
                 </label>
@@ -176,24 +157,21 @@ export default function EditarAlumno() {
                     Apellido:
                     <input
                     type="text"
-                    value={alumno.apellido}
-                    onChange={(e) => setAlumno({ ...alumno, apellido: e.target.value })}
+                    value={admin.apellido}
+                    onChange={(e) => setAdmin({ ...admin, apellido: e.target.value })}
                     required
                     />
                 </label>
                 <label>
-                    Grupo:
+                    Rol:
                     <select
-                        value={alumno.grupoNombre}
-                        onChange={(e) => setAlumno({ ...alumno, grupoNombre: e.target.value })}
+                        value={admin.rol}
+                        onChange={(e) => setAdmin({ ...admin, rol: e.target.value })}
                         required
                     >
-                        <option value="">Seleccionar grupo</option>
-                        {grupos.map((g) => (
-                            <option key={g._id} value={g.nombre}>
-                                {g.nombre}
-                            </option>
-                        ))}
+                        <option value="superadmin">Superadmin</option>
+                        <option value="editor">Editor</option>
+                        <option value="lector">Lector</option>
                     </select>
                 </label>
                 <button type="button" className="btn-guardar" onClick={guardarCambios}>

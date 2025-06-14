@@ -12,7 +12,7 @@ import CambiarContraseña from "../pages/SICA/Alumnos/CambiarContraseña/Cambiar
 import AgregarGrupo from "../pages/SICA/Administradores/AgregarGrupo/AgregarGrupo"
 import VerUsuarios from "../pages/SICA/Administradores/VerUsuarios/VerUsuarios"
 import VerGrupos from "../pages/SICA/Administradores/VerGrupos/VerGrupos"
-import SubirHorarios from "../pages/SICA/Administradores/SubirHorarios/SubirHorarios"
+import SubirHorarios from "../pages/SICA/Administradores/GestionarHorarios/GestionarHorarios"
 import EditarGrupo from "../pages/SICA/Administradores/EditarGrupo/EditarGrupo"
 import EditarAlumno from "../pages/SICA/Administradores/EditarAlumno/EditarAlumno"
 import EditarAdministrador from "../pages/SICA/Administradores/EditarAdministrador/EditarAdministrador"

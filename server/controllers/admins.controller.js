@@ -102,5 +102,22 @@ const listarAdmins = async (req, res) => {
     }
 }
 
+// Función para obtener un administrador por ID
+const obtenerAdminPorID = async (req, res) => {
+    try {
+        const { id } = req.params;
 
-module.exports = {agregarAdmin, modificarAdmin, listarAdmins} // Se exporta el controlador
+        const admin = await Administrador.findById(id)
+            .select('-contrasena') // No enviar contraseña
+
+        if (!admin) {
+            return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
+        }
+        return res.status(200).json(admin)
+    } catch (error) {
+        console.error('Error al obtener el administrador:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarAdmin, modificarAdmin, listarAdmins, obtenerAdminPorID} // Se exporta el controlador

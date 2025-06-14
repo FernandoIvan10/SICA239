@@ -40,7 +40,7 @@ export default function AppRoutes(){
                 <Route path="/SICA/administradores/subir-horarios" element={<SubirHorarios/>}/>
                 <Route path="/SICA/administradores/editar-grupo" element={<EditarGrupo/>}/>
                 <Route path="/SICA/administradores/editar-alumno/:id" element={<EditarAlumno/>}/>
-                <Route path="/SICA/administradores/editar-admin/:id" element={<EditarAdministrador/>}/>
+                <Route path="/SICA/administradores/editar-administrador/:id" element={<EditarAdministrador/>}/>
             </Routes>
         </Router>
     )

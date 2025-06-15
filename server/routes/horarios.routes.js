@@ -29,3 +29,5 @@ router.delete(
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     eliminarHorario // Se llama al controlador
 )
+
+module.exports = router // Se exporta el router

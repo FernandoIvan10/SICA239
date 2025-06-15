@@ -16,8 +16,8 @@ import { RiCalendarScheduleFill } from "react-icons/ri";
 export default function GestionarHorarios(){
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const [menu, setMenu] = useState([]) // Elementos del menú
-    const [grupos, setGrupos] = useState([]) // Grupos del sistema
-    const [horarios, setHorarios] = useState([]) // Horarios de la BD
+    const [grupos, setGrupos] = useState(null) // Grupos del sistema
+    const [horarios, setHorarios] = useState(null) // Horarios de la BD
 
     useValidarToken() // Se valida que el usuario haya iniciado sesión
 
@@ -85,7 +85,7 @@ export default function GestionarHorarios(){
     }, [navigate])
 
     useEffect(() => { // Se obtienen los grupos del backend
-        const token = localStorage.getItem("token"); //Token de inicio de sesión
+        const token = localStorage.getItem("token") //Token de inicio de sesión
         fetch('http://localhost:3000/api/grupos',{
             method: 'GET',
             headers: {
@@ -105,7 +105,8 @@ export default function GestionarHorarios(){
         })
     }, [])
 
-    useEffect(() => {
+    useEffect(() => { // Se obtienen los horarios del backend
+        const token = localStorage.getItem('token') // Token de inicio de sesión
         fetch('http://localhost:3000/api/horarios',{
             method: 'GET',
             headers: {
@@ -127,6 +128,7 @@ export default function GestionarHorarios(){
 
     // Método para obtener el horario de un grupo específico
     const obtenerHorarioDeGrupo = (grupoId) => {
+        if (!horarios || horarios.length === 0) return null // Se valida que existan horarios
         return horarios.find(h => h.grupo._id === grupoId)
     }    
 
@@ -136,6 +138,7 @@ export default function GestionarHorarios(){
         formData.append("imagen", file)
         formData.append("grupoId", grupoId)
 
+        const token = localStorage.getItem('token') // Token de inicio de sesión
         const res = await fetch("http://localhost:3000/api/horarios", {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
@@ -150,22 +153,24 @@ export default function GestionarHorarios(){
         }
         }
 
-    
     // Método para eliminar un horario
     const eliminarHorario = async (horarioId) => {
-    const res = await fetch(`http://localhost:3000/api/horarios/${horarioId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-    })
+        const token = localStorage.getItem('token') // Token de inicio de sesión
+        const res = await fetch(`http://localhost:3000/api/horarios/${horarioId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` }
+        })
 
-    if (res.ok) {
-        setHorarios(prev => prev.filter(h => h._id !== horarioId))
-    } else {
-        alert("Error al eliminar el horario")
+        if (res.ok) {
+            setHorarios(prev => prev.filter(h => h._id !== horarioId))
+        } else {
+            alert("Error al eliminar el horario")
+        }
     }
+
+    if (grupos === null || horarios === null) {
+        return <p>Cargando datos...</p>
     }
-
-
     return(
         <div className="contenedor-gestionar-horarios">
             <MenuLateral elementos={menu}/>

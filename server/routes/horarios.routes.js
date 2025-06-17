@@ -1,5 +1,6 @@
 // imports
 const express = require('express')
+const upload = require('../middleware/upload')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const { subirHorario, eliminarHorario, listarHorarios } = require('../controllers/horarios.controller')
@@ -11,6 +12,7 @@ router.post(
     '/horarios',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
+    upload.single('imagen'),
     subirHorario // Se llama al controladr
 )
 

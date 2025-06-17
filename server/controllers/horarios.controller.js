@@ -4,29 +4,31 @@ const cloudinary = require('../config/cloudinary');
 // Función para subir el horario de un grupo
 const subirHorario = async (req, res) => {
   try {
-    const { id } = req.body
-
+    const { grupoId } = req.body
+    const id = grupoId
     if (!id) return res.status(400).json({ mensaje: 'El ID del grupo es obligatorio.' }) // Se valida que se proporcione un ID
-
     if (!req.file) return res.status(400).json({ mensaje: 'No se subió ninguna imagen' }) // Se valida que se suba una imagen
 
-    const uploadResult = await cloudinary.uploader.upload_stream(
-      { folder: 'horarios' },
-      async (error, result) => {
-        if (error) return res.status(500).json({ mensaje: 'Error al subir imagen a Cloudinary', error })
+    const resultado = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: 'horarios' },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result)
+        }
+      )
+      uploadStream.end(req.file.buffer);
+    })
 
-        const nuevoHorario = new Horario({
-          grupo: id,
-          imagenUrl: result.secure_url,
-          publicId: result.public_id,
-        })
+    // Guardar en la base de datos
+    const nuevoHorario = new Horario({
+      grupo: id,
+      imagenUrl: resultado.secure_url,
+      publicId: resultado.public_id,
+    })
 
-        await nuevoHorario.save()
-        return res.status(201).json({ mensaje: 'Horario subido exitosamente.', horario: nuevoHorario })
-      }
-    )
-
-    uploadResult.end(req.file.buffer)
+    await nuevoHorario.save()
+    return res.status(201).json({ mensaje: 'Horario subido exitosamente.'})
   } catch (error) {
     console.error('Error al subir horario:', error)
     return res.status(500).json({ mensaje: 'Error interno del servidor.' })

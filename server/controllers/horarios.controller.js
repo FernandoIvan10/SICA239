@@ -60,7 +60,7 @@ const eliminarHorario = async (req, res) => {
         const horario = await Horario.findById(id);
         if (!horario) return res.status(404).json({ mensaje: 'Horario no encontrado.' }) // Se valida que el horario exista
 
-        await cloudinary.uploader.destroy(horario.public_id)
+        await cloudinary.uploader.destroy(horario.publicId)
         await Horario.findByIdAndDelete(id)
 
         return res.status(200).json({ mensaje: 'Horario eliminado correctamente.' })

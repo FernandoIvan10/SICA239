@@ -16,8 +16,8 @@ import { RiCalendarScheduleFill } from "react-icons/ri";
 export default function GestionarHorarios(){
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const [menu, setMenu] = useState([]) // Elementos del menú
-    const [grupos, setGrupos] = useState(null) // Grupos del sistema
-    const [horarios, setHorarios] = useState(null) // Horarios de la BD
+    const [grupos, setGrupos] = useState([]) // Grupos del sistema
+    const [horarios, setHorarios] = useState([]) // Horarios de la BD
 
     useValidarToken() // Se valida que el usuario haya iniciado sesión
 
@@ -106,7 +106,12 @@ export default function GestionarHorarios(){
     }, [])
 
     useEffect(() => { // Se obtienen los horarios del backend
-        const token = localStorage.getItem('token') // Token de inicio de sesión
+        cargarHorarios()
+    },[])
+
+    // Método para obtener los horarios de la BD
+    const cargarHorarios = () => {
+	const token = localStorage.getItem('token') // Token de inicio de sesión
         fetch('http://localhost:3000/api/horarios',{
             method: 'GET',
             headers: {
@@ -124,7 +129,7 @@ export default function GestionarHorarios(){
                 return   
             }
         })
-    },[])
+    }
 
     // Método para obtener el horario de un grupo específico
     const obtenerHorarioDeGrupo = (grupoId) => {
@@ -147,11 +152,12 @@ export default function GestionarHorarios(){
 
         if (res.ok) {
             const data = await res.json()
-            setHorarios(prev => [...prev, data.horario])
+            cargarHorarios()
+            alert("Horario establecido exitosamente")
         } else {
             alert("Error al subir el horario")
         }
-        }
+    }
 
     // Método para eliminar un horario
     const eliminarHorario = async (horarioId) => {
@@ -162,13 +168,13 @@ export default function GestionarHorarios(){
         })
 
         if (res.ok) {
-            setHorarios(prev => prev.filter(h => h._id !== horarioId))
+            cargarHorarios()
         } else {
             alert("Error al eliminar el horario")
         }
     }
 
-    if (grupos === null || horarios === null) {
+    if (grupos.length === 0 && horarios.length === 0) {
         return <p>Cargando datos...</p>
     }
     return(

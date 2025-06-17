@@ -42,7 +42,7 @@ const subirHorario = async (req, res) => {
 const listarHorarios = async (req, res) => {
     try{
         const horarios = await Horario.find().populate('grupo', 'nombre')
-        return res.status(200).json({ mensaje: 'Horarios obtenidos correctamente.'})
+        return res.status(200).json({horarios})
     }catch (error) {
         console.error('Error al obtener los horarios: ', error)
         return res.status(500).json({ mensaje: 'Error interno del servidor.' })

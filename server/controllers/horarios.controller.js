@@ -28,7 +28,10 @@ const subirHorario = async (req, res) => {
     })
 
     await nuevoHorario.save()
-    return res.status(201).json({ mensaje: 'Horario subido exitosamente.'})
+    return res.status(201).json({ 
+      mensaje: 'Horario subido exitosamente.',
+      horario: nuevoHorario
+    })
   } catch (error) {
     console.error('Error al subir horario:', error)
     return res.status(500).json({ mensaje: 'Error interno del servidor.' })

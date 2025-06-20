@@ -2,6 +2,8 @@
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
 const Calificacion = require('../models/calificacion.model')
+const Horario = require('../models/horario.model')
+const cloudinary = require('../config/cloudinary')
 
 // Función para agregar un nuevo grupo
 const agregarGrupo = async (req, res) => {
@@ -148,6 +150,12 @@ const eliminarGrupo = async (req, res) => {
         const calificacionesExistentes = await Calificacion.findOne({ grupo: id })
         if (calificacionesExistentes) {
             return res.status(400).json({ mensaje: 'No se puede eliminar el grupo porque tiene calificaciones registradas.' })
+        }
+
+        const horario = await Horario.findOne({ grupo: id })
+        if (horario) { // Si el grupo tiene un horario asignado este se elimina
+            await cloudinary.uploader.destroy(horario.publicId) // Elimina la imagen de Cloudinary
+            await Horario.findByIdAndDelete(horario._id) // Elimina el documento de la base de datos
         }
 
         // Elimina el grupo

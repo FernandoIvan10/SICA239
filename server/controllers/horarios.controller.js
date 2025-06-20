@@ -1,5 +1,5 @@
-const Horario = require('../models/horario.model');
-const cloudinary = require('../config/cloudinary');
+const Horario = require('../models/horario.model')
+const cloudinary = require('../config/cloudinary')
 
 // Función para subir el horario de un grupo
 const subirHorario = async (req, res) => {

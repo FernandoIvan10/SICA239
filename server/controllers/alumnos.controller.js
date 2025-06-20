@@ -6,9 +6,9 @@ const bcrypt = require('bcrypt')
 // Función para agregar un nuevo alumno
 const agregarAlumno = async (req, res) => {
     try {
-        const { matricula, nombre, apellido, contrasena, grupoNombre } = req.body
+        const { matricula, nombre, apellido, contrasena, grupoNombre, materiasRecursadas } = req.body
 
-        // Valida que los campos estén rellenados
+        // Valida que los campos obligatorios estén rellenados
         if (!matricula || !nombre || !apellido || !contrasena || !grupoNombre) {
             return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' })
         }
@@ -25,6 +25,23 @@ const agregarAlumno = async (req, res) => {
             return res.status(400).json({ mensaje: 'El alumno ya existe.' })
         }
 
+        // Valida que las materias recursadas tengan la estructura correcta
+        if (materiasRecursadas && !Array.isArray(materiasRecursadas)) {
+            return res.status(400).json({ mensaje: 'materiasRecursadas debe ser un arreglo.' })
+        }
+        if (materiasRecursadas && materiasRecursadas.some(m => !m.materia || !m.grupo)) {
+            return res.status(400).json({ mensaje: 'Cada materia recursada debe tener materia y grupo.' })
+        }
+        if(materiasRecursadas){
+            for (const item of materiasRecursadas) {
+                const materiaValida = await Materia.findById(item.materia)
+                const grupoValido = await Grupo.findById(item.grupo)
+                if (!materiaValida || !grupoValido) {
+                    return res.status(400).json({ mensaje: 'Materia o grupo inválido en materiasRecursadas.' })
+                }
+            }
+        }
+
         // Se crea el nuevo alumno
         const contrasenaEncriptada = await bcrypt.hash(contrasena, 10)
         const nuevoAlumno = new Alumno({
@@ -33,6 +50,7 @@ const agregarAlumno = async (req, res) => {
             apellido,
             contrasena: contrasenaEncriptada,
             grupoId: grupoExistente._id,
+            materiasRecursadas: materiasRecursadas
         })
 
         await nuevoAlumno.save(); // Guarda el nuevo alumno

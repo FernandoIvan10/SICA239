@@ -17,7 +17,7 @@ export default function AgregarUsuario(){
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const [menu, setMenu] = useState([]) // Elementos del menú
     const [rolUsuario, setRolUsuario] = useState(null)
-    const [tipoUsuario, setTipoUsuario] = useState("alumno"); // Estado para el tipo de usuario
+    const [tipoUsuario, setTipoUsuario] = useState("alumno") // Estado para el tipo de usuario
     const [grupos, setGrupos] = useState([]) // Lista de grupos en la BD
 
     // Hooks para el formulario de administradores
@@ -31,6 +31,8 @@ export default function AgregarUsuario(){
     const [nombreAlumno, setNombreAlumno] = useState("")
     const [apellidoAlumno, setApellidoAlumno] = useState("")
     const [grupo, setGrupo] = useState("")
+    const [materiasRecursadas, setMateriasRecursadas] = useState([])
+    const [materiaSeleccionada, setMateriaSeleccionada] = useState("")
 
     useValidarToken() // Se valida que el usuario haya iniciado sesión
 
@@ -152,7 +154,7 @@ export default function AgregarUsuario(){
     // Función para guardar el nuevo alumno en la BD
     const agregarAlumno = () => {
         if(!matricula.trim() || !nombreAlumno.trim() || !apellidoAlumno.trim() || !grupo.trim()){
-            // No se puede guardar el alumno si no se ha llenado todo el formulario
+            // No se puede guardar el alumno si no se han llenado los campos obligatorios del formulario
             alert("Debes ingresar todos los datos del formulario")
         }else{
             const token = localStorage.getItem('token') // Token de inicio de sesión
@@ -168,7 +170,8 @@ export default function AgregarUsuario(){
 		        nombre: nombreAlumno,
                 apellido: apellidoAlumno,
                 contrasena: matricula, //La contraseña por default es la matrícula
-                grupoNombre: grupo
+                grupoNombre: grupo,
+                materiasRecursadas
 	        })
             }).then(async res => {
                 if(res.ok){
@@ -178,6 +181,8 @@ export default function AgregarUsuario(){
                     setNombreAlumno("")
                     setApellidoAlumno("")
                     setGrupo("")
+                    setMateriasRecursadas([])
+                    setMateriaSeleccionada("")
                     return
                 }else{
                     console.error(`Error ${res.status}`, await res.json().catch(()=>null))
@@ -241,6 +246,58 @@ export default function AgregarUsuario(){
                                 ))}
                         </select>
                     </label>
+                    <label>
+                        Materias recursadas:
+                        <select
+                            value={materiaSeleccionada}
+                            onChange={(e) => setMateriaSeleccionada(e.target.value)}
+                        >
+                            <option value="">Seleccionar materia</option>
+                            {grupos.map(grupo => (
+                                grupo.materias.map(materia => (
+                                    <option
+                                        key={`${materia._id}-${grupo._id}`}
+                                        value={`${materia._id}-${grupo._id}`}
+                                    >
+                                        {materia.nombre} - {grupo.nombre}
+                                    </option>
+                                ))
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (materiaSeleccionada) {
+                                    const [materia, grupo] = materiaSeleccionada.split("-")
+                                    const yaAgregada = materiasRecursadas.some(mr =>
+                                        mr.materia === materia && mr.grupo === grupo
+                                    )
+                                    if (!yaAgregada) {
+                                        setMateriasRecursadas([...materiasRecursadas, { materia, grupo }])
+                                        setMateriaSeleccionada("")
+                                    }
+                                }
+                            }}
+                        >
+                            Agregar
+                        </button>
+                    </label>
+                    <div className="materias-recursadas-lista">
+                        {materiasRecursadas.map((item, index) => {
+                            const grupoObj = grupos.find(g => g._id === item.grupo)
+                            const materiaObj = grupoObj?.materias.find(m => m._id === item.materia)
+                            return (
+                                <div key={index} className="materia-item">
+                                    {materiaObj?.nombre || "Materia desconocida"} - {grupoObj?.nombre || "Grupo desconocido"}
+                                    <button onClick={() => {
+                                        const nuevas = [...materiasRecursadas]
+                                        nuevas.splice(index, 1)
+                                        setMateriasRecursadas(nuevas)
+                                    }}>X</button>
+                                </div>
+                            )
+                        })}
+                    </div>
                     <button 
                         type="button" 
                         className="btn-guardar"

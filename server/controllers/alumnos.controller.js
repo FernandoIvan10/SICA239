@@ -1,6 +1,7 @@
 // imports
 const Alumno = require('../models/alumno.model')
 const Grupo = require('../models/grupo.model')
+const Materia = require('../models/materia.model')
 const bcrypt = require('bcrypt')
 
 // Función para agregar un nuevo alumno

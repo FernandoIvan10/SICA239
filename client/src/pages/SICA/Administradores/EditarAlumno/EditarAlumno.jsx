@@ -19,6 +19,8 @@ export default function EditarAlumno() {
     const { id } = useParams() // ID enviado por parámetro
     const [alumno, setAlumno] = useState(null) // Contiene todos los datos del formulario
     const [grupos, setGrupos] = useState([]) // Contiene los grupos del backend
+    const [materiasRecursadas, setMateriasRecursadas] = useState([]) // Contiene la lista de materias que el alumno está recursando
+    const [materiaSeleccionada, setMateriaSeleccionada] = useState("") // Contiene la materia recursada que está seleccionada en la lista
     
     useValidarToken() // Se válida que el usuario haya iniciado sesión
 
@@ -115,6 +117,7 @@ export default function EditarAlumno() {
                 apellido: data.apellido,
                 grupoNombre: grupo ? grupo.nombre : '' // Se necesita el nombre del grupo en el formulario
             })
+            setMateriasRecursadas(data.materiasRecursadas || [])
         })
         .catch(err => {
             console.error("Error al obtener alumno:", err)
@@ -124,7 +127,7 @@ export default function EditarAlumno() {
     // Método para editar el alumno con los nuevos datos
     const guardarCambios = () => {
         if(!alumno.nombre.trim() || !alumno.apellido.trim() || !alumno.grupoNombre.trim()){ // Se valida que hayan rellenado todos los campos del formulario
-            alert("Todos los campos son obligatorios")
+            alert("Faltan campos son obligatorios")
             return
         }
 
@@ -137,7 +140,7 @@ export default function EditarAlumno() {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({nombre, apellido, grupoNombre})
+            body: JSON.stringify({nombre, apellido, grupoNombre, materiasRecursadas})
         }).then(async res => {
             if(res.ok){
                 alert("Alumno actualizado correctamente")
@@ -196,6 +199,58 @@ export default function EditarAlumno() {
                         ))}
                     </select>
                 </label>
+                <label>
+                    Materias recursadas:
+                    <select
+                        value={materiaSeleccionada}
+                        onChange={(e) => setMateriaSeleccionada(e.target.value)}
+                    >
+                        <option value="">Seleccionar materia</option>
+                        {grupos.map(grupo =>
+                            grupo.materias.map(materia => (
+                                <option key={`${materia._id}-${grupo._id}`} value={`${materia._id}-${grupo._id}`}>
+                                    {materia.nombre} - {grupo.nombre}
+                                </option>
+                            ))
+                        )}
+                    </select>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (materiaSeleccionada) {
+                                const [materia, grupo] = materiaSeleccionada.split("-")
+                                const existe = materiasRecursadas.some(m => m.materia === materia && m.grupo === grupo)
+                                if (!existe) {
+                                    setMateriasRecursadas([...materiasRecursadas, { materia, grupo }])
+                                }
+                                setMateriaSeleccionada("")
+                            }
+                        }}
+                    >
+                        Agregar
+                    </button>
+                </label>
+                <div className="materias-recursadas-lista">
+                    {materiasRecursadas.map((item, index) => {
+                        const grupoObj = grupos.find(g => g._id === item.grupo)
+                        const materiaObj = grupoObj?.materias.find(m => m._id === item.materia)
+                        return (
+                            <div key={index} className="materia-item">
+                                {materiaObj?.nombre || "Materia desconocida"} - {grupoObj?.nombre || "Grupo desconocido"}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const nuevas = [...materiasRecursadas]
+                                        nuevas.splice(index, 1)
+                                        setMateriasRecursadas(nuevas)
+                                    }}
+                                >
+                                    X
+                                </button>
+                            </div>
+                        )
+                    })}
+                </div>
                 <button type="button" className="btn-guardar" onClick={guardarCambios}>
                     Guardar cambios
                 </button>

@@ -2,6 +2,7 @@
 const Alumno = require('../models/alumno.model')
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
+const Calificacion = require('../models/calificacion.model')
 const bcrypt = require('bcrypt')
 
 // Función para agregar un nuevo alumno
@@ -67,7 +68,7 @@ const modificarAlumno = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const { nombre, apellido, grupoNombre } = req.body;
+        const { nombre, apellido, grupoNombre, materiasRecursadas } = req.body;
 
         // Valida que el ID sea proporcionado
         if (!id) {
@@ -90,6 +91,44 @@ const modificarAlumno = async (req, res) => {
             if (!grupoExistente) {
                 return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
             }
+            // Valida que el alumno no tenga calificaciones en el grupo anterior
+            if (alumnoExistente.grupoId.toString() !== grupoExistente._id.toString()) {
+                const tieneCalificaciones = await Calificacion.exists({
+                    alumnoId: alumnoExistente._id,
+                    grupoId: alumnoExistente.grupoId
+                })
+                if (tieneCalificaciones) {
+                    return res.status(400).json({
+                        mensaje: 'No se puede cambiar el grupo del alumno porque ya tiene calificaciones registradas en su grupo actual.'
+                    })
+                }
+            }
+            if (materiasRecursadas) {
+                // Se detectan cuáles materias recursadas han cambiado
+                const actuales = alumnoExistente.materiasRecursadas.map(mr =>
+                    `${mr.materia.toString()}-${mr.grupo.toString()}`
+                )
+                const nuevas = materiasRecursadas.map(mr =>
+                    `${mr.materia}-${mr.grupo}`
+                )
+                const eliminadas = actuales.filter(mr => !nuevas.includes(mr))
+                // Se valida que las materias eliminadas no tengan calificaciones
+                for (const mr of eliminadas) {
+                    const [materiaId, grupoId] = mr.split('-')
+                    const tieneCalificaciones = await Calificacion.exists({
+                        alumnoId: alumnoExistente._id,
+                        grupoId,
+                        materiaId
+                    })
+                    if (tieneCalificaciones) {
+                        return res.status(400).json({
+                            mensaje: 'No se puede quitar o modificar una materia recursada con calificaciones registradas.'
+                        })
+                    }
+                }
+                actualizaciones.materiasRecursadas = materiasRecursadas
+            }
+
             actualizaciones.grupoId = grupoExistente._id
         }
 

@@ -201,5 +201,26 @@ const obtenerAlumnoPorID = async (req, res) => {
     }
 }
 
+const obtenerAlumnosPorGrupo = async (req, res) => {
+    try {
+        const { grupoId } = req.params
+        if (!grupoId) return res.status(400).json({ mensaje: 'Se requiere el ID del grupo.' })
 
-module.exports = {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID} // Se exporta el controlador
+        // Alumnos con el grupo como grupo principal
+        const alumnosGrupo = await Alumno.find({ grupoId }, '-contrasena')
+
+        // Alumnos que recursan materias en ese grupo, pero que no pertenecen al grupo
+        const alumnosRecursando = await Alumno.find({ 
+            'materiasRecursadas.grupo': grupoId,
+            grupoId: { $ne: grupoId }
+        }, '-contrasena')
+
+        const alumnos = [...alumnosGrupo, ...alumnosRecursando]
+        return res.status(200).json(alumnos)
+    } catch (error) {
+        console.error('Error al obtener alumnos por grupo:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo} // Se exporta el controlador

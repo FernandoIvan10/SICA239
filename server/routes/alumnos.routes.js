@@ -40,7 +40,7 @@ router.get(
 
 // Ruta para obtener los alumnos que toman materias con un grupo específico (sólo para "superadmin" y "editor")
 router.get(
-    'alumnos/por-grupo/:grupoId',
+    '/alumnos/por-grupo/:grupoId',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     obtenerAlumnosPorGrupo // Se llama al controlador

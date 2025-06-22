@@ -151,11 +151,7 @@ const listarCalificaciones = async (req, res) => {
             .populate('materiaId', 'nombre') // Incluye información de la materia
             .populate('grupoId', 'nombre') // Incluye información del grupo
             .exec()
-
-        if (calificaciones.length === 0) {
-            return res.status(404).json({ mensaje: 'No se encontraron calificaciones con los filtros especificados.' })
-        }
-
+            
         return res.status(200).json({
             mensaje: 'Calificaciones obtenidas exitosamente.',
             calificaciones,

@@ -3,6 +3,7 @@ const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
 const Calificacion = require('../models/calificacion.model')
 const Horario = require('../models/horario.model')
+const Alumno = require('../models/alumno.model')
 const cloudinary = require('../config/cloudinary')
 
 // Función para agregar un nuevo grupo
@@ -168,5 +169,38 @@ const eliminarGrupo = async (req, res) => {
     }
 }
 
+// Función para migrar alumnos de un grupo a otro
+const migrarAlumnos = async (req, res) => {
+    const { grupoOrigen, grupoDestino, alumnos } = req.body
 
-module.exports = {agregarGrupo, modificarGrupo, listarGrupos, eliminarGrupo} // Se exporta el controlador
+    // Valida que se hayan enviado todos los parámetros
+    if (!grupoOrigen || !grupoDestino || !Array.isArray(alumnos) || alumnos.length === 0) { 
+        return res.status(400).json({ mensaje: 'Faltan datos obligatorios: grupoOrigen, grupoDestino y lista de alumnos.' })
+    }
+
+    try {
+        // Verificar que los grupos existan
+        const origenExiste = await Grupo.findById(grupoOrigen)
+        const destinoExiste = await Grupo.findById(grupoDestino)
+
+        if (!origenExiste || !destinoExiste) {
+            return res.status(404).json({ mensaje: 'Uno o ambos grupos especificados no existen.' })
+        }
+
+        // Actualizar grupo de cada alumno
+        const resultados = await Alumno.updateMany(
+            { _id: { $in: alumnos } },
+            { $set: { grupoId: grupoDestino } }
+        )
+
+        return res.status(200).json({
+            mensaje: `Migración completada. ${resultados.modifiedCount} alumno(s) actualizados.`,
+        })
+
+    } catch (error) {
+        console.error('Error al migrar alumnos:', error)
+        return res.status(500).json({ mensaje: 'Error interno al migrar alumnos.' })
+    }
+}
+
+module.exports = {agregarGrupo, modificarGrupo, listarGrupos, eliminarGrupo, migrarAlumnos} // Se exporta el controlador

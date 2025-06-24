@@ -12,7 +12,7 @@ import { IoLogOut } from "react-icons/io5";
 import { MdGroupAdd, MdGroups } from "react-icons/md";
 import { RiCalendarScheduleFill } from "react-icons/ri";
 
-// Página del SICA para subir calificaciones
+// Página del SICA para cerrar un semestre pasando las calificaciones parciales al historial académico
 export default function CerrarSemestre(){
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const [menu, setMenu] = useState([]) // Elementos del menú

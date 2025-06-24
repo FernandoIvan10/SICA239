@@ -16,6 +16,7 @@ import SubirHorarios from "../pages/SICA/Administradores/GestionarHorarios/Gesti
 import EditarGrupo from "../pages/SICA/Administradores/EditarGrupo/EditarGrupo"
 import EditarAlumno from "../pages/SICA/Administradores/EditarAlumno/EditarAlumno"
 import EditarAdministrador from "../pages/SICA/Administradores/EditarAdministrador/EditarAdministrador"
+import CerrarSemestre from "../pages/SICA/Administradores/CerrarSemestre/CerrarSemestre"
 
 // Clase que maneja las rutas (URL) de la App
 export default function AppRoutes(){
@@ -41,6 +42,7 @@ export default function AppRoutes(){
                 <Route path="/SICA/administradores/editar-grupo" element={<EditarGrupo/>}/>
                 <Route path="/SICA/administradores/editar-alumno/:id" element={<EditarAlumno/>}/>
                 <Route path="/SICA/administradores/editar-administrador/:id" element={<EditarAdministrador/>}/>
+                <Route path="/SICA/administradores/cerrar-semestre" element={<CerrarSemestre/>}/>
             </Routes>
         </Router>
     )

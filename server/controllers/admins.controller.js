@@ -120,4 +120,30 @@ const obtenerAdminPorID = async (req, res) => {
     }
 }
 
-module.exports = {agregarAdmin, modificarAdmin, listarAdmins, obtenerAdminPorID} // Se exporta el controlador
+// Función para cambiar la contraseña por primera vez
+const primerCambioContrasenaAdministrador = async (req, res) => {
+    try {
+        const { nuevaContrasena } = req.body
+        const { usuarioId } = req
+
+        if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
+            return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' })
+        }
+
+        const admin = await Administrador.findById(usuarioId)
+        if (!admin) {
+            return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
+        }
+
+        admin.contrasena = await bcrypt.hash(nuevaContrasena, 10)
+        admin.requiereCambioContrasena = false
+        await admin.save()
+
+        return res.status(200).json({ mensaje: 'Contraseña actualizada correctamente.' })
+    } catch (error) {
+        console.error('Error al cambiar contraseña del administrador:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarAdmin, modificarAdmin, listarAdmins, obtenerAdminPorID, primerCambioContrasenaAdministrador} // Se exporta el controlador

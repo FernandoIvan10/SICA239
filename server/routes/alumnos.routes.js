@@ -2,7 +2,7 @@
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo} = require('../controllers/alumnos.controller')
+const {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo, primerCambioContrasenaAlumno} = require('../controllers/alumnos.controller')
 
 const router = express.Router() // Se crea un router
 
@@ -44,6 +44,13 @@ router.get(
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     obtenerAlumnosPorGrupo // Se llama al controlador
+)
+
+// Ruta para cambiar la contraseña de un alumno por primera vez
+router.put(
+    '/alumnos/primer-cambio-contrasena',
+    verificarToken, // Se valida la autenticación
+    primerCambioContrasenaAlumno // Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

@@ -223,4 +223,30 @@ const obtenerAlumnosPorGrupo = async (req, res) => {
     }
 }
 
-module.exports = {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo} // Se exporta el controlador
+// Función para cambiar la contraseña por primera vez
+const primerCambioContrasenaAlumno = async (req, res) => {
+    try {
+        const { nuevaContrasena } = req.body
+        const { usuarioId } = req
+
+        if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
+            return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' })
+        }
+
+        const alumno = await Alumno.findById(usuarioId)
+        if (!alumno) {
+            return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
+        }
+
+        alumno.contrasena = await bcrypt.hash(nuevaContrasena, 10)
+        alumno.requiereCambioContrasena = false
+        await alumno.save()
+
+        return res.status(200).json({ mensaje: 'Contraseña actualizada correctamente.' })
+    } catch (error) {
+        console.error('Error al cambiar contraseña del alumno:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    }
+}
+
+module.exports = {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo, primerCambioContrasenaAlumno} // Se exporta el controlador

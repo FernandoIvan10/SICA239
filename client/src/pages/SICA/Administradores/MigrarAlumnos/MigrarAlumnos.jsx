@@ -13,6 +13,7 @@ import { RiCalendarScheduleFill } from "react-icons/ri";
 
 // Página del SICA para pasar los alumnos de un grupo a otro (sin calificaciones)
 export default function MigrarAlumnos() {
+    const navigate = useNavigate() // Para redireccionar a los usuarios
     const [menu, setMenu] = useState([])
     const [grupos, setGrupos] = useState([])
     const [grupoOrigen, setGrupoOrigen] = useState('')

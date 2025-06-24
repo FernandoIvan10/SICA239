@@ -1,5 +1,5 @@
 const Calificacion = require('../models/calificacion.model')
-const Historial = require('../models/historial.model')
+const Historial = require('../models/historialAcademico.model')
 
 // Función para cerrar el semestre y guardar los promedios en el historial académico
 const cerrarSemestre = async (req, res) => {

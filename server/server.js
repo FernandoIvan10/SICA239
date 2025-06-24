@@ -9,6 +9,7 @@ const calificacionesRoutes = require('./routes/calificaciones.routes')
 const gruposRoutes = require('./routes/grupos.routes')
 const materiasRoutes = require('./routes/materias.routes')
 const horariosRoutes = require('./routes/horarios.routes')
+const historialAcademicoRoutes = require('./routes/historialAcademico.routes')
 
 // Conexión a la base de datos
 conectarBD();
@@ -29,6 +30,7 @@ app.use('/api', calificacionesRoutes)
 app.use('/api', gruposRoutes)
 app.use('/api', materiasRoutes)
 app.use('/api', horariosRoutes)
+app.use('/api', historialAcademicoRoutes)
 
 // Ruta pública (no necesita autenticación)
 app.get('/public', (req, res) => {

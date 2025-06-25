@@ -18,6 +18,7 @@ import EditarAlumno from "../pages/SICA/Administradores/EditarAlumno/EditarAlumn
 import EditarAdministrador from "../pages/SICA/Administradores/EditarAdministrador/EditarAdministrador"
 import CerrarSemestre from "../pages/SICA/Administradores/CerrarSemestre/CerrarSemestre"
 import MigrarAlumnos from "../pages/SICA/Administradores/MigrarAlumnos/MigrarAlumnos"
+import PrimerCambioContrasena from "../pages/SICA/Administradores/CambiarContrasenaPrimeraVez/CambiarContrasenaPrimeraVez"
 
 // Clase que maneja las rutas (URL) de la App
 export default function AppRoutes(){
@@ -45,6 +46,7 @@ export default function AppRoutes(){
                 <Route path="/SICA/administradores/editar-administrador/:id" element={<EditarAdministrador/>}/>
                 <Route path="/SICA/administradores/cerrar-semestre" element={<CerrarSemestre/>}/>
                 <Route path="/SICA/administradores/migrar-alumnos" element={<MigrarAlumnos/>}/>
+                <Route path="/SICA/primer-cambio-contrasena" element={<PrimerCambioContrasena/>}/>
             </Routes>
         </Router>
     )

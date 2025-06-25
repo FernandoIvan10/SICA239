@@ -70,14 +70,20 @@ export default function Login(){
             }
 
             const datos = await response.json()
-            const {token, nombre, apellido, tipoUsuario} = datos
+            const {token, nombre, apellido, tipoUsuario, requiereCambioContrasena } = datos
 
             // La sesión debe mantenerse iniciada
             localStorage.setItem('token',token)
 
-            // El usuario es redirigido al sistema
-            const ruta = tipoUsuario === 'alumno' ? '/SICA/alumnos/inicio' : '/SICA/administradores/inicio'
-            window.location.href = ruta
+            // Verifica si necesita cambiar contraseña
+            if (requiereCambioContrasena) {
+                window.location.href = '/SICA/primer-cambio-contrasena' // Ruta que hayas definido
+            } else { // El usuario es redirigido al sistema
+                const ruta = tipoUsuario === 'alumno'
+                    ? '/SICA/alumnos/inicio'
+                    : '/SICA/administradores/inicio'
+                window.location.href = ruta
+            }
         }catch(error){
             setError(error.message)
         }

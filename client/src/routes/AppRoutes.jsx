@@ -47,6 +47,7 @@ export default function AppRoutes(){
                 <Route path="/SICA/administradores/cerrar-semestre" element={<CerrarSemestre/>}/>
                 <Route path="/SICA/administradores/migrar-alumnos" element={<MigrarAlumnos/>}/>
                 <Route path="/SICA/primer-cambio-contrasena" element={<PrimerCambioContrasena/>}/>
+                <Route path="/SICA/cambiar-contrasena" element={<CambiarContraseña/>}/>
             </Routes>
         </Router>
     )

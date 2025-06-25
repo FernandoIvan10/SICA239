@@ -3,11 +3,12 @@ import {jwtDecode} from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 
 
-// Página del SICA para cambiar la contraseña de un usuario cuando ingresa por primera vez al sistema
-export default function PrimerCambioContrasena() {
+// Página del SICA para cambiar la contraseña de un usuario
+export default function CambiarContrasena() {
   const navigate = useNavigate()
   const [rol, setRol] = useState(null)
-  const [nuevaContrasena, setNuevaContrasena] = useState('')
+  const [contrasenaAntigua, setContrasenaAntigua] = useState('')
+  const [contrasenaNueva, setContrasenaNueva] = useState('')
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(false)
 
@@ -28,7 +29,7 @@ export default function PrimerCambioContrasena() {
   const cambiarContrasena = async (e) => {
     e.preventDefault()
     setMensaje('')
-    if (nuevaContrasena.length < 6) {
+    if (contrasenaNueva.length < 6) {
       setMensaje('La contraseña debe tener al menos 6 caracteres.')
       return
     }
@@ -36,8 +37,8 @@ export default function PrimerCambioContrasena() {
 
     const url =
       rol === 'alumno'
-        ? '/api/alumnos/primer-cambio-contrasena'
-        : '/api/admins/primer-cambio-contrasena'
+        ? '/api/alumnos/cambiar-contrasena'
+        : '/api/admins/cambiar-contrasena'
 
     try {
       const res = await fetch(url, {
@@ -46,7 +47,7 @@ export default function PrimerCambioContrasena() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({ nuevaContrasena }),
+        body: JSON.stringify({ contrasenaAntigua, contrasenaNueva }),
       })
 
       const data = await res.json()
@@ -64,18 +65,28 @@ export default function PrimerCambioContrasena() {
 
   return (
     <div style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
-      <h2>Primer cambio de contraseña</h2>
+      <h2>Cambio de contraseña</h2>
       <form onSubmit={cambiarContrasena}>
-        <label htmlFor="nuevaContrasena">Nueva contraseña:</label>
+        <label htmlFor="contrasenaAntigua">Contraseña antigua:</label>
         <input
-          id="nuevaContrasena"
+          id="contrasenaAntigua"
           type="password"
-          value={nuevaContrasena}
-          onChange={(e) => setNuevaContrasena(e.target.value)}
+          value={contrasenaAntigua}
+          onChange={(e) => setContrasenaAntigua(e.target.value)}
           minLength={6}
           required
           disabled={cargando}
           autoFocus
+        />
+        <label htmlFor="contrasenaNueva">Contraseña nueva:</label>
+        <input
+          id="contrasenaNueva"
+          type="password"
+          value={contrasenaNueva}
+          onChange={(e) => setContrasenaNueva(e.target.value)}
+          minLength={6}
+          required
+          disabled={cargando}
         />
         <button type="submit" disabled={cargando} style={{ marginTop: 10 }}>
           {cargando ? 'Guardando...' : 'Actualizar contraseña'}

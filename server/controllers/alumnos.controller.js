@@ -249,4 +249,41 @@ const primerCambioContrasenaAlumno = async (req, res) => {
     }
 }
 
-module.exports = {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo, primerCambioContrasenaAlumno} // Se exporta el controlador
+// Función para cambiar la contraseña
+const cambiarContrasena = async (req, res) =>{
+    try{
+        const {contrasenaAntigua, contrasenaNueva} = req.body
+        const {usuarioId} = req
+
+        if(!contrasenaAntigua || !contrasenaNueva){
+            return res.status(400).json({mensaje: 'Se requiere la antigua y la nueva contraseña.'})
+        }
+
+        const alumno = await Alumno.findById(usuarioId)
+        if (!alumno) {
+            return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
+        }
+
+        const esValido = await bcrypt.compare(contrasenaAntigua, alumno.contrasena)
+        if(!esValido){
+            return res.status(401).json({mensaje: 'Contraseña incorrrecta.'})
+        }
+
+        alumno.contrasena = await bcrypt.hash(contrasenaNueva, 10)
+        await alumno.save()
+
+        return res.status(200).json({ mensaje: 'Contraseña cambiada correctamente.' })
+    }catch(error){
+        res.status(500).json({message: 'Error al cambiar la contraseña: ', error})
+    }
+}
+
+module.exports = {
+    agregarAlumno, 
+    modificarAlumno, 
+    listarAlumnos, 
+    obtenerAlumnoPorID, 
+    obtenerAlumnosPorGrupo, 
+    primerCambioContrasenaAlumno, 
+    cambiarContrasena
+} // Se exporta el controlador

@@ -146,4 +146,39 @@ const primerCambioContrasenaAdministrador = async (req, res) => {
     }
 }
 
-module.exports = {agregarAdmin, modificarAdmin, listarAdmins, obtenerAdminPorID, primerCambioContrasenaAdministrador} // Se exporta el controlador
+// Función para cambiar la contraseña
+const cambiarContrasena = async (req, res) => {
+    try{const {contrasenaAntigua, contrasenaNueva} = req.body
+        const {usuarioId} = req
+
+        if(!contrasenaAntigua || !contrasenaNueva){
+            return res.status(400).json({mensaje: 'Se requiere la antigua y la nueva contraseña.'})
+        }
+
+        const administrador = await Administrador.findById(usuarioId)
+        if (!administrador) {
+            return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
+        }
+
+        const esValido = await bcrypt.compare(contrasenaAntigua, administrador.contrasena)
+        if(!esValido){
+            return res.status(401).json({mensaje: 'Contraseña incorrrecta.'})
+        }
+
+        administrador.contrasena = await bcrypt.hash(contrasenaNueva, 10)
+        await administrador.save()
+
+        return res.status(200).json({ mensaje: 'Contraseña cambiada correctamente.' })
+    }catch(error){
+        res.status(500).json({message: 'Error al cambiar la contraseña: ', error})
+    }
+}
+
+module.exports = {
+    agregarAdmin,
+    modificarAdmin,
+    listarAdmins,
+    obtenerAdminPorID,
+    primerCambioContrasenaAdministrador,
+    cambiarContrasena
+} // Se exporta el controlador

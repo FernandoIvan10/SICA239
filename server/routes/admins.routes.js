@@ -14,14 +14,6 @@ router.post(
     agregarAdmin // Se llama al controlador
 )
 
-// Ruta para modificar un usuario administrador (solo para "superadmin")
-router.put(
-    '/admins/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
-    modificarAdmin // Se llama al controlador
-)
-
 // Ruta para listar administradores (solo para "superadmin")
 router.get(
     '/admins',
@@ -30,19 +22,27 @@ router.get(
     listarAdmins // Se llama al controlador
 )
 
+// Ruta para cambiar la contraseña de un administrador por primera vez
+router.put(
+    '/administradores/primer-cambio-contrasena',
+    verificarToken, // Se valida la autenticación
+    primerCambioContrasenaAdministrador // Se llama al controlador
+)
+
+// Ruta para modificar un usuario administrador (solo para "superadmin")
+router.put(
+    '/admins/:id',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin']), // Se valida el rol
+    modificarAdmin // Se llama al controlador
+)
+
 // Ruta para obtener un administrador con su ID (sólo para administradores)
 router.get(
     '/admins/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     obtenerAdminPorID// Se llama al controlador
-)
-
-// Ruta para cambiar la contraseña de un administrador por primera vez
-router.put(
-    '/administradores/primer-cambio-contrasena',
-    verificarToken, // Se valida la autenticación
-    primerCambioContrasenaAdministrador // Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

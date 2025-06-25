@@ -14,20 +14,27 @@ router.post(
     agregarAlumno // Se llama al controlador
 )
 
-// Ruta para modificar un usuario alumno (solo para "superadmin" y "editor")
-router.put(
-    '/alumnos/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    modificarAlumno // Se llama al controlador
-)
-
 // Ruta para listar alumnos (sólo para administradores)
 router.get(
     '/alumnos',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     listarAlumnos // Se llama al controlador
+)
+
+// Ruta para cambiar la contraseña de un alumno por primera vez
+router.put(
+    '/alumnos/primer-cambio-contrasena',
+    verificarToken, // Se valida la autenticación
+    primerCambioContrasenaAlumno // Se llama al controlador
+)
+
+// Ruta para modificar un usuario alumno (solo para "superadmin" y "editor")
+router.put(
+    '/alumnos/:id',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin', 'editor']), // Se valida el rol
+    modificarAlumno // Se llama al controlador
 )
 
 // Ruta para obtener un alumno con su ID (sólo para administradores)
@@ -44,13 +51,6 @@ router.get(
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     obtenerAlumnosPorGrupo // Se llama al controlador
-)
-
-// Ruta para cambiar la contraseña de un alumno por primera vez
-router.put(
-    '/alumnos/primer-cambio-contrasena',
-    verificarToken, // Se valida la autenticación
-    primerCambioContrasenaAlumno // Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

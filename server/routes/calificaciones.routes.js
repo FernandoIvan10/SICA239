@@ -14,6 +14,14 @@ router.post(
     agregarCalificacion // Se llama al controlador
 )
 
+// Ruta para listar las calificaciones (Sólo para administradores)
+router.get(
+    '/calificaciones',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin','editor','lector']), // Se valida el rol
+    listarCalificaciones // Se llama al controlador
+)
+
 // Ruta para modificar una calificación (para 'superadmin' y 'editor')
 router.put(
     '/calificaciones/:id',
@@ -22,12 +30,5 @@ router.put(
     modificarCalificacion // Se llama al controlador
 )
 
-// Ruta para listar las calificaciones (Sólo para administradores)
-router.get(
-    '/calificaciones',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin','editor','lector']), // Se valida el rol
-    listarCalificaciones // Se llama al controlador
-)
 
 module.exports = router // Se exporta el router

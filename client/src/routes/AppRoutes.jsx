@@ -30,24 +30,29 @@ export default function AppRoutes(){
                 <Route path="*" element={<Navigate to="/inicio" />} /> {/* Ruta por defecto */}
                 <Route path="/inicio" element={<Inicio/>}/>
                 <Route path="/SICA/iniciar-sesion" element={<Login/>}/>
-                <Route path="/SICA/alumnos/*" element={<RutaProtegida />} />
-                <Route path="/SICA/administradores/*" element={<RutaProtegida />} />
-                <Route path="/SICA/administradores/inicio" element={<InicioAdmin/>}/>
-                <Route path="/SICA/alumnos/inicio" element={<InicioAlumno/>}/>
-                <Route path="/SICA/administradores/subir-calificaciones" element={<SubirCalificaciones/>}/>
-                <Route path="/SICA/administradores/agregar-usuario" element={<AgregarUsuario/>}/>
-                <Route path="/SICA/administradores/ver-usuarios" element={<VerUsuarios/>}/>
-                <Route path="/SICA/administradores/agregar-grupo" element={<AgregarGrupo/>}/>
-                <Route path="/SICA/administradores/ver-grupos" element={<VerGrupos/>}/>
-                <Route path="/SICA/alumnos/en-curso" element={<EnCurso/>}/>
-                <Route path="/SICA/alumnos/historial" element={<Historial/>}/>
-                <Route path="/SICA/alumnos/horario" element={<Horario/>}/>
-                <Route path="/SICA/administradores/subir-horarios" element={<SubirHorarios/>}/>
-                <Route path="/SICA/administradores/editar-grupo" element={<EditarGrupo/>}/>
-                <Route path="/SICA/administradores/editar-alumno/:id" element={<EditarAlumno/>}/>
-                <Route path="/SICA/administradores/editar-administrador/:id" element={<EditarAdministrador/>}/>
-                <Route path="/SICA/administradores/cerrar-semestre" element={<CerrarSemestre/>}/>
-                <Route path="/SICA/administradores/migrar-alumnos" element={<MigrarAlumnos/>}/>
+                
+                <Route path="/SICA/alumnos/*" element={<RutaProtegida />}>
+                    <Route path="/SICA/alumnos/inicio" element={<InicioAlumno/>}/>
+                    <Route path="/SICA/alumnos/en-curso" element={<EnCurso/>}/>
+                    <Route path="/SICA/alumnos/historial" element={<Historial/>}/>
+                    <Route path="/SICA/alumnos/horario" element={<Horario/>}/>
+                </Route>
+
+                <Route path="/SICA/administradores/*" element={<RutaProtegida />}>
+                    <Route path="/SICA/administradores/inicio" element={<InicioAdmin/>}/>
+                    <Route path="/SICA/administradores/subir-calificaciones" element={<SubirCalificaciones/>}/>
+                    <Route path="/SICA/administradores/agregar-usuario" element={<AgregarUsuario/>}/>
+                    <Route path="/SICA/administradores/ver-usuarios" element={<VerUsuarios/>}/>
+                    <Route path="/SICA/administradores/agregar-grupo" element={<AgregarGrupo/>}/>
+                    <Route path="/SICA/administradores/ver-grupos" element={<VerGrupos/>}/>
+                    <Route path="/SICA/administradores/subir-horarios" element={<SubirHorarios/>}/>
+                    <Route path="/SICA/administradores/editar-grupo" element={<EditarGrupo/>}/>
+                    <Route path="/SICA/administradores/editar-alumno/:id" element={<EditarAlumno/>}/>
+                    <Route path="/SICA/administradores/editar-administrador/:id" element={<EditarAdministrador/>}/>
+                    <Route path="/SICA/administradores/cerrar-semestre" element={<CerrarSemestre/>}/>
+                    <Route path="/SICA/administradores/migrar-alumnos" element={<MigrarAlumnos/>}/>
+                </Route>
+                
                 <Route path="/SICA/primer-cambio-contrasena" element={<PrimerCambioContrasena/>}/>
                 <Route path="/SICA/cambiar-contrasena" element={<CambiarContrasena/>}/>
             </Routes>

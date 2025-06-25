@@ -49,7 +49,8 @@ const loginController = async(req,res)=>{
             token,
             rol,
             nombre: user.nombre,
-            apellido: user.apellido, 
+            apellido: user.apellido,
+            requiereCambioContrasena: user.requiereCambioContrasena
         }) 
     }catch(error){
         res.status(500).json({message: 'Error al iniciar sesión', error})

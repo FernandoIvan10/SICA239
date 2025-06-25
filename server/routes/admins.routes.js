@@ -40,7 +40,7 @@ router.get(
 
 // Ruta para cambiar la contraseña de un administrador por primera vez
 router.put(
-    '/admins/primer-cambio-contrasena',
+    '/administradores/primer-cambio-contrasena',
     verificarToken, // Se valida la autenticación
     primerCambioContrasenaAdministrador // Se llama al controlador
 )

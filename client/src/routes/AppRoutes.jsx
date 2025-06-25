@@ -8,7 +8,6 @@ import AgregarUsuario from "../pages/SICA/Administradores/AgregarUsuario/Agregar
 import EnCurso from "../pages/SICA/Alumnos/EnCurso/EnCurso"
 import Historial from "../pages/SICA/Alumnos/Historial/Historial"
 import Horario from "../pages/SICA/Alumnos/Horario/Horario"
-import CambiarContraseña from "../pages/SICA/Alumnos/CambiarContraseña/CambiarContraseña"
 import AgregarGrupo from "../pages/SICA/Administradores/AgregarGrupo/AgregarGrupo"
 import VerUsuarios from "../pages/SICA/Administradores/VerUsuarios/VerUsuarios"
 import VerGrupos from "../pages/SICA/Administradores/VerGrupos/VerGrupos"
@@ -19,6 +18,7 @@ import EditarAdministrador from "../pages/SICA/Administradores/EditarAdministrad
 import CerrarSemestre from "../pages/SICA/Administradores/CerrarSemestre/CerrarSemestre"
 import MigrarAlumnos from "../pages/SICA/Administradores/MigrarAlumnos/MigrarAlumnos"
 import PrimerCambioContrasena from "../pages/SICA/Administradores/CambiarContrasenaPrimeraVez/CambiarContrasenaPrimeraVez"
+import CambiarContrasena from "../pages/SICA/Administradores/CambiarContrasena/CambiarContrasena"
 
 // Clase que maneja las rutas (URL) de la App
 export default function AppRoutes(){
@@ -39,7 +39,6 @@ export default function AppRoutes(){
                 <Route path="/SICA/alumnos/en-curso" element={<EnCurso/>}/>
                 <Route path="/SICA/alumnos/historial" element={<Historial/>}/>
                 <Route path="/SICA/alumnos/horario" element={<Horario/>}/>
-                <Route path="/SICA/alumnos/cambiar-contraseña" element={<CambiarContraseña/>}/>
                 <Route path="/SICA/administradores/subir-horarios" element={<SubirHorarios/>}/>
                 <Route path="/SICA/administradores/editar-grupo" element={<EditarGrupo/>}/>
                 <Route path="/SICA/administradores/editar-alumno/:id" element={<EditarAlumno/>}/>
@@ -47,7 +46,7 @@ export default function AppRoutes(){
                 <Route path="/SICA/administradores/cerrar-semestre" element={<CerrarSemestre/>}/>
                 <Route path="/SICA/administradores/migrar-alumnos" element={<MigrarAlumnos/>}/>
                 <Route path="/SICA/primer-cambio-contrasena" element={<PrimerCambioContrasena/>}/>
-                <Route path="/SICA/cambiar-contrasena" element={<CambiarContraseña/>}/>
+                <Route path="/SICA/cambiar-contrasena" element={<CambiarContrasena/>}/>
             </Routes>
         </Router>
     )

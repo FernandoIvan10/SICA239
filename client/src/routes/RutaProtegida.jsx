@@ -7,9 +7,9 @@ export default function RutaProtegida() {
   if (!token) return <Navigate to="/SICA/iniciar-sesion" replace />
 
   try {
-    const decoded = jwtDecode(token)
+    const { requiereCambioContrasena } = jwtDecode(token)
 
-    if (decoded.requiereCambioContrasena) {
+    if (requiereCambioContrasena) {
       return <Navigate to="/SICA/primer-cambio-contrasena" replace />
     }
 

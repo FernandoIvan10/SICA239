@@ -7,9 +7,9 @@ export function useValidarToken(){
 
     useEffect(()=>{
         const token = localStorage.getItem("token") // Token de inicio de sesión
-        if(token){ //Valida que exista un token
+        if(token){ // Se valida que el token de inicio de sesión sea válido
             try{
-                const tokenDecodificado = jwtDecode(token) // Se decodifica el token
+                const tokenDecodificado = jwtDecode(token)
                 if(tokenDecodificado.exp * 1000 < Date.now()){
                     // Si el token expiró entonces es eliminado
                     localStorage.removeItem("token")
@@ -21,7 +21,7 @@ export function useValidarToken(){
                 navigate("/SICA/iniciar-sesion")
             }
         } else{
-            // Si no existe un login el usuario debe iniciar sesión
+            // Si no existe un token el usuario debe iniciar sesión
             navigate("/SICA/iniciar-sesion")
         }
     },[navigate])

@@ -1,24 +1,18 @@
 import {jwtDecode} from "jwt-decode"
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral";
+import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
+import { useEffect, useState } from "react"
+import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
+import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 import "./AgregarUsuario.css"
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";
-
-import { FaHouseChimney } from "react-icons/fa6";
-import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";
-import { TiUserAdd } from "react-icons/ti";
-import { IoLogOut } from "react-icons/io5";
-import { MdGroupAdd, MdGroups } from "react-icons/md";
-import { RiCalendarScheduleFill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom"
 
 // Página del SICA para agregar usuarios 
 export default function AgregarUsuario(){
-    const navigate = useNavigate() // Para redireccionar a los usuarios
-    const [menu, setMenu] = useState([]) // Elementos del menú
-    const [rolUsuario, setRolUsuario] = useState(null)
-    const [tipoUsuario, setTipoUsuario] = useState("alumno") // Estado para el tipo de usuario
-    const [grupos, setGrupos] = useState([]) // Lista de grupos en la BD
+    const navigate = useNavigate() // Para redirigir al usuario
+    const token = localStorage.getItem('token') // Token de inicio de sesión
+    const [rol, setRol] = useState('') // Tipo de usuario
+    const [tipoUsuario, setTipoUsuario] = useState('alumno') // Pestaña activa del formulario
+    const [grupos, setGrupos] = useState([]) // Grupos de la BD
 
     // Hooks para el formulario de administradores
     const [RFC, setRFC] = useState("")
@@ -34,69 +28,21 @@ export default function AgregarUsuario(){
     const [materiasRecursadas, setMateriasRecursadas] = useState([])
     const [materiaSeleccionada, setMateriaSeleccionada] = useState("")
 
-    useValidarToken() // Se valida que el usuario haya iniciado sesión
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin','editor']) // El usuario debe tener permiso para acceder a esta ruta
 
-    useEffect(() => {
-        const token = localStorage.getItem('token') // Token de inicio de sesión        
-            try{
-                const tokenDecodificado = jwtDecode(token) // Se decodifica el token
-                setRolUsuario(tokenDecodificado.rol)
-
-                if(tokenDecodificado.rol === 'alumno'){
-                        // Si el usuario es un alumno se redirige a su panel
-                        navigate('/SICA/alumnos/inicio')
-                }
-
-                if(tokenDecodificado.rol === 'superadmin'){
-                    // Si el usuario es superadmin
-                    // Se asigna el siguiente menú
-                    setMenu([ 
-                        {titulo: "Inicio", icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
-                        {titulo: "Subir calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},
-                        {titulo: "Gestionar usuarios", icono:FaUsers, 
-                            subelementos:[
-                                {titulo:"Agregar usuario", icono:TiUserAdd, link:'/SICA/administradores/agregar-usuario'},
-                                {titulo:"Ver usuarios", icono:FaUserEdit, link:'/SICA/administradores/ver-usuarios'},
-                            ]},
-                        {titulo: "Gestionar grupos", icono:FaLayerGroup, 
-                            subelementos:[
-                                {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
-                                {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
-                            ]},
-                        {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/subir-horarios'},
-                        {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
-                    ])
-                }else if(tokenDecodificado.rol==='editor'){
-                    // Si el usuario es editor
-                    // Se asigna el siguiente menú
-                    setMenu([ 
-                        {titulo: "Inicio", icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
-                        {titulo: "Subir calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},
-                        {titulo: "Gestionar usuarios", icono:FaUsers, 
-                            subelementos:[
-                                {titulo:"Agregar usuario", icono:TiUserAdd, link:'/SICA/administradores/agregar-usuario'},
-                                {titulo:"Ver usuarios", icono:FaUserEdit, link:'/SICA/administradores/ver-usuarios'},
-                            ]},
-                        {titulo: "Gestionar grupos", icono:FaLayerGroup, 
-                            subelementos:[
-                                {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
-                                {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
-                            ]},
-                        {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
-                    ])
-                } else if(tokenDecodificado.rol==='lector'){
-                    // Si el usuario es lector se redirige a la lista de usuarios
-                    navigate('/SICA/administradores/ver-usuarios')
-                }
-
-            }catch(error){
-                // Si hay algún error se redirige al usuario al inicio de sesión
-                navigate('/SICA/iniciar-sesion')
-            }
-    }, [navigate])
+    useEffect(() => { // Se obtiene el tipo de usuario del token de inicio de sesión
+        try{
+            const tokenDecodificado = jwtDecode(token)
+            setRol(tokenDecodificado.rol)
+        }catch(error){
+            console.log(error)
+            localStorage.removeItem('token')
+            navigate('/SICA/iniciar-sesion')
+        }
+    })
 
     useEffect(() => { // Se obtienen los grupos de la BD para mostrarlos en el formulario
-        const token = localStorage.getItem('token')
         fetch('http://localhost:3000/api/grupos', {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -116,10 +62,8 @@ export default function AgregarUsuario(){
     const agregarAdmin = () => {
         if(!RFC.trim() || !nombreAdmin.trim() || !apellidoAdmin.trim() || !rolAdmin.trim()){
             // No se puede guardar el administrador si no se ha llenado todo el formulario
-            alert("Debes ingresar todos los datos del formulario")
+            alert("Debes ingresar todos los datos en el formulario")
         }else{
-            const token = localStorage.getItem('token') // Token de inicio de sesión
-            
             fetch('http://localhost:3000/api/admins', {
                 method: 'POST',
                 headers: {
@@ -155,10 +99,8 @@ export default function AgregarUsuario(){
     const agregarAlumno = () => {
         if(!matricula.trim() || !nombreAlumno.trim() || !apellidoAlumno.trim() || !grupo.trim()){
             // No se puede guardar el alumno si no se han llenado los campos obligatorios del formulario
-            alert("Debes ingresar todos los datos del formulario")
+            alert("Debes ingresar los datos obligatorios en el formulario")
         }else{
-            const token = localStorage.getItem('token') // Token de inicio de sesión
-            
             fetch('http://localhost:3000/api/alumnos', {
                 method: 'POST',
                 headers: {
@@ -193,14 +135,14 @@ export default function AgregarUsuario(){
         }
     }
 
-    // Formularios específicos para cada tipo de usuario
+    // Los campos se cambian dependiendo de la pestaña seleccionada (alumno o administrador)
     const renderFormulario = () => {
         if (tipoUsuario === "alumno") {
             return (
                 <form className="formulario-agregar">
                     <h2>Agregar Alumno</h2>
                     <label>
-                        Matrícula:
+                        Matrícula*:
                         <input 
                             type="text" 
                             placeholder="Ingrese la matrícula" 
@@ -210,7 +152,7 @@ export default function AgregarUsuario(){
                         />
                     </label>
                     <label>
-                        Nombre:
+                        Nombre*:
                         <input 
                             type="text" 
                             placeholder="Ingrese el nombre" 
@@ -220,7 +162,7 @@ export default function AgregarUsuario(){
                         />
                     </label>
                     <label>
-                        Apellido:
+                        Apellido*:
                         <input 
                             type="text" 
                             placeholder="Ingrese el apellido" 
@@ -230,7 +172,7 @@ export default function AgregarUsuario(){
                         />
                     </label>
                     <label>
-                        Grupo:
+                        Grupo*:
                         <select
                             type="text" 
                             placeholder="Ingrese el ID del grupo" 
@@ -312,7 +254,7 @@ export default function AgregarUsuario(){
                 <form className="formulario-agregar">
                     <h2>Agregar Administrador</h2>
                     <label>
-                        RFC:
+                        RFC*:
                         <input 
                             type="text" 
                             placeholder="Ingrese el RFC" 
@@ -322,7 +264,7 @@ export default function AgregarUsuario(){
                         />
                     </label>
                     <label>
-                        Nombre:
+                        Nombre*:
                         <input 
                             type="text" 
                             placeholder="Ingrese el nombre" 
@@ -332,7 +274,7 @@ export default function AgregarUsuario(){
                         />
                     </label>
                     <label>
-                        Apellido:
+                        Apellido*:
                         <input 
                             type="text" 
                             placeholder="Ingrese el apellido" 
@@ -342,7 +284,7 @@ export default function AgregarUsuario(){
                         />
                     </label>
                     <label>
-                        Rol:
+                        Rol*:
                         <select value={rolAdmin} onChange={(e)=>setRolAdmin(e.target.value)} required>
                             <option value="superadmin">Superadmin</option>
                             <option value="editor">Editor</option>
@@ -363,10 +305,9 @@ export default function AgregarUsuario(){
 
     return(
         <div className="contenedor-inicio">
-            <MenuLateral elementos={menu}/>
+            <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Agregar Usuario</h1>
-                {/* Selector del tipo de usuario */}
                 <div className="selector-tipo">
                     <button
                         className={`btn-selector ${tipoUsuario === "alumno" ? "activo" : ""}`}
@@ -377,13 +318,13 @@ export default function AgregarUsuario(){
                     <button
                         className={`btn-selector ${tipoUsuario === "administrador" ? "activo" : ""}`}
                         onClick={() => setTipoUsuario("administrador")}
-                        disabled={rolUsuario === "editor"} // No puede agregar administradores si es editor
-                        style={rolUsuario === "editor" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+                        disabled={rol === "editor"} // Los 'editores' no pueden agregar administradores
+                        style={rol === "editor" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
                     >
                         Administrador
                     </button>
                 </div>
-                {/* Renderiza el formulario según el tipo de usuario */}
+                {/* Renderiza el formulario según la pestaña activa */}
                 {renderFormulario()}
             </div>
         </div>

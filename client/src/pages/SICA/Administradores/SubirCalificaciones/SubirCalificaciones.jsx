@@ -1,92 +1,24 @@
-import {jwtDecode} from "jwt-decode"
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral";
+import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
+import { useEffect, useState } from "react"
+import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
+import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 import "./SubirCalificaciones.css"
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";
-
-import { FaHouseChimney } from "react-icons/fa6";
-import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";
-import { TiUserAdd } from "react-icons/ti";
-import { IoLogOut } from "react-icons/io5";
-import { MdGroupAdd, MdGroups } from "react-icons/md";
-import { RiCalendarScheduleFill } from "react-icons/ri";
 
 // Página del SICA para subir calificaciones
 export default function SubirCalificaciones(){
-    const navigate = useNavigate() // Para redireccionar a los usuarios
-    const [menu, setMenu] = useState([]) // Elementos del menú
-    const [grupos, setGrupos] = useState([]) // Almacena los grupos obtenidos del backend
-    const [grupoSeleccionado, setGrupoSeleccionado] = useState('') // Almacena el grupo seleccionado actualmente
+    const token = localStorage.getItem('token') // Token de inicio de sesión
+    const [grupos, setGrupos] = useState([]) // Grupos obtenidos del backend
+    const [grupoSeleccionado, setGrupoSeleccionado] = useState('') // Grupo seleccionado
     const [parciales] = useState(['Parcial 1', 'Parcial 2', 'Parcial 3', 'Parcial 4', 'Parcial 5']) // Lista de parciales
-    const [parcialSeleccionado, setParcialSeleccionado] = useState('') // Almacena el parcial seleccionado actualmente
-    const [alumnos, setAlumnos] = useState([]) // Almacena los alumnos del grupo seleccionado actualmente
-    const [materias, setMaterias] = useState([]) // Almacena las materias del grupo seleccionado actualmente
-    const [calificaciones, setCalificaciones] = useState({}) // Almacena las calificaciones del grupo seleccionado actualmente
+    const [parcialSeleccionado, setParcialSeleccionado] = useState('') // Parcial seleccionado actualmente
+    const [alumnos, setAlumnos] = useState([]) // Alumnos del grupo seleccionado
+    const [materias, setMaterias] = useState([]) // Materias del grupo seleccionado
+    const [calificaciones, setCalificaciones] = useState({}) // Calificaciones del grupo seleccionado
 
-    useValidarToken() // Se valida que el usuario haya iniciado sesión
-    
-    useEffect(() => {
-        const token = localStorage.getItem('token') // Token de inicio de sesión        
-            try{
-                const tokenDecodificado = jwtDecode(token) // Se decodifica el token
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol('superadmin', 'editor') // El usuario debe tener permiso para acceder a esta ruta
 
-                if(tokenDecodificado.rol === 'alumno'){
-                        // Si el usuario es un alumno se redirige a su panel
-                        navigate('/SICA/alumnos/inicio')
-                }
-
-                if(tokenDecodificado.rol === 'superadmin'){
-                    // Si el usuario es superadmin
-                    // Se asigna el siguiente menú
-                    setMenu([ 
-                        {titulo: "Inicio", icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
-                        {titulo: "Subir calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},
-                        {titulo: "Gestionar usuarios", icono:FaUsers, 
-                            subelementos:[
-                                {titulo:"Agregar usuario", icono:TiUserAdd, link:'/SICA/administradores/agregar-usuario'},
-                                {titulo:"Ver usuarios", icono:FaUserEdit, link:'/SICA/administradores/ver-usuarios'},
-                            ]},
-                        {titulo: "Gestionar grupos", icono:FaLayerGroup, 
-                            subelementos:[
-                                {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
-                                {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
-                            ]},
-                        {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/subir-horarios'},
-                        {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
-                    ])
-                }else if(tokenDecodificado.rol==='editor'){
-                    // Si el usuario es editor
-                    // Se asigna el siguiente menú
-                    setMenu([ 
-                        {titulo: "Inicio", icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
-                        {titulo: "Subir calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},
-                        {titulo: "Gestionar usuarios", icono:FaUsers, 
-                            subelementos:[
-                                {titulo:"Agregar usuario", icono:TiUserAdd, link:'/SICA/administradores/agregar-usuario'},
-                                {titulo:"Ver usuarios", icono:FaUserEdit, link:'/SICA/administradores/ver-usuarios'},
-                            ]},
-                        {titulo: "Gestionar grupos", icono:FaLayerGroup, 
-                            subelementos:[
-                                {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
-                                {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
-                            ]},
-                        {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
-                    ])
-                } else if(tokenDecodificado.rol==='lector'){
-                    // Si el usuario es lector se redirige a la lista de usuarios
-                    navigate('/SICA/administradores/ver-usuarios')
-                }
-
-            }catch(error){
-                // Si hay algún error se redirige al usuario al inicio de sesión
-                navigate('/SICA/iniciar-sesion')
-            }
-    }, [navigate])
-
-    // Método para obtener los grupos del backend
-    useEffect(()=>{
-        const token = localStorage.getItem("token") //Token de inicio de sesión
+    useEffect(()=>{ // Se obtienen los grupos del backend
         fetch('http://localhost:3000/api/grupos',{
             method: 'GET',
             headers: {
@@ -94,11 +26,11 @@ export default function SubirCalificaciones(){
                 'Authorization': `Bearer ${token}`
             }
         }).then(async res => {
-            if (res.ok) { // Si se obtienen los grupos correctamente
+            if (res.ok) {
                 const data = await res.json()
                 setGrupos(data.grupos)
                 return
-            }else{ // Si ocurrió un error se alerta al usuario
+            }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
                 alert("Ocurrió un error al obtener los grupos")
                 return   
@@ -106,8 +38,7 @@ export default function SubirCalificaciones(){
         })
     })
      
-    // Método para obtener los alumnos y materias del grupo seleccionado
-    useEffect(()=>{
+    useEffect(()=>{ // Se obtienen los alumnos y materias del grupo seleccionado
         if(grupoSeleccionado){
             const token = localStorage.getItem("token");
             fetch(`http://localhost:3000/api/alumnos/por-grupo/${grupoSeleccionado}`, { // Obtener los alumnos del backend
@@ -136,12 +67,9 @@ export default function SubirCalificaciones(){
         }
     }, [grupoSeleccionado])
 
-    // Método para obtener las calificaciones del grupo y parcial seleccionados
-    useEffect(() => {
+    useEffect(() => { // Se obtienen las calificaciones del grupo y parcial seleccionados
         if (!grupoSeleccionado || !parcialSeleccionado) return
 	    setCalificaciones({})
-
-        const token = localStorage.getItem("token")
 
         fetch(`http://localhost:3000/api/calificaciones?grupoId=${grupoSeleccionado}`, {
             method: 'GET',
@@ -175,7 +103,7 @@ export default function SubirCalificaciones(){
         })
     }, [grupoSeleccionado, parcialSeleccionado])
 
-    // Manejar cambios en la calificación
+    // Método para cambiar las calificaciones a nivel local
     const manejarCambiosCalificaciones = (alumnoId, materiaId, nota) => {
         setCalificaciones(prev => {
             const previa = prev[alumnoId]?.[materiaId] || {}
@@ -198,8 +126,6 @@ export default function SubirCalificaciones(){
             alert("Selecciona un grupo y un parcial antes de guardar.")
             return
         }
-
-        const token = localStorage.getItem("token")
 
         for (const alumno of alumnos) {
             const materiasAlumno = materias.filter(m => {
@@ -246,7 +172,7 @@ export default function SubirCalificaciones(){
     }
     return (
         <div className="contenedor-inicio">
-            <MenuLateral elementos={menu} />
+            <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Subir Calificaciones</h1>
 

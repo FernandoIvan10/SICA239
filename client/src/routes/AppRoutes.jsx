@@ -18,8 +18,8 @@ import EditarAlumno from "../pages/SICA/Administradores/EditarAlumno/EditarAlumn
 import EditarAdministrador from "../pages/SICA/Administradores/EditarAdministrador/EditarAdministrador"
 import CerrarSemestre from "../pages/SICA/Administradores/CerrarSemestre/CerrarSemestre"
 import MigrarAlumnos from "../pages/SICA/Administradores/MigrarAlumnos/MigrarAlumnos"
-import PrimerCambioContrasena from "../pages/SICA/Administradores/CambiarContrasenaPrimeraVez/CambiarContrasenaPrimeraVez"
-import CambiarContrasena from "../pages/SICA/Administradores/CambiarContrasena/CambiarContrasena"
+import PrimerCambioContrasena from "../pages/SICA/Globales/CambiarContrasenaPrimeraVez/CambiarContrasenaPrimeraVez"
+import CambiarContrasena from "../pages/SICA/Globales/CambiarContrasena/CambiarContrasena"
 
 // Clase que maneja las rutas (URL) de la App
 export default function AppRoutes(){
@@ -30,31 +30,31 @@ export default function AppRoutes(){
                 <Route path="*" element={<Navigate to="/inicio" />} /> {/* Ruta por defecto */}
                 <Route path="/inicio" element={<Inicio/>}/>
                 <Route path="/SICA/iniciar-sesion" element={<Login/>}/>
+                <Route path="/SICA/primer-cambio-contrasena" element={<PrimerCambioContrasena/>}/>
                 
                 <Route path="/SICA/alumnos/*" element={<RutaProtegida />}>
                     <Route path="inicio" element={<InicioAlumno/>}/>
                     <Route path="en-curso" element={<EnCurso/>}/>
                     <Route path="historial" element={<Historial/>}/>
                     <Route path="horario" element={<Horario/>}/>
+                    <Route path="cambiar-contrasena" element={<CambiarContrasena/>}/>
                 </Route>
 
                 <Route path="/SICA/administradores/*" element={<RutaProtegida />}>
                     <Route path="inicio" element={<InicioAdmin/>}/>
-                    <Route path="subir-calificaciones" element={<SubirCalificaciones/>}/>
+                    <Route path="calificaciones" element={<SubirCalificaciones/>}/>
                     <Route path="agregar-usuario" element={<AgregarUsuario/>}/>
                     <Route path="ver-usuarios" element={<VerUsuarios/>}/>
                     <Route path="agregar-grupo" element={<AgregarGrupo/>}/>
                     <Route path="ver-grupos" element={<VerGrupos/>}/>
-                    <Route path="subir-horarios" element={<SubirHorarios/>}/>
+                    <Route path="gestionar-horarios" element={<SubirHorarios/>}/>
                     <Route path="editar-grupo" element={<EditarGrupo/>}/>
                     <Route path="editar-alumno/:id" element={<EditarAlumno/>}/>
                     <Route path="editar-administrador/:id" element={<EditarAdministrador/>}/>
                     <Route path="cerrar-semestre" element={<CerrarSemestre/>}/>
                     <Route path="migrar-alumnos" element={<MigrarAlumnos/>}/>
+                    <Route path="cambiar-contrasena" element={<CambiarContrasena/>}/>
                 </Route>
-                
-                <Route path="/SICA/primer-cambio-contrasena" element={<PrimerCambioContrasena/>}/>
-                <Route path="/SICA/cambiar-contrasena" element={<CambiarContrasena/>}/>
             </Routes>
         </Router>
     )

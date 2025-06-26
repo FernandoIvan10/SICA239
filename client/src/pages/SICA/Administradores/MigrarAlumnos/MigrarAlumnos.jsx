@@ -1,90 +1,23 @@
-import {jwtDecode} from "jwt-decode"
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken";
+import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
+import { useEffect, useState } from "react"
+import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
+import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 
-import { FaHouseChimney } from "react-icons/fa6";
-import { FaFileUpload, FaUsers, FaUserEdit, FaLayerGroup } from "react-icons/fa";
-import { TiUserAdd } from "react-icons/ti";
-import { IoLogOut } from "react-icons/io5";
-import { MdGroupAdd, MdGroups } from "react-icons/md";
-import { RiCalendarScheduleFill } from "react-icons/ri";
-
-// Página del SICA para pasar los alumnos de un grupo a otro (sin calificaciones)
+// Página del SICA para migrar los alumnos de un grupo (sin calificaciones) a otro
 export default function MigrarAlumnos() {
-    const navigate = useNavigate() // Para redireccionar a los usuarios
-    const [menu, setMenu] = useState([])
-    const [grupos, setGrupos] = useState([])
-    const [grupoOrigen, setGrupoOrigen] = useState('')
-    const [grupoDestino, setGrupoDestino] = useState('')
-    const [alumnos, setAlumnos] = useState([])
-    const [seleccionados, setSeleccionados] = useState([])
-    const [mensaje, setMensaje] = useState('')
-    const [cargando, setCargando] = useState(false)
+    const token = localStorage.getItem('token') // Token de inicio de sesión
+    const [grupos, setGrupos] = useState([]) // Grupos del sistema
+    const [grupoOrigen, setGrupoOrigen] = useState('') // Grupo donde se encuentran los alumnos a migrar
+    const [grupoDestino, setGrupoDestino] = useState('') // Grupo a donde serán migrados los alumnos
+    const [alumnos, setAlumnos] = useState([]) // Alumnos del grupo seleccionado
+    const [seleccionados, setSeleccionados] = useState([]) // Alumnos seleccionados para migrarlos
+    const [mensaje, setMensaje] = useState('') // Mensaje de éxito o error
+    const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga la migración
 
-    useValidarToken() // Se válida que el usuario haya iniciado sesión
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol('superadmin', 'editor') // El usuario debe tener permiso para acceder a esta ruta
 
-    useEffect(() => {
-        const token = localStorage.getItem('token') // Token de inicio de sesión
-        try{
-            const tokenDecodificado = jwtDecode(token) // Se decodifica el token
-
-            if(tokenDecodificado.rol === 'alumno'){
-                // Si el usuario es un alumno se redirige a su panel
-                navigate('/SICA/alumnos/inicio')
-            }
-
-            if(tokenDecodificado.rol === 'superadmin'){
-                // Si el usuario es superadmin
-                // Se asigna el siguiente menú
-                setMenu([ 
-                    {titulo: "Inicio", icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
-                    {titulo: "Subir calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},
-                    {titulo: "Gestionar usuarios", icono:FaUsers, 
-                        subelementos:[
-                            {titulo:"Agregar usuario", icono:TiUserAdd, link:'/SICA/administradores/agregar-usuario'},
-                            {titulo:"Ver usuarios", icono:FaUserEdit, link:'/SICA/administradores/ver-usuarios'},
-                        ]},
-                    {titulo: "Gestionar grupos", icono:FaLayerGroup, 
-                        subelementos:[
-                            {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
-                            {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
-                        ]},
-                    {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/subir-horarios'},
-                    {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
-                ])
-        }else if(tokenDecodificado.rol === 'editor'){
-            // Si el usuario es editor
-            // Se asigna el siguiente menú
-            setMenu([ 
-                {titulo: "Inicio", icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
-                {titulo: "Subir calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},
-                {titulo: "Gestionar usuarios", icono:FaUsers, 
-                    subelementos:[
-                        {titulo:"Agregar usuario", icono:TiUserAdd, link:'/SICA/administradores/agregar-usuario'},
-                        {titulo:"Ver usuarios", icono:FaUserEdit, link:'/SICA/administradores/ver-usuarios'},
-                    ]},
-                {titulo: "Gestionar grupos", icono:FaLayerGroup, 
-                    subelementos:[
-                        {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
-                        {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
-                    ]},
-                {titulo: "Cerrar sesión", icono:IoLogOut, link:'/inicio'},
-            ])
-        }else if(tokenDecodificado.rol === 'lector'){
-            // Si el usuario es lector se redirige al panel
-            navigate('/SICA/administradores/inicio')
-        }
-        }catch(error){
-            // Si hay algún error se redirige al usuario al inicio de sesión
-            navigate('/SICA/iniciar-sesion')
-        }
-    }, [navigate])
-
-    // Método para obtener los grupos del backend
-    useEffect(() => {
-        const token = localStorage.getItem("token") //Token de inicio de sesión
+    useEffect(() => { // Se obtienen los grupos del backend
         fetch('http://localhost:3000/api/grupos',{
             method: 'GET',
             headers: {
@@ -92,11 +25,11 @@ export default function MigrarAlumnos() {
                 'Authorization': `Bearer ${token}`
             }
         }).then(async res => {
-            if (res.ok) { // Si se obtienen los grupos correctamente
+            if (res.ok) {
                 const data = await res.json()
                 setGrupos(data.grupos)
                 return
-            }else{ // Si ocurrió un error se alerta al usuario
+            }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
                 alert("Ocurrió un error al obtener los grupos")
                 return   
@@ -104,11 +37,9 @@ export default function MigrarAlumnos() {
         })
     }, [])
 
-    // Carga alumnos del grupo seleccionado
-    useEffect(() => {
+    useEffect(() => { // Se obtienen los alumnos del grupo seleccionado
         if(grupoOrigen){
-            const token = localStorage.getItem("token");
-            fetch(`http://localhost:3000/api/alumnos/por-grupo/${grupoOrigen}`, { // Obtener los alumnos del backend
+            fetch(`http://localhost:3000/api/alumnos/por-grupo/${grupoOrigen}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -131,7 +62,8 @@ export default function MigrarAlumnos() {
         }
     }, [grupoOrigen])
 
-    const manejarCheckbox = (id) => {
+    // Método para modificar la lista de alumnos seleccionados
+    const manejarCheckbox = (id) => { 
         setSeleccionados(prev =>
             prev.includes(id)
                 ? prev.filter(alumnoId => alumnoId !== id)
@@ -139,16 +71,16 @@ export default function MigrarAlumnos() {
         )
     }
 
+    // Método para migrar de grupo los alumnos seleccionados
     const migrar = async () => {
         setCargando(true)
         setMensaje('')
-
         try {
             const res = await fetch('/api/grupos/migrar-alumnos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     grupoOrigen,
@@ -160,7 +92,7 @@ export default function MigrarAlumnos() {
             const data = await res.json()
 
             if (!res.ok) throw new Error(data.mensaje || 'Error al migrar alumnos')
-            setMensaje('✅ ' + data.mensaje)
+            setMensaje(data.mensaje)
 
             // Limpia el estado
             setSeleccionados([])
@@ -168,7 +100,7 @@ export default function MigrarAlumnos() {
             setGrupoDestino('')
             setAlumnos([])
         } catch (error) {
-            setMensaje('❌ ' + error.message)
+            setMensaje(error.message)
         } finally {
             setCargando(false)
         }
@@ -176,7 +108,7 @@ export default function MigrarAlumnos() {
 
     return (
         <div>
-            <MenuLateral elementos={menu}/>
+            <MenuLateral/>
             <div>
                 <h2>Migrar alumnos entre grupos</h2>
 

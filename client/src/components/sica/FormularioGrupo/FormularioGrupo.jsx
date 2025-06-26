@@ -59,7 +59,7 @@ export default function FormularioGrupo(props) {
         <h1>{props.tituloFormulario}</h1>
         <div className="formulario-grupo">
             <label>
-                Nombre del Grupo:
+                Nombre del Grupo*:
                 <input
                     type="text"
                     value={nombreGrupo}
@@ -68,7 +68,7 @@ export default function FormularioGrupo(props) {
                 />
             </label>
             <label>
-                Materias:
+                Materias*:
                 <div className="materias-lista">
                     {materias.map((materia, index) => (
                         <div key={index} className="materia-item">

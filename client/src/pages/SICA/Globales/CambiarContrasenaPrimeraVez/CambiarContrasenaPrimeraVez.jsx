@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import {jwtDecode} from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
-import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 
 // Página del SICA para cambiar la contraseña de un usuario cuando ingresa por primera vez al sistema
@@ -56,6 +55,7 @@ export default function PrimerCambioContrasena() {
       if (!res.ok) throw new Error(data.mensaje || 'Error al cambiar contraseña')
 
       setMensaje('Contraseña actualizada correctamente.')
+      localStorage.removeItem("token")
       setTimeout(() => navigate('/SICA/iniciar-sesion'), 2000)
     } catch (error) {
       setMensaje(error.message)
@@ -66,7 +66,6 @@ export default function PrimerCambioContrasena() {
 
   return (
     <>
-      <MenuLateral/>
       <div style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
         <h2>Primer cambio de contraseña</h2>
         <form onSubmit={cambiarContrasena}>

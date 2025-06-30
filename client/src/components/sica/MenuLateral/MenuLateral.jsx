@@ -53,9 +53,9 @@ export default function MenuLateral(){
                     subelementos:[
                         {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
                         {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
-                        {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/subir-horarios'},
+                        {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/gestionar-horarios'},
                     ]},
-                {titulo: "Capturar calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},
+                {titulo: "Capturar calificaciones", icono:FaFileUpload, link:'/SICA/administradores/calificaciones'},
                 {titulo: "Cerrar semestre", icono:HiLockClosed, link:'/SICA/administradores/cerrar-semestre'},
                 {titulo: "Reubicar alumnos", icono:MdOutlineMoveUp, link:'/SICA/administradores/migrar-alumnos'},
                 {titulo:"Usuario", icono:FaUserCircle, 
@@ -77,9 +77,9 @@ export default function MenuLateral(){
                     subelementos:[
                         {titulo:"Agregar grupo", icono:MdGroupAdd, link:'/SICA/administradores/agregar-grupo'},
                         {titulo:"Ver grupos", icono:MdGroups, link:'/SICA/administradores/ver-grupos'},
-                        {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/subir-horarios'},
+                        {titulo: "Subir horarios", icono:RiCalendarScheduleFill, link:'/SICA/administradores/gestionar-horarios'},
                     ]},
-                {titulo: "Capturar calificaciones", icono:FaFileUpload, link:'/SICA/administradores/subir-calificaciones'},
+                {titulo: "Capturar calificaciones", icono:FaFileUpload, link:'/SICA/administradores/calificaciones'},
                 {titulo: "Reubicar alumnos", icono:MdOutlineMoveUp, link:'/SICA/administradores/migrar-alumnos'},
                 {titulo:"Usuario", icono:FaUserCircle, 
                     subelementos:[

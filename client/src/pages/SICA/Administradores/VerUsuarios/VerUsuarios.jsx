@@ -64,6 +64,16 @@ export default function VerUsuarios(){
         }
     }
 
+    if(usuarios.length === 0){ // Mientras no haya usuarios cargados se muestra un mensaje de carga
+        return(
+            <>
+                <MenuLateral/>
+                <div className="contenido-principal">
+                    <p>Cargando datos</p>
+                </div>
+            </>
+        )
+    }
     return(
         <div className="contenedor-inicio">
             <MenuLateral/>

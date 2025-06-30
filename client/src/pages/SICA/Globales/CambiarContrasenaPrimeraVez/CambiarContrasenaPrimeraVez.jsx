@@ -8,6 +8,7 @@ import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarTok
 export default function PrimerCambioContrasena() {
   useValidarToken() // El usuario debe haber iniciado sesión
 
+  const token = localStorage.getItem("token") // Token de inicio de sesión
   const navigate = useNavigate() // Para redirigir al usuario
   const [rol, setRol] = useState(null) // Tipo de usuario
   const [nuevaContrasena, setNuevaContrasena] = useState('')

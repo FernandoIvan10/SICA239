@@ -167,8 +167,15 @@ export default function SubirCalificaciones(){
         alert('Calificaciones guardadas.')
     }
 
-    if (grupos.length === 0) {
-        return <p>Cargando datos...</p>
+    if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
+        return(
+            <>
+                <MenuLateral/>
+                <div className="contenido-principal">
+                    <p>Cargando datos</p>
+                </div>
+            </>
+        )
     }
     return (
         <div className="contenedor-inicio">

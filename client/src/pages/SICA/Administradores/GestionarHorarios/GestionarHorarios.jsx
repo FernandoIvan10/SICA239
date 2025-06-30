@@ -99,7 +99,7 @@ export default function GestionarHorarios(){
         }
     }
 
-    if (grupos.length === 0 && horarios.length === 0) {
+    if (grupos.length === 0 && horarios.length === 0) { // Mientras no haya grupos cargados se muestra un mensaje de carga
         return <p>Cargando datos...</p>
     }
     return(

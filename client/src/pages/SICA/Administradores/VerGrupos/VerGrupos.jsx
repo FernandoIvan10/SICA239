@@ -8,12 +8,12 @@ import "./VerGrupos.css"
 
 // Página del sica para ver la lista de grupos
 export default function VerGrupos(){
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
+
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const [grupos, setGrupos] = useState([]); // Grupos del sistema
-
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin', 'editor', 'lector') // El usuario debe tener permiso para acceder a esta ruta
 
     useEffect(() => { // Se obtienen los grupos del backend
         obtenerGrupos()

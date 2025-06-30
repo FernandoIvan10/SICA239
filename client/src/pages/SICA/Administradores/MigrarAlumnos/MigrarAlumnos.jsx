@@ -5,6 +5,9 @@ import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 
 // Página del SICA para migrar los alumnos de un grupo (sin calificaciones) a otro
 export default function MigrarAlumnos() {
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
+
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const [grupos, setGrupos] = useState([]) // Grupos del sistema
     const [grupoOrigen, setGrupoOrigen] = useState('') // Grupo donde se encuentran los alumnos a migrar
@@ -13,9 +16,6 @@ export default function MigrarAlumnos() {
     const [seleccionados, setSeleccionados] = useState([]) // Alumnos seleccionados para migrarlos
     const [mensaje, setMensaje] = useState('') // Mensaje de éxito o error
     const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga la migración
-
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin', 'editor') // El usuario debe tener permiso para acceder a esta ruta
 
     useEffect(() => { // Se obtienen los grupos del backend
         fetch('http://localhost:3000/api/grupos',{

@@ -7,14 +7,14 @@ import "./EditarGrupo.css"
 
 // Página del SICA para editar grupos
 export default function EditarGrupo() {
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
+
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const location = useLocation() // Para obtener los datos del grupo a editar
     const grupo = location.state?.grupo // Grupo a editar
     
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin', 'editor') // El usuario debe tener permiso para acceder a esta ruta
-
     if (!grupo) { // Si no se recibe un grupo se redirige a la vista de grupos        
         navigate("/SICA/administradores/ver-grupos")
         return null

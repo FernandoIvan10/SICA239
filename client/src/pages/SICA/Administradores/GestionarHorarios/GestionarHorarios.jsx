@@ -6,12 +6,12 @@ import "./GestionarHorarios.css"
 
 // Página del sica para gestionar los horarios de los grupos
 export default function GestionarHorarios(){
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
+
     const token = localStorage.getItem('token') // Token de inicio de sesión        
     const [grupos, setGrupos] = useState([]) // Grupos del sistema
     const [horarios, setHorarios] = useState([]) // Horarios de la BD
-
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin', 'editor', 'lector') // El usuario debe tener permiso para acceder a esta ruta
 
     useEffect(() => { // Se obtienen los grupos del backend
         fetch('http://localhost:3000/api/grupos',{

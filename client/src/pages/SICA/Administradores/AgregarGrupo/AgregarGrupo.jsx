@@ -7,11 +7,11 @@ import "./AgregarGrupo.css"
 
 // Página del SICA para agregar grupos
 export default function AgregarGrupo() {
-    const [resetForm, setResetForm] = useState(false) // Para reiniciar el formulario
-    const token = localStorage.getItem('token') // Token de inicio de sesión
-
     useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin','editor']) // El usuario debe tener permiso para acceder a esta ruta
+
+    const [resetForm, setResetForm] = useState(false) // Para reiniciar el formulario
+    const token = localStorage.getItem('token') // Token de inicio de sesión
 
     // Función para guardar el grupo y las materias en la BD
     const guardarGrupo = (nombreGrupo, materias) => {

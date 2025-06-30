@@ -6,7 +6,7 @@ import './Historial.css'
 // Página de inicio del SICA para alumnos
 export default function Historial(){
     useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('alumno') // El usuario debe tener permiso para acceder a esta ruta
+    useValidarRol(['alumno']) // El usuario debe tener permiso para acceder a esta ruta
 
     return(
         <div className="contenedor-inicio">

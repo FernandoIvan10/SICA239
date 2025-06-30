@@ -8,14 +8,14 @@ import "./VerUsuarios.css"
 
 // Página del SICA para ver la lista de usuarios
 export default function VerUsuarios(){
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
+    
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const [alumnos, setAlumnos] = useState([]) // Alumnos del sistema
     const [admins, setAdmins] = useState([]) // Administradores del sistema
     const [usuarios, setUsuarios] = useState([]) // Lista completa de usuarios (alumnos y administradores)
-
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin', 'editor', 'lector') // El usuario debe tener permiso para acceder a esta ruta
     
     useEffect(() => { // Se obtienen los alumnos del backend
         fetch('http://localhost:3000/api/alumnos', {

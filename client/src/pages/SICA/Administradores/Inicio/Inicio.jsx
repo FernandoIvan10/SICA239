@@ -9,6 +9,9 @@ import "./Inicio.css"
 
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
+
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión        
     const [nombreUsuario, setNombreUsuario] = useState('') // Nombre del usuario
@@ -17,9 +20,6 @@ export default function InicioAdmin(){
     // Botones para acciones rápidas
     const [boton1, setBoton1] = useState({})
     const [boton2, setBoton2] = useState({})
-
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin', 'editor', 'lector') // El usuario debe tener permiso para acceder a esta ruta
 
     useEffect(() => { // Se obtiene el nombre y rol del usuario del token de inicio de sesión
         try{

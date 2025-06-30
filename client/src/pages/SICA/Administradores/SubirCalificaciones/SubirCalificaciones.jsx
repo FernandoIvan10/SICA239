@@ -6,6 +6,9 @@ import "./SubirCalificaciones.css"
 
 // Página del SICA para subir calificaciones
 export default function SubirCalificaciones(){
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
+
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const [grupos, setGrupos] = useState([]) // Grupos obtenidos del backend
     const [grupoSeleccionado, setGrupoSeleccionado] = useState('') // Grupo seleccionado
@@ -14,9 +17,6 @@ export default function SubirCalificaciones(){
     const [alumnos, setAlumnos] = useState([]) // Alumnos del grupo seleccionado
     const [materias, setMaterias] = useState([]) // Materias del grupo seleccionado
     const [calificaciones, setCalificaciones] = useState({}) // Calificaciones del grupo seleccionado
-
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin', 'editor') // El usuario debe tener permiso para acceder a esta ruta
 
     useEffect(()=>{ // Se obtienen los grupos del backend
         fetch('http://localhost:3000/api/grupos',{

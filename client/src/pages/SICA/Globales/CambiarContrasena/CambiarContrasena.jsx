@@ -6,6 +6,8 @@ import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 
 // Página del SICA para cambiar la contraseña del usuario
 export default function CambiarContrasena() {
+  useValidarToken() // El usuario debe haber iniciado sesión
+
   const navigate = useNavigate() // Para redirigir al usuario
   const token = localStorage.getItem('token') // Token de inicio de sesión
   const [rol, setRol] = useState(null) // Tipo de usuario
@@ -13,8 +15,6 @@ export default function CambiarContrasena() {
   const [contrasenaNueva, setContrasenaNueva] = useState('')
   const [mensaje, setMensaje] = useState('') // Mensaje de éxito o error
   const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga
-
-  useValidarToken() // El usuario debe haber iniciado sesión
 
   useEffect(() => { // Se obtiene el tipo de usuario del token de inicio de sesión
     try {

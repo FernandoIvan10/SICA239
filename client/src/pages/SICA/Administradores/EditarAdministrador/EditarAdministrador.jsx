@@ -7,14 +7,14 @@ import "./EditarAdministrador.css"
 
 // Página del SICA para editar usuarios administradores
 export default function EditarAdministrador() {
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin']) // El usuario debe tener permiso para acceder a esta ruta
+
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const { id } = useParams() // ID enviado por parámetro
     const [admin, setAdmin] = useState(null) // Contiene todos los datos del formulario
     
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin') // El usuario debe tener permiso para acceder a esta ruta
-
     useEffect(() => { // Se obtienen los datos del administrador a editar
         fetch(`http://localhost:3000/api/admins/${id}`, {
             headers: {

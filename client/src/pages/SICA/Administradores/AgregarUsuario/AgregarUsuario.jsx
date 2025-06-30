@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom"
 
 // Página del SICA para agregar usuarios 
 export default function AgregarUsuario(){
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin','editor']) // El usuario debe tener permiso para acceder a esta ruta
+
     const navigate = useNavigate() // Para redirigir al usuario
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const [rol, setRol] = useState('') // Tipo de usuario
@@ -27,9 +30,6 @@ export default function AgregarUsuario(){
     const [grupo, setGrupo] = useState("")
     const [materiasRecursadas, setMateriasRecursadas] = useState([])
     const [materiaSeleccionada, setMateriaSeleccionada] = useState("")
-
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol(['superadmin','editor']) // El usuario debe tener permiso para acceder a esta ruta
 
     useEffect(() => { // Se obtiene el tipo de usuario del token de inicio de sesión
         try{

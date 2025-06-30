@@ -7,6 +7,9 @@ import "./EditarAlumno.css"
 
 // Página del SICA para editar alumnos
 export default function EditarAlumno() {
+    useValidarToken() // El usuario debe haber iniciado sesión
+    useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
+
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const { id } = useParams() // ID enviado por parámetro
@@ -15,9 +18,6 @@ export default function EditarAlumno() {
     const [materiasRecursadas, setMateriasRecursadas] = useState([]) // Materias que el alumno está recursando
     const [materiaSeleccionada, setMateriaSeleccionada] = useState("") // Materia recursada seleccionada
     
-    useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('superadmin', 'editor') // El usuario debe tener permiso para acceder a esta ruta
-
     useEffect(() => { // Se obtienen los grupos de la BD para mostrarlos en el formulario
         fetch('http://localhost:3000/api/grupos', {
             headers: {

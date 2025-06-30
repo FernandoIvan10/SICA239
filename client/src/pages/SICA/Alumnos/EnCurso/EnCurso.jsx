@@ -6,7 +6,7 @@ import './EnCurso.css'
 // Página de inicio del SICA para consultar las calificaciones del semestre en curso
 export default function EnCurso(){
     useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol('alumno') // El usuario debe tener permiso para acceder a esta ruta
+    useValidarRol(['alumno']) // El usuario debe tener permiso para acceder a esta ruta
 
     return(
         <div className="contenedor-inicio">

@@ -142,26 +142,25 @@ export default function SubirCalificaciones(){
 
                 const body = {
                     alumnoId: alumno._id,
-                    grupoId: grupoSeleccionado,
                     materiaId: materia._id,
-                    parciales: [
-                        { parcial: parcialSeleccionado, nota: Number(calificacionData.nota) }
-                    ]
+                    grupoId: grupoSeleccionado,
+                    parcial: parcialSeleccionado,
+                    nota: Number(calificacionData.nota)
                 }
 
-                const method = calificacionData.calificacionId ? 'PUT' : 'POST'
-                const url = calificacionData.calificacionId
-                    ? `http://localhost:3000/api/calificaciones/${calificacionData.calificacionId}`
-                    : 'http://localhost:3000/api/calificaciones'
-
-                await fetch(url, {
-                    method,
+                const response = await fetch('http://localhost:3000/api/calificaciones', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(body)
                 })
+                if(!response.ok){
+                    const errorData = await response.json()
+                    throw new Error("Error al capturar las calificaciones: " + errorData)
+                }
+
             }
         }
         alert('Calificaciones guardadas.')

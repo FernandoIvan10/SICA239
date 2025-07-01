@@ -23,7 +23,7 @@ router.get(
 )
 
 // Ruta para modificar una calificación (para 'superadmin' y 'editor')
-router.put(
+router.patch(
     '/calificaciones/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol

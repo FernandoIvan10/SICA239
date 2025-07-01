@@ -7,10 +7,10 @@ const Calificacion = require('../models/calificacion.model')
 // Función para agregar una nueva calificación
 const agregarCalificacion = async (req, res) => {
     try {
-        const { alumnoId, materiaId, grupoId, parciales } = req.body
+        const { alumnoId, materiaId, grupoId, parcial, nota } = req.body
 
         // Validar que todos los campos obligatorios estén presentes
-        if (!alumnoId || !materiaId || !grupoId || !parciales || parciales.length === 0) {
+        if (!alumnoId || !materiaId || !grupoId || !parcial || !nota) {
             return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' })
         }
 
@@ -32,19 +32,9 @@ const agregarCalificacion = async (req, res) => {
             return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
         }
 
-        // Validar que las notas sean válidas
-        for (const parcial of parciales) {
-            if (!parcial.parcial || typeof parcial.nota !== 'number' || parcial.nota < 0 || parcial.nota > 10) {
-                return res.status(400).json({
-                    mensaje: 'Cada parcial debe tener un nombre y una nota válida entre 0 y 10.',
-                })
-            }
-        }
-
-        // Calcular el promedio de las calificaciones
-        const sumaNotas = parciales.reduce((acum, parcial) => acum + parcial.nota, 0)
-        const promedio = sumaNotas / parciales.length
-
+        const parciales = [{ parcial, nota }]
+        const promedio = nota // Por ser la única calificación
+        
         // Crear la nueva calificación
         const nuevaCalificacion = new Calificacion({
             alumnoId,
@@ -70,64 +60,32 @@ const agregarCalificacion = async (req, res) => {
 const modificarCalificacion = async (req, res) => {
     try {
         const { id } = req.params
-        const { alumnoId, materiaId, grupoId, parciales } = req.body
+        const { parcial, nota } = req.body
 
         // Valida los campos obligatorios
-        if (!alumnoId || !materiaId || !grupoId || !parciales || parciales.length === 0) {
+        if ( !parcial || !nota) {
             return res.status(400).json({ mensaje: 'Faltan campos obligatorios' })
         }
 
-        // Se valida que el alumno exista
-        const alumnoExistente = await Alumno.findById(alumnoId)
-        if (!alumnoExistente) {
-            return res.status(400).json({ mensaje: 'El alumno especificado no existe' })
-        }
+        const calificacion = await Calificacion.findById(id)
+        if (!calificacion) return res.status(404).json({ mensaje: 'Calificación no encontrada' })
 
-        // Se valida que la materia exista
-        const materiaExistente = await Materia.findById(materiaId)
-        if (!materiaExistente) {
-            return res.status(400).json({ mensaje: 'La materia especificada no existe' })
-        }
-
-        // Se valida que el grupo exista
-        const grupoExistente = await Grupo.findById(grupoId)
-        if (!grupoExistente) {
-            return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
-        }
-
-        // Valida que las notas sean válidas
-        for (const parcial of parciales) {
-            if (!parcial.parcial || typeof parcial.nota !== 'number' || parcial.nota < 0 || parcial.nota > 10) {
-                return res.status(400).json({
-                    mensaje: 'Cada parcial debe tener un nombre y una nota válida entre 0 y 10.',
-                })
-            }
-        }
-
-        // Valida que la calificación exista
-        const calificacionExistente = await Calificacion.findById(id)
-        if (!calificacionExistente) {
-            return res.status(404).json({ mensaje: 'La calificación especificada no existe.' })
+        // Se actualiza o se crea el parcial
+        const parcialExistente = calificacion.parciales.find(p => p.parcial === parcial)
+        
+        if(parcialExistente){
+            parcialExistente.nota = nota
+        } else {
+            calificacion.parciales.push({ parcial, nota })
         }
 
         // Se calcula el promedio de las calificaciones
-        const sumaNotas = parciales.reduce((acum, parcial) => acum + parcial.nota, 0)
-        const promedio = sumaNotas / parciales.length
-
-        // Se actualiza la calificación con los nuevos datos
-        calificacionExistente.alumnoId = alumnoId
-        calificacionExistente.materiaId = materiaId
-        calificacionExistente.grupoId = grupoId
-        calificacionExistente.parciales = parciales
-        calificacionExistente.promedio = promedio
+        const suma = calificacion.parciales.reduce((total, p) => total + p.nota, 0)
+        calificacion.promedio = suma / calificacion.parciales.length
 
         // Se guardan los cambios
-        await calificacionExistente.save()
-
-        return res.status(200).json({
-            mensaje: 'Calificación modificada exitosamente.',
-            calificacion: calificacionExistente,
-        })
+        await calificacion.save()
+        return res.status(200).json(calificacion)
     } catch (error) {
         console.error('Error al modificar la calificación:', error)
         return res.status(500).json({ mensaje: 'Error interno del servidor.' })

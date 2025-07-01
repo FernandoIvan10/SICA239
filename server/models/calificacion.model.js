@@ -15,5 +15,10 @@ const calificacionEsquema = new mongoose.Schema({
     promedio: {type:Number},
 }, { collection: 'calificaciones' })
 
+calificacionEsquema.index(
+    { alumnoId: 1, materiaId: 1, grupoId: 1 },
+    { unique: true, name: 'unique_calificacion' }
+)
+
 // Se exporta el esquema
 module.exports = mongoose.model('Calificacion',calificacionEsquema)

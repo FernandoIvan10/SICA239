@@ -22,13 +22,4 @@ router.get(
     listarCalificaciones // Se llama al controlador
 )
 
-// Ruta para modificar una calificación (para 'superadmin' y 'editor')
-router.patch(
-    '/calificaciones/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    modificarCalificacion // Se llama al controlador
-)
-
-
 module.exports = router // Se exporta el router

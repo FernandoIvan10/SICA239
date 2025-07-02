@@ -3,13 +3,15 @@ import { useEffect, useState } from "react"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
 import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 import "./SubirCalificaciones.css"
+import { jwtDecode } from "jwt-decode"
 
 // Página del SICA para subir calificaciones
 export default function SubirCalificaciones(){
     useValidarToken() // El usuario debe haber iniciado sesión
-    useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
+    useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
 
     const token = localStorage.getItem('token') // Token de inicio de sesión
+    const tokenDecodificado = jwtDecode(token) // Datos del token
     const [grupos, setGrupos] = useState([]) // Grupos obtenidos del backend
     const [grupoSeleccionado, setGrupoSeleccionado] = useState('') // Grupo seleccionado
     const [parciales] = useState(['Parcial 1', 'Parcial 2', 'Parcial 3', 'Parcial 4', 'Parcial 5']) // Lista de parciales
@@ -233,6 +235,7 @@ export default function SubirCalificaciones(){
                                                     materia._id,
                                                     e.target.value === '' ? '' : Number(e.target.value)
                                                 )}
+                                                disabled={tokenDecodificado.rol === "lector"}
                                             />
                                         </td>
                                     )
@@ -241,8 +244,9 @@ export default function SubirCalificaciones(){
                         ))}
                     </tbody>
                 </table>
-
-                <button className="btn-guardar" onClick={guardarCalificaciones}>Guardar Calificaciones</button>
+                {tokenDecodificado.rol !== "lector" && 
+                    <button className="btn-guardar" onClick={guardarCalificaciones}>Guardar Calificaciones</button>
+                }
             </div>
         </div>
     )

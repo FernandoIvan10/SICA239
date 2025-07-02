@@ -84,6 +84,11 @@ export default function EditarAlumno() {
         })
     }
 
+    // Método para regresar a la lista de usuarios
+    const cancelar = () => {
+        navigate('/SICA/administradores/ver-usuarios')
+    }
+
     if (!alumno) return <p>Cargando alumno...</p>
     return (
         <>
@@ -183,9 +188,14 @@ export default function EditarAlumno() {
                         )
                     })}
                 </div>
+                <div className="botones-formulario">
                 <button type="button" className="btn-guardar" onClick={guardarCambios}>
                     Guardar cambios
                 </button>
+                <button type="button" className="btn-cancelar" onClick={cancelar}>
+                    Cancelar
+                </button>
+                </div>
             </form>
         </>
     )

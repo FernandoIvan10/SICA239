@@ -4,12 +4,14 @@ import { useState } from "react"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
 import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 import "./AgregarGrupo.css"
+import { useNavigate } from "react-router-dom"
 
 // Página del SICA para agregar grupos
 export default function AgregarGrupo() {
     useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin','editor']) // El usuario debe tener permiso para acceder a esta ruta
 
+    const navigate = useNavigate() // Para redirigir al usuario
     const [resetForm, setResetForm] = useState(false) // Para reiniciar el formulario
     const token = localStorage.getItem('token') // Token de inicio de sesión
 
@@ -47,8 +49,9 @@ export default function AgregarGrupo() {
 
     // Método para cancelar la creación del nuevo grupo
     const cancelar = () => {
-        setResetForm(true);   // reinicia el formulario
+        setResetForm(true)   // reinicia el formulario
         setTimeout(() => setResetForm(false), 0)
+        navigate('/SICA/administradores/ver-grupos')
     }
 
     return (

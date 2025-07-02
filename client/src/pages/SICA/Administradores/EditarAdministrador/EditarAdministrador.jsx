@@ -63,6 +63,11 @@ export default function EditarAdministrador() {
         })
     }
 
+    // Método para regresar a la lista de usuarios
+    const cancelar = () => {
+        navigate('/SICA/administradores/ver-usuarios')
+    }
+
     if (!admin) return <p>Cargando administrador...</p>
     return (
         <>
@@ -107,9 +112,14 @@ export default function EditarAdministrador() {
                         <option value="lector">Lector</option>
                     </select>
                 </label>
-                <button type="button" className="btn-guardar" onClick={guardarCambios}>
-                    Guardar cambios
-                </button>
+                <div className="botones-formulario">
+                    <button type="button" className="btn-guardar" onClick={guardarCambios}>
+                        Guardar cambios
+                    </button>
+                    <button type="button" className="btn-cancelar" onClick={cancelar}>
+                        Cancelar
+                    </button>
+                </div>
             </form>
         </>
     )

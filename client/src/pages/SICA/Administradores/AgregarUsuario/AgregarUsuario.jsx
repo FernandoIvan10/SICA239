@@ -135,6 +135,11 @@ export default function AgregarUsuario(){
         }
     }
 
+    // Método para regresar a la lista de usuarios
+    const cancelar = () => {
+        navigate('/SICA/administradores/ver-usuarios')
+    }
+
     // Los campos se cambian dependiendo de la pestaña seleccionada (alumno o administrador)
     const renderFormulario = () => {
         if (tipoUsuario === "alumno") {
@@ -240,13 +245,22 @@ export default function AgregarUsuario(){
                             )
                         })}
                     </div>
-                    <button 
-                        type="button" 
-                        className="btn-guardar"
-                        onClick={agregarAlumno}
-                    >
-                        Guardar Alumno
-                    </button>
+                    <div className="botones-formulario">
+                        <button 
+                            type="button" 
+                            className="btn-guardar"
+                            onClick={agregarAlumno}
+                        >
+                            Guardar Alumno
+                        </button>
+                        <button
+                            type="button"
+                            className="btn-cancelar"
+                            onClick={cancelar}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </form>
             )
         } else if (tipoUsuario === "administrador") {
@@ -291,13 +305,22 @@ export default function AgregarUsuario(){
                             <option value="lector">Lector</option>
                         </select>
                     </label>
-                    <button 
-                        type="button" 
-                        className="btn-guardar"
-                        onClick={agregarAdmin}
-                    >
-                        Guardar Administrador
-                    </button>
+                    <div className="botones-formulario">
+                        <button 
+                            type="button" 
+                            className="btn-guardar"
+                            onClick={agregarAdmin}
+                        >
+                            Guardar Administrador
+                        </button>
+                        <button
+                            type="button"
+                            className="btn-cancelar"
+                            onClick={cancelar}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </form>
             )
         }

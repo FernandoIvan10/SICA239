@@ -15,11 +15,10 @@ export default function VerUsuarios(){
     
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
+    const tokenDecodificado = jwtDecode(token)
     const [alumnos, setAlumnos] = useState([]) // Alumnos del sistema
     const [admins, setAdmins] = useState([]) // Administradores del sistema
     const [usuarios, setUsuarios] = useState([]) // Lista completa de usuarios (alumnos y administradores)
-    const [identificador, setIdentificador] = useState('Matrícula') // Título de la columna que muestra la matrícula o RFC del usuario
-    const [agrupacion, setAgrupacion] = useState('Grupo') // Título de la columna que muestra el rol o grupo del usuario
 
     useEffect(() => { // Se obtienen los alumnos del backend
         fetch('http://localhost:3000/api/alumnos', {
@@ -66,12 +65,6 @@ export default function VerUsuarios(){
             alumnosConTipo = alumnos.map(a => ({ ...a, tipo: "Alumno" }))
         }
         setUsuarios([...alumnosConTipo, ...adminsConTipo]) // Se les agrega el tipo antes de almacenarlos
-
-        const tokenDecodificado = jwtDecode(token)
-        if(tokenDecodificado.rol === 'superadmin'){
-            setIdentificador("Matrícula/RFC")
-            setAgrupacion("Grupo/Rol")
-        }
     }, [alumnos, admins])
 
     // Método para redirigir al usuario a la página de edición del usuario seleccionado
@@ -126,35 +119,39 @@ export default function VerUsuarios(){
         <div className="contenedor-inicio">
             <MenuLateral/>
             <div className="contenido-principal">
-                <h1>Lista de Usuarios</h1>
+                <h1>{tokenDecodificado.rol === "superadmin" ? "Lista de Usuarios" : "Lista de alumnos"}</h1>
                 <table className="tabla-usuarios">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Tipo</th>
-                            <th>{identificador}</th>
+                            {tokenDecodificado.rol === "superadmin" && <th>Tipo</th>}
+                            <th>{tokenDecodificado.rol === "superadmin" ? "Matrícula/RFC" : "Matrícula"}</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
-                            <th>{agrupacion}</th>
-                            <th>Editar</th>
-                            <th>Reiniciar Contraseña</th>
+                            <th>{tokenDecodificado.rol === "superadmin" ? "Grupo/Rol" : "Grupo"}</th>
+                            {tokenDecodificado.rol !== "lector" && <th>Editar</th>}
+                            {tokenDecodificado.rol !== "lector" && <th>Reiniciar Contraseña</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {usuarios.map((usuario, index) => (
                             <tr key={usuario._id || usuario.id || index}>
                                 <td>{index + 1}</td>
-                                <td>{usuario.tipo}</td>
+                                {tokenDecodificado.rol === "superadmin" && <td>{usuario.tipo}</td>}
                                 <td>{usuario.tipo === "Alumno" ? usuario.matricula : usuario.rfc}</td>
                                 <td>{usuario.nombre}</td>
                                 <td>{usuario.apellido}</td>
                                 <td>{usuario.tipo === "Alumno" ? usuario.grupoId.nombre : usuario.rol}</td>
-                                <td>
-                                    <MdEdit className="btn-editar" onClick={() => redirigirAEdicion(usuario)}/>
-                                </td>
-                                <td>
-                                    <RiResetLeftLine className="btn-reiniciar-contrasena" onClick={() => reiniciarContrasena(usuario)}/>
-                                </td>
+                                {tokenDecodificado.rol !== "lector" && 
+                                    <td>
+                                        <MdEdit className="btn-editar" onClick={() => redirigirAEdicion(usuario)}/>
+                                    </td>
+                                }
+                                {tokenDecodificado.rol !== "lector" && 
+                                    <td>
+                                        <RiResetLeftLine className="btn-reiniciar-contrasena" onClick={() => reiniciarContrasena(usuario)}/>
+                                    </td>
+                                }
                             </tr>
                         ))} 
                     </tbody>

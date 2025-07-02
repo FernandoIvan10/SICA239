@@ -5,6 +5,7 @@ import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarTok
 import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 import { MdEdit, MdDelete } from "react-icons/md"
 import "./VerGrupos.css"
+import { jwtDecode } from "jwt-decode"
 
 // Página del sica para ver la lista de grupos
 export default function VerGrupos(){
@@ -13,7 +14,8 @@ export default function VerGrupos(){
 
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
-    const [grupos, setGrupos] = useState([]); // Grupos del sistema
+    const tokenDecodificado = jwtDecode(token) // Datos del token
+    const [grupos, setGrupos] = useState([]) // Grupos del sistema
 
     useEffect(() => { // Se obtienen los grupos del backend
         obtenerGrupos()
@@ -81,14 +83,14 @@ export default function VerGrupos(){
         <div className="contenedor-gestionar-grupos">
             <MenuLateral/>
             <div className="contenido-principal">
-                <h1>Gestionar Grupos</h1>
+                <h1>{tokenDecodificado.rol !== "lector" ? "Gestionar Grupos" : "Lista de Grupos"}</h1>
                 <table className="tabla-grupos">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Nombre del Grupo</th>
                             <th>Materias</th>
-                            <th>Acciones</th>
+                            {tokenDecodificado.rol !== "lector" && <th>Acciones</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -97,26 +99,30 @@ export default function VerGrupos(){
                                 <td>{index + 1}</td>
                                 <td>{grupo.nombre}</td>
                                 <td>{grupo.materias.map((materia) => materia.nombre).join(', ')}</td>
-                                <td>
-                                    <MdEdit 
-                                        className="btn-editar"
-                                        onClick={() => navigate('/SICA/administradores/editar-grupo', { state: { grupo } })}
-                                    />
-                                    <MdDelete 
-                                        className="btn-eliminar"
-                                        onClick={() => eliminarGrupo(grupo._id)}
-                                    />
-                                </td>
+                                {tokenDecodificado.rol !== "lector" && 
+                                    <td>
+                                        <MdEdit 
+                                            className="btn-editar"
+                                            onClick={() => navigate('/SICA/administradores/editar-grupo', { state: { grupo } })}
+                                        />
+                                        <MdDelete 
+                                            className="btn-eliminar"
+                                            onClick={() => eliminarGrupo(grupo._id)}
+                                        />
+                                    </td>
+                                }
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                <button
-                    className="btn-agregar-grupo"
-                    onClick={() => navigate('/SICA/administradores/agregar-grupo')}
-                >
-                    Agregar Grupo
-                </button>
+                {tokenDecodificado.rol !== "lector" && 
+                    <button
+                        className="btn-agregar-grupo"
+                        onClick={() => navigate('/SICA/administradores/agregar-grupo')}
+                    >
+                        Agregar Grupo
+                    </button>
+                }
             </div>
         </div>
     )

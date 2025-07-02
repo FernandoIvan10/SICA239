@@ -13,7 +13,7 @@ export default function SubirCalificaciones(){
     const [grupos, setGrupos] = useState([]) // Grupos obtenidos del backend
     const [grupoSeleccionado, setGrupoSeleccionado] = useState('') // Grupo seleccionado
     const [parciales] = useState(['Parcial 1', 'Parcial 2', 'Parcial 3', 'Parcial 4', 'Parcial 5']) // Lista de parciales
-    const [parcialSeleccionado, setParcialSeleccionado] = useState('') // Parcial seleccionado actualmente
+    const [parcialSeleccionado, setParcialSeleccionado] = useState('Parcial 1') // Parcial seleccionado actualmente
     const [alumnos, setAlumnos] = useState([]) // Alumnos del grupo seleccionado
     const [materias, setMaterias] = useState([]) // Materias del grupo seleccionado
     const [calificaciones, setCalificaciones] = useState({}) // Calificaciones del grupo seleccionado

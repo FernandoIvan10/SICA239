@@ -6,6 +6,7 @@ import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 import { MdEdit } from "react-icons/md"
 import { RiResetLeftLine } from "react-icons/ri";
 import "./VerUsuarios.css"
+import { jwtDecode } from "jwt-decode"
 
 // Página del SICA para ver la lista de usuarios
 export default function VerUsuarios(){
@@ -17,7 +18,9 @@ export default function VerUsuarios(){
     const [alumnos, setAlumnos] = useState([]) // Alumnos del sistema
     const [admins, setAdmins] = useState([]) // Administradores del sistema
     const [usuarios, setUsuarios] = useState([]) // Lista completa de usuarios (alumnos y administradores)
-    
+    const [identificador, setIdentificador] = useState('Matrícula') // Título de la columna que muestra la matrícula o RFC del usuario
+    const [agrupacion, setAgrupacion] = useState('Grupo') // Título de la columna que muestra el rol o grupo del usuario
+
     useEffect(() => { // Se obtienen los alumnos del backend
         fetch('http://localhost:3000/api/alumnos', {
             headers: {
@@ -34,8 +37,10 @@ export default function VerUsuarios(){
         })
     }, [])
 
-    useEffect(() => { // Se obtienen los administradores del backend
-        fetch('http://localhost:3000/api/admins', {
+    useEffect(() => { // Se obtienen los administradores del backend si el usuario es superadmin
+        const tokenDecodificado = jwtDecode(token)
+        if(tokenDecodificado.rol === 'superadmin'){
+            fetch('http://localhost:3000/api/admins', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -48,12 +53,25 @@ export default function VerUsuarios(){
             console.error("Error al obtener administradores:", err)
             setAdmins([])
         })
+        }
     }, [])
 
     useEffect(() => { // Se unen la lista de alumnos y la lista de administradores en una sola lista
-        const alumnosConTipo = alumnos.map(a => ({ ...a, tipo: "Alumno" }))
-        const adminsConTipo = admins.map(a => ({ ...a, tipo: "Administrador" }))
+        let adminsConTipo = []
+        let alumnosConTipo = []
+        if(admins.length !== 0){
+            adminsConTipo = admins.map(a => ({ ...a, tipo: "Administrador" }))    
+        }
+        if(alumnos.length !== 0){
+            alumnosConTipo = alumnos.map(a => ({ ...a, tipo: "Alumno" }))
+        }
         setUsuarios([...alumnosConTipo, ...adminsConTipo]) // Se les agrega el tipo antes de almacenarlos
+
+        const tokenDecodificado = jwtDecode(token)
+        if(tokenDecodificado.rol === 'superadmin'){
+            setIdentificador("Matrícula/RFC")
+            setAgrupacion("Grupo/Rol")
+        }
     }, [alumnos, admins])
 
     // Método para redirigir al usuario a la página de edición del usuario seleccionado
@@ -114,10 +132,10 @@ export default function VerUsuarios(){
                         <tr>
                             <th>#</th>
                             <th>Tipo</th>
-                            <th>Matrícula/RFC</th>
+                            <th>{identificador}</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
-                            <th>Grupo/Rol</th>
+                            <th>{agrupacion}</th>
                             <th>Editar</th>
                             <th>Reiniciar Contraseña</th>
                         </tr>

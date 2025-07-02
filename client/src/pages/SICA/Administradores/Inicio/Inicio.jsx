@@ -43,12 +43,12 @@ export default function InicioAdmin(){
                 }else if(rol==='editor'){
                     // Mensaje de bienvenida para el editor
                     setMensaje("Este es el sistema de calificaciones, aquí podrás gestionar los alumnos del sistema, gestionar los grupos y subir las calificaciones de los alumnos")
-                    setBoton1({texto:"Subir calificaciones", link:"/SICA/administradores/subir-calificaciones"})
+                    setBoton1({texto:"Subir calificaciones", link:"/SICA/administradores/calificaciones"})
                     setBoton2({texto:"Ver grupos", link:"/SICA/administradores/ver-grupos"})
                 } else if(rol==='lector'){
                     // Mensaje de bienvenida para el lector
                     setMensaje("Este es el sistema de calificaciones, aquí podrás consultar los alumnos del sistema, las calificaciones, y los grupos")
-                    setBoton1({texto:"Ver calificaciones", link:"/SICA/administradores/subir-calificaciones"})
+                    setBoton1({texto:"Ver calificaciones", link:"/SICA/administradores/calificaciones"})
                     setBoton2({texto:"Ver usuarios", link:"/SICA/administradores/ver-usuarios"})
                 }
             }catch(error){

@@ -81,7 +81,7 @@ const modificarGrupo = async (req, res) => {
         // Actualiza los campos proporcionados
         if (nombre) actualizaciones.nombre = nombre
         if (materias && materias.length > 0) {
-            const calificacionesExistentes = await Calificacion.findOne({grupo: id})
+            const calificacionesExistentes = await Calificacion.findOne({grupoId: id})
             if(calificacionesExistentes){ // No se pueden modificar materias si hay calificaciones capturadas
                 return res.status(400).json({ mensaje: 'No se pueden modificar las materias porque el grupo ya tiene calificaciones registradas.' })
             }

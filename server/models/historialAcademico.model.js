@@ -10,7 +10,7 @@ const historialAcademicoEsquema = new mongoose.Schema({
             nota: {type:Number},
         }
     ],
-})
+}, { collection: 'historialacademico' })
 
 // Se exporta el esquema
 module.exports = mongoose.model('HistorialAcademico',historialAcademicoEsquema)

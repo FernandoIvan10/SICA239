@@ -3,13 +3,15 @@ import { useEffect, useState } from "react"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
 import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 import "./GestionarHorarios.css"
+import { jwtDecode } from "jwt-decode"
 
 // Página del sica para gestionar los horarios de los grupos
 export default function GestionarHorarios(){
     useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
 
-    const token = localStorage.getItem('token') // Token de inicio de sesión        
+    const token = localStorage.getItem('token') // Token de inicio de sesión
+    const tokenDecodificado = jwtDecode(token) // Datos del token
     const [grupos, setGrupos] = useState([]) // Grupos del sistema
     const [horarios, setHorarios] = useState([]) // Horarios de la BD
 
@@ -106,13 +108,13 @@ export default function GestionarHorarios(){
         <div className="contenedor-gestionar-horarios">
             <MenuLateral/>
             <div className="contenido-principal">
-                <h1>Gestionar Grupos</h1>
+                <h1>Horarios</h1>
                 <table className="tabla-horarios">
                     <thead>
                         <tr>
                         <th>Grupo</th>
                         <th>Horario</th>
-                        <th>Acciones</th>
+                        {tokenDecodificado.rol !== "lector" && <th>Acciones</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -128,20 +130,22 @@ export default function GestionarHorarios(){
                                 <span>Sin horario</span>
                                 )}
                             </td>
-                            <td>
-                                {!horario && (
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => subirHorario(grupo._id, e.target.files[0])}
-                                />
-                                )}
-                                {horario && (
-                                <button onClick={() => eliminarHorario(horario._id)}>
-                                    Eliminar
-                                </button>
-                                )}
-                            </td>
+                            {tokenDecodificado.rol !== "lector" && 
+                                <td>
+                                    {!horario && (
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => subirHorario(grupo._id, e.target.files[0])}
+                                    />
+                                    )}
+                                    {horario && (
+                                    <button onClick={() => eliminarHorario(horario._id)}>
+                                        Eliminar
+                                    </button>
+                                    )}
+                                </td>
+                            }
                             </tr>
                         )
                         })}

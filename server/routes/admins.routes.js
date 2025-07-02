@@ -2,7 +2,7 @@
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarAdmin, modificarAdmin, listarAdmins, obtenerAdminPorID, primerCambioContrasenaAdministrador, cambiarContrasena} = require('../controllers/admins.controller')
+const {agregarAdmin, modificarAdmin, listarAdmins, obtenerAdminPorID, primerCambioContrasenaAdministrador, cambiarContrasena, reiniciarContrasena} = require('../controllers/admins.controller')
 
 const router = express.Router() // Se crea un router
 
@@ -34,6 +34,14 @@ router.put(
     '/admins/cambiar-contrasena',
     verificarToken, // Se valida la autenticación
     cambiarContrasena // Se llama al controlador
+)
+
+// Ruta para reiniciar la contraseña de un administrador (sólo para superadmin)
+router.put(
+    '/admins/reiniciar-contrasena',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin']), // Se valida el rol
+    reiniciarContrasena // Se llama al controlador
 )
 
 // Ruta para modificar un usuario administrador (solo para "superadmin")

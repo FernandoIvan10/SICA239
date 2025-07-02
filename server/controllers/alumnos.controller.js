@@ -278,6 +278,26 @@ const cambiarContrasena = async (req, res) =>{
     }
 }
 
+// Función para reiniciar la contraseña (Que la contraseña sea su Matrícula)
+const reiniciarContrasena = async (req, res) => {
+    try{
+        const {id} = req
+        
+        const alumno = await Alumno.findById(id)
+        if(!alumno){
+            return res.status(404).json({ mensaje: 'Alumo no encontrado.' })
+        }
+
+        alumno.contrasena = await bcrypt.hash(alumno.matricula, 10)
+        alumno.requiereCambioContrasena = true
+        alumno.save()
+        
+        return res.status(200).json({mensaje: 'La contraseña ahora es la matrícula del usuario.'})
+    }catch(error){
+        res.status(500).json({mensaje: 'Error al reiniciar la contraseña: ', error})
+    }
+}
+
 module.exports = {
     agregarAlumno, 
     modificarAlumno, 
@@ -285,5 +305,6 @@ module.exports = {
     obtenerAlumnoPorID, 
     obtenerAlumnosPorGrupo, 
     primerCambioContrasenaAlumno, 
-    cambiarContrasena
+    cambiarContrasena,
+    reiniciarContrasena
 } // Se exporta el controlador

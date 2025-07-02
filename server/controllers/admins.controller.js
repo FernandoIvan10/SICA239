@@ -174,11 +174,32 @@ const cambiarContrasena = async (req, res) => {
     }
 }
 
+// Función para reiniciar la contraseña (Que la contraseña sea su RFC)
+const reiniciarContrasena = async (req, res) => {
+    try{
+        const {id} = req
+        
+        const admin = await Administrador.findById(id)
+        if(!admin){
+            return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
+        }
+
+        admin.contrasena = await bcrypt.hash(admin.rfc, 10)
+        admin.requiereCambioContrasena = true
+        admin.save()
+        
+        return res.status(200).json({mensaje: 'La contraseña ahora es el RFC del usuario.'})
+    }catch(error){
+        res.status(500).json({mensaje: 'Error al reiniciar la contraseña: ', error})
+    }
+}
+
 module.exports = {
     agregarAdmin,
     modificarAdmin,
     listarAdmins,
     obtenerAdminPorID,
     primerCambioContrasenaAdministrador,
-    cambiarContrasena
+    cambiarContrasena,
+    reiniciarContrasena
 } // Se exporta el controlador

@@ -59,7 +59,7 @@ export default function VerGrupos(){
             } else {
                 const data = await respuesta.json()
                 console.error(`Error ${respuesta.status}`, data)
-                alert("Error al eliminar el grupo")
+                alert(data.mensaje)
             }
         } catch (error) {
             console.error("Error al eliminar el grupo:", error)

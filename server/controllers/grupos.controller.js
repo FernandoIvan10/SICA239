@@ -190,7 +190,7 @@ const migrarAlumnos = async (req, res) => {
         // Actualizar grupo de cada alumno
         const resultados = await Alumno.updateMany(
             { _id: { $in: alumnos } },
-            { $set: { grupoId: grupoDestino } }
+            { $set: { grupoId: grupoDestino, materiasRecursadas: [] } },
         )
 
         return res.status(200).json({

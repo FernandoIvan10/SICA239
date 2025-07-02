@@ -38,7 +38,7 @@ router.put(
 
 // Ruta para reiniciar la contraseña de un alumno (sólo para superadmin)
 router.put(
-    '/alumnos/reiniciar-contrasena',
+    '/alumnos/reiniciar-contrasena/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin']), // Se valida el rol
     reiniciarContrasena // Se llama al controlador

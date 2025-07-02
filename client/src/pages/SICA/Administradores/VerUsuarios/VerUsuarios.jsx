@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
 import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
 import { MdEdit } from "react-icons/md"
+import { RiResetLeftLine } from "react-icons/ri";
 import "./VerUsuarios.css"
 
 // Página del SICA para ver la lista de usuarios
@@ -64,6 +65,35 @@ export default function VerUsuarios(){
         }
     }
 
+    // Método para reiniciar la contraseña de un usuario (Que la contraseña sea su RFC o Matrícula)
+    const reiniciarContrasena = (usuario) => {
+        const confirmacion = confirm( // El usuario debe confirmar el reinicio de contraseña
+            `¿Estás seguro que quieres reiniciar la contraseña de ${usuario.nombre} (${usuario.tipo})?`
+        )
+        if (!confirmacion) return
+        
+        let url = ""
+        if (usuario.tipo === "Alumno") {
+            url=`http://localhost:3000/api/alumnos/reiniciar-contrasena/${usuario._id}`
+        } else if (usuario.tipo === "Administrador") {
+            url=`http://localhost:3000/api/admins/reiniciar-contrasena/${usuario._id}`
+        }
+
+        fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(async res => {
+            if(res.ok){
+                alert("Contraseña reiniciada correctamente")
+            } else {
+                console.error(await res.json().catch(()=>null))
+                alert("Ocurrió un error al reiniciar la contraseña")
+            }
+        })
+    }
+
     if(usuarios.length === 0){ // Mientras no haya usuarios cargados se muestra un mensaje de carga
         return(
             <>
@@ -89,6 +119,7 @@ export default function VerUsuarios(){
                             <th>Apellido</th>
                             <th>Grupo/Rol</th>
                             <th>Editar</th>
+                            <th>Reiniciar Contraseña</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,6 +133,9 @@ export default function VerUsuarios(){
                                 <td>{usuario.tipo === "Alumno" ? usuario.grupoId.nombre : usuario.rol}</td>
                                 <td>
                                     <MdEdit className="btn-editar" onClick={() => redirigirAEdicion(usuario)}/>
+                                </td>
+                                <td>
+                                    <RiResetLeftLine className="btn-reiniciar-contrasena" onClick={() => reiniciarContrasena(usuario)}/>
                                 </td>
                             </tr>
                         ))} 

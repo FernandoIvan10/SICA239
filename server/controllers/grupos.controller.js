@@ -148,7 +148,7 @@ const eliminarGrupo = async (req, res) => {
         }
 
         // No se puede eliminar el grupo si hay calificaciones capturadas
-        const calificacionesExistentes = await Calificacion.findOne({ grupo: id })
+        const calificacionesExistentes = await Calificacion.findOne({ grupoId: id })
         if (calificacionesExistentes) {
             return res.status(400).json({ mensaje: 'No se puede eliminar el grupo porque tiene calificaciones registradas.' })
         }

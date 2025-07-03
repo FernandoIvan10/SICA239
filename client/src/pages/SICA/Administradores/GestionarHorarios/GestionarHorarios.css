@@ -1,0 +1,49 @@
+.contenedor-inicio{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.contenedor-gestionar-horarios {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background-color: #f9f9f9;
+}
+
+.contenido-principal {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.tabla-horarios {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.tabla-horarios th, .tabla-horarios td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.tabla-horarios th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.tabla-horarios tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabla-horarios tr:hover {
+    background-color: #f1f1f1;
+}

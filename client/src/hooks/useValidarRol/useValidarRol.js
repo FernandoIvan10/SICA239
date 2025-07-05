@@ -13,7 +13,7 @@ export function useValidarRol(roles) {
 
             if (!tienePermiso) {
                 alert('No tienes permiso para entrar a esta ruta')
-                navigate('/SICA/iniciar-sesion')
+                navigate('/SICA/iniciar-sesion') // Se redirige a iniciar sesión para que lo redirija a su panel
             }
         } catch (error) {
             navigate('/SICA/iniciar-sesion')

@@ -77,12 +77,15 @@ export default function Login(){
 
             // Verifica si necesita cambiar contraseña
             if (requiereCambioContrasena) {
-                window.location.href = '/SICA/primer-cambio-contrasena' // Ruta que hayas definido
+                navigate('/SICA/primer-cambio-contrasena')
             } else { // El usuario es redirigido al sistema
-                const ruta = tipoUsuario === 'alumno'
-                    ? '/SICA/alumnos/inicio'
-                    : '/SICA/administradores/inicio'
-                window.location.href = ruta
+                const token = localStorage.getItem("token")
+                const tokenDecodificado = jwtDecode(token)
+                if(tokenDecodificado.rol === "alumno"){
+                    navigate('/SICA/alumnos/inicio')
+                }else{
+                    navigate('/SICA/administradores/inicio')
+                }
             }
         }catch(error){
             setError(error.message)

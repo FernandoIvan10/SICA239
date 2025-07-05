@@ -83,13 +83,33 @@ const obtenerCalificacionesPorID = async (req, res) => {
     try{
         const {id} = req.params
 
-        const calificaciones = await Calificacion.find({alumnoId: id})
+        const calificaciones = await Calificacion.find({alumnoId: id}).populate('materiaId')
 
         if(!calificaciones || calificaciones.length === 0){
             return res.status(404).json({mensaje: "Calificaciones no encontradas"})
         } 
 
-        return res.status(200).json(calificaciones)
+        // Se les da un mejor formato a los datos
+        const parcialesSet = new Set()
+        calificaciones.forEach(cal => {
+            cal.parciales.forEach(p => parcialesSet.add(p.parcial))
+        })
+        const parciales = Array.from(parcialesSet)
+        const resultado = calificaciones.map(cal => {
+            const fila = {
+                materia: cal.materiaId?.nombre
+            }
+            parciales.forEach(nombre => {
+                fila[nombre] = ''
+            })
+            cal.parciales.forEach(p => {
+                fila[p.parcial] = p.nota
+            })
+            fila.promedio = cal.promedio
+            return fila
+        })
+
+        return res.status(200).json({parciales, calificaciones: resultado})
     }catch (error){
         console.error("Error al obtener las calificaciones: ", error)
         return res.status(500).json({mensaje: "Error interno del servidor."})

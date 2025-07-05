@@ -78,4 +78,22 @@ const listarCalificaciones = async (req, res) => {
     }
 }
 
-module.exports = {agregarCalificacion, listarCalificaciones} // Se exporta el controlador
+// Función para obtener las calificaciones de un alumno con su ID
+const obtenerCalificacionesPorID = async (req, res) => {
+    try{
+        const {id} = req.params
+
+        const calificaciones = await Calificacion.find({alumnoId: id})
+
+        if(!calificaciones || calificaciones.length === 0){
+            return res.status(404).json({mensaje: "Calificaciones no encontradas"})
+        } 
+
+        return res.status(200).json(calificaciones)
+    }catch (error){
+        console.error("Error al obtener las calificaciones: ", error)
+        return res.status(500).json({mensaje: "Error interno del servidor."})
+    }
+}
+
+module.exports = {agregarCalificacion, listarCalificaciones, obtenerCalificacionesPorID} // Se exporta el controlador

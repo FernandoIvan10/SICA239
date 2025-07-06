@@ -1,4 +1,5 @@
 const Horario = require('../models/horario.model')
+const Alumno = require('../models/alumno.model')
 const cloudinary = require('../config/cloudinary')
 
 // Función para subir el horario de un grupo
@@ -70,4 +71,43 @@ const eliminarHorario = async (req, res) => {
     }
 }
 
-module.exports = { subirHorario, eliminarHorario, listarHorarios }
+// Función para obtener los horarios de un alumno
+const obtenerHorariosPorID = async (req, res) => {
+  try{
+    const {id} = req.params
+
+    const alumno = await Alumno.findById(id)
+    .populate('grupoId')
+    .populate('materiasRecursadas.grupo')
+
+    if(!alumno){
+      return res.status(404).json({mensaje: "Alumno no encontrado"})
+    }
+    
+    const grupos = new Map()
+
+    grupos.set(alumno.grupoId._id.toString(), alumno.grupoId.nombre)
+
+    alumno.materiasRecursadas.forEach(({grupo}) => {
+      if(grupo){
+        grupos.set(grupo._id.toString(), grupo.nombre)
+      }
+    })
+
+    const gruposIds = [...grupos.keys()]
+
+    const horarios = await Horario.find({grupo: { $in: gruposIds}})
+
+    const respuesta = horarios.map(horario => ({
+      grupo: grupos.get(horario.grupo.toString()) || 'Grupo desconocido',
+      imagenUrl: horario.imagenUrl
+    }))
+
+    return res.status(200).json(respuesta)
+  }catch(error){
+    console.error("Error al obtener los horarios:", error)
+    return res.status(500).json({ mensaje: 'Error interno del servidor' })
+  }
+}
+
+module.exports = { subirHorario, eliminarHorario, listarHorarios, obtenerHorariosPorID }

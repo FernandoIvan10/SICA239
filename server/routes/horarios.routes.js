@@ -3,7 +3,7 @@ const express = require('express')
 const upload = require('../middleware/upload')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const { subirHorario, eliminarHorario, listarHorarios } = require('../controllers/horarios.controller')
+const { subirHorario, eliminarHorario, listarHorarios, obtenerHorariosPorID } = require('../controllers/horarios.controller')
 
 const router = express.Router() // Se crea un router
 
@@ -30,6 +30,14 @@ router.delete(
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     eliminarHorario // Se llama al controlador
+)
+
+// Ruta para obtener los horarios de un alumno
+router.get(
+    '/horarios/:id',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['alumno']), // Se valida el rol
+    obtenerHorariosPorID // Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

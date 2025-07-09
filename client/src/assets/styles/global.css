@@ -15,3 +15,14 @@ p{
     white-space: pre-line;
     text-align: justify;
 }
+
+input {
+    font-family: 'Roboto';
+}
+
+.input-label{
+    font-family: 'Roboto';
+    font-size: 18px;
+    margin-bottom: 0;
+    font-weight: 100;
+}

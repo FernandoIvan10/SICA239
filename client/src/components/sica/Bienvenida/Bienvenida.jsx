@@ -8,7 +8,7 @@ export default function Bienvenida(props){
     <div className='contenedor-bienvenida'>
         <h2>¡Bienvenido, {props.nombre}!</h2>
         <p>{props.descripcion}</p>
-        <div className="contenedor-botones">
+        <div className='contenedor-botones'>
             <Link 
                 to={props.linkBoton1} 
                 className='boton'>

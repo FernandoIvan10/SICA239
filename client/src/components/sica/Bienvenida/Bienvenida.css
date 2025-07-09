@@ -5,22 +5,27 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f9f9f9;
+    background-color: #F9F9F9;
 }
 
-.contenedor-bienvenida h2{
-    font-family: 'Roboto';
+h2 {
+    padding-top: 2rem;
 }
 
-.contenedor-bienvenida p{
-    font-family: 'Roboto';
-    white-space: pre-line;
+p {
+    margin-top: 1rem;
+    padding: 0 1rem;
+    max-width: 700px;
 }
 
-.botones{
-    width: 50%;
+.contenedor-botones{
+    width: 100%;
+    max-width: 400px;
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
 .boton{
@@ -39,5 +44,5 @@
 }
 
 .boton:hover {
-    background-color: #45a049;
+    background-color: #45A049;
   }

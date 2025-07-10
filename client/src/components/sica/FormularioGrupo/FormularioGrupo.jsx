@@ -50,30 +50,31 @@ export default function FormularioGrupo(props) {
     }
 
     // Método para eliminar una materia de la lista
-    const eliminarMateria = (materia) => {
-        setMaterias(materias.filter((m) => m !== materia))
+    const eliminarMateria = (index) => {
+        setMaterias((prev) => prev.filter((_, i) => i !== index));
     }
 
     return (
     <div className="contenedor-formulario">
         <h1>{props.tituloFormulario}</h1>
         <div className="formulario-grupo">
-            <label>
+            <label className="form-label">
                 Nombre del Grupo*:
+            </label>
                 <input
                     type="text"
                     value={nombreGrupo}
                     onChange={(e) => setNombreGrupo(e.target.value)}
                     placeholder="Escribe el nombre del grupo"
                 />
-            </label>
-            <label>
+            <label className="form-label">
                 Materias*:
+            </label>
                 <div className="materias-lista">
                     {materias.map((materia, index) => (
                         <div key={index} className="materia-item">
                             {materia}
-                            <button onClick={() => eliminarMateria(materia)}>X</button>
+                            <button onClick={() => eliminarMateria(index)}>X</button>
                         </div>
                     ))}
                 </div>
@@ -104,7 +105,6 @@ export default function FormularioGrupo(props) {
                         </ul>
                     )}
                 </div>
-            </label>
             <div className="botones-formulario">
                 <button onClick={() => props.guardar(nombreGrupo, materias)}>Guardar</button>
                 <button onClick={props.cancelar}>Cancelar</button>

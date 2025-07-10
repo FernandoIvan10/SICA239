@@ -6,31 +6,46 @@
   padding: 2rem;
   flex-direction: column;
   background-color: #f9f9f9;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
+  font-family: 'Roboto';
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
   color: #333;
 }
 
 .formulario-grupo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0%;
+  justify-content: center;
+  max-width: 600px;
   background-color: #fff;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 2.5rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-label {
-  display: block;
-  margin-bottom: 1.5rem;
-  font-weight: bold;
-  color: #333;
+.form-label{
+    font-family: 'Roboto';
+    font-size: 18px;
+    display: block;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+    font-weight: bold;
+    color: #333;
 }
 
 input[type="text"] {
+  font-family: 'Roboto';
   width: 100%;
   margin-top: 0.5rem;
+  margin-right: 0.5rem;
   padding: 0.6rem;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -45,6 +60,7 @@ input[type="text"] {
 }
 
 .materia-item {
+  font-family: 'Roboto';
   display: flex;
   align-items: center;
   background-color: #e6e6e6;
@@ -75,6 +91,7 @@ input[type="text"] {
 }
 
 .agregar-materia input {
+  font-family: 'Roboto';
   flex: 1;
 }
 
@@ -96,9 +113,11 @@ input[type="text"] {
   margin-top: 1.5rem;
   display: flex;
   gap: 1rem;
+  justify-content: space-around;
 }
 
 .botones-formulario button {
+  font-family: 'Roboto';
   padding: 0.7rem 1.4rem;
   font-size: 1rem;
   border: none;
@@ -125,6 +144,7 @@ input[type="text"] {
 }
 
 .sugerencias-materias {
+  font-family: 'Roboto';
   position: absolute;
   top: 100%;
   left: 0;
@@ -142,6 +162,7 @@ input[type="text"] {
 }
 
 .sugerencia-item {
+  font-family: 'Roboto';
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 0.95rem;

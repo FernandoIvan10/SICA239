@@ -20,6 +20,12 @@ input {
     font-family: 'Roboto';
 }
 
+.contenedor-principal{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
 .input-label{
     font-family: 'Roboto';
     font-size: 18px;

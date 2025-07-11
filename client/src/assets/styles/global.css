@@ -26,3 +26,23 @@ input {
     margin-bottom: 0;
     font-weight: 100;
 }
+
+.boton-guardar{
+    font-family: 'Roboto';
+    background-color: #28a745;
+    color: white;
+}
+
+.boton-guardar:hover{
+    background-color: #218838;
+}
+
+.boton-cancelar{
+    font-family: 'Roboto';
+    background-color: #dc3545;
+    color: white;
+}
+
+.boton-cancelar:hover{
+    background-color: #c82333;
+}

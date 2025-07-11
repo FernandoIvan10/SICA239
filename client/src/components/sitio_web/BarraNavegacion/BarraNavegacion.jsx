@@ -16,18 +16,18 @@ export default function BarraNavegacion(){
     }
 
     return (
-        <nav class="barra-navegacion">
+        <nav class='barra-navegacion'>
             {/* Logo */}
-            <div className="barra-contenido">
+            <div className='barra-contenido'>
                 <img src={LogoCBTA} alt='Logo' className='img-barra-navegacion'/>
                 {/* Botón del menú hamburguesa para móviles */}
-                <button className="menu-hamburguesa" onClick={abrirMenu}>
+                <button className='menu-hamburguesa' onClick={abrirMenu}>
                         ☰
                     </button>
                 {/* Elementos de navegación */}
                 <ul className={`ul-barra-navegacion ${menuAbierto ? 'activo' : ''}`}>
 		            {/* Ícono de cerrar sólo visible en móviles */}
-                    <li className="cerrar-menu" onClick={cerrarMenu}>✕</li>
+                    <li className='cerrar-menu' onClick={cerrarMenu}>✕</li>
                     <li className='li-barra-navegacion' onClick={cerrarMenu}><Link to='/inicio'>Inicio</Link></li>
                     <li className='li-barra-navegacion' onClick={cerrarMenu}><Link to='/quienes-somos'>Quiénes somos</Link></li>
                     <li className='li-barra-navegacion' onClick={cerrarMenu}><Link to='/oferta-educativa'>Oferta educativa</Link></li>

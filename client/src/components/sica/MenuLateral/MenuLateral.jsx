@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react'
 import { jwtDecode } from "jwt-decode"
 
+import '../../../assets/styles/global.css'
 import './MenuLateral.css'
 import { FaHouseChimney } from "react-icons/fa6"
 import { MdGrade, MdGroupAdd, MdGroups, MdOutlineMoveUp } from "react-icons/md"
@@ -139,7 +140,7 @@ export default function MenuLateral(){
                         {elementosMenu.map((elemento, index)=>(
                             <li 
                                 key={index} 
-                                className={isActive(elemento.link)} 
+                                className={`elemento ${isActive(elemento.link)}`} 
                                 onClick={() => {
                                     if (elemento.onClick) {
                                         elemento.onClick()
@@ -158,7 +159,7 @@ export default function MenuLateral(){
                                         {elemento.subelementos.map((subelemento, subIndex)=>(
                                             <li 
                                                 key={subIndex} 
-                                                className={isActive(subelemento.link)} 
+                                                className={`subelemento ${isActive(subelemento.link)}`} 
                                                 onClick={(e) => {
                                                     e.stopPropagation()
                                                     if (subelemento.onClick) {

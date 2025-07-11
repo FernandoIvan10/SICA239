@@ -4,12 +4,13 @@
     width: 20%;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: auto;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
 }
 
 .encabezado-menu{
+    font-family: 'Roboto';
     height: 80px;
     display: flex;
     justify-content: space-around;
@@ -36,21 +37,22 @@
     margin: 0;
 }
 
-.elementos-menu ul li {
+.elemento {
+    font-family: 'Roboto';
     padding: 10px 20px;
     font-family: 'Roboto';
-    font-size: 18px;
+    font-size: 20px;
     display: block;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.elementos-menu ul li.active {
-    background-color: #28a745;
-    color: white;
+.elemento.active {
+    font-family: 'Roboto';
+    color: #28a745;
 }
 
-.elementos-menu ul li:hover {
+.elemento:hover {
     background-color: #e9ecef;
     color: #4CAF50; 
 }
@@ -62,22 +64,23 @@
     display: block; 
 }
 
-.elementos-menu ul li ul li {
-    font-size: 16px;
+.subelemento {
+    font-family: 'Roboto';
+    font-size: 18px;
     padding: 5px 0;
 }
 
-.elementos-menu ul li ul li.active {
-    background-color: #28a745;
-    color: white;
+.subelemento.active {
+    font-family: 'Roboto';
+    color: #28a745;
 }
 
-.elementos-menu ul li ul li:hover {
+.subelemento:hover {
     background-color: #f1f3f5;
     color: #4CAF60; 
 }
 
-.elementos-menu ul li span svg {
+.subelemento span svg {
     font-size: 20px; 
     color: inherit; 
 }

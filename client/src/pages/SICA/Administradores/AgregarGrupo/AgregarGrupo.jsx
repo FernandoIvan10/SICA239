@@ -1,10 +1,10 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import FormularioGrupo from "../../../../components/sica/FormularioGrupo/FormularioGrupo"
-import { useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import "./AgregarGrupo.css"
-import { useNavigate } from "react-router-dom"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import FormularioGrupo from '../../../../components/sica/FormularioGrupo/FormularioGrupo'
+import { useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import { useNavigate } from 'react-router-dom'
+import '../../../../assets/styles/global.css'
 
 // Página del SICA para agregar grupos
 export default function AgregarGrupo() {
@@ -19,7 +19,7 @@ export default function AgregarGrupo() {
     const guardarGrupo = (nombreGrupo, materias) => {
         if(!nombreGrupo.trim() || materias.length === 0){
             // No se puede guardar el grupo sin un nombre de grupo y por lo menos una materia
-            alert("Debes ingresar un nombre de grupo y al menos una materia")
+            alert('Debes ingresar un nombre de grupo y al menos una materia')
         }else{ 
     	const materiasFormateadas = materias.map(nombre => ({ nombre })) //Formato correcto para la API
         fetch('http://localhost:3000/api/grupos', { // Guarda el grupo en la BD
@@ -34,13 +34,13 @@ export default function AgregarGrupo() {
 	        })
         }).then(async res => {
             if(res.ok){
-                alert("Grupo guardado exitosamente")
+                alert('Grupo guardado exitosamente')
                 setResetForm(true) // Se limpia el formulario
                 setTimeout(() => setResetForm(false), 0)
                 return
             }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al guardar el grupo")
+                alert('Ocurrió un error al guardar el grupo')
                 return
             }
         })
@@ -55,10 +55,10 @@ export default function AgregarGrupo() {
     }
 
     return (
-        <div className="contenedor-agregar-grupo">
+        <div className='contenedor-principal'>
             <MenuLateral/>
             <FormularioGrupo
-                tituloFormulario = "Agregar Nuevo Grupo"
+                tituloFormulario = 'Agregar Nuevo Grupo'
                 guardar = {guardarGrupo}
                 cancelar = {cancelar}
                 reset= {resetForm}

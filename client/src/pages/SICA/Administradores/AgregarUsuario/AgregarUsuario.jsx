@@ -3,8 +3,9 @@ import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
 import { useEffect, useState } from "react"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
 import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import "./AgregarUsuario.css"
 import { useNavigate } from "react-router-dom"
+import '../../../../assets/styles/global.css'
+import "./AgregarUsuario.css"
 
 // Página del SICA para agregar usuarios 
 export default function AgregarUsuario(){
@@ -146,8 +147,8 @@ export default function AgregarUsuario(){
             return (
                 <form className="formulario-agregar">
                     <h2>Agregar Alumno</h2>
-                    <label>
-                        Matrícula*:
+                    <div className="campo-formulario">
+                        <label className="input-label">Matrícula*:</label>
                         <input 
                             type="text" 
                             placeholder="Ingrese la matrícula" 
@@ -155,9 +156,9 @@ export default function AgregarUsuario(){
                             onChange={(e) => setMatricula(e.target.value)}
                             required 
                         />
-                    </label>
-                    <label>
-                        Nombre*:
+                    </div>
+                    <div className="campo-formulario">
+                        <label className="input-label">Nombre*:</label>
                         <input 
                             type="text" 
                             placeholder="Ingrese el nombre" 
@@ -165,9 +166,9 @@ export default function AgregarUsuario(){
                             onChange={(e) => setNombreAlumno(e.target.value)}
                             required 
                         />
-                    </label>
-                    <label>
-                        Apellido*:
+                    </div>
+                    <div className="campo-formulario">
+                        <label className="input-label">Apellido*:</label>
                         <input 
                             type="text" 
                             placeholder="Ingrese el apellido" 
@@ -175,9 +176,9 @@ export default function AgregarUsuario(){
                             onChange={(e) => setApellidoAlumno(e.target.value)}
                             required 
                         />
-                    </label>
-                    <label>
-                        Grupo*:
+                    </div>
+                    <div className="campo-formulario">
+                        <label className="input-label">Grupo*:</label>
                         <select
                             type="text" 
                             placeholder="Ingrese el ID del grupo" 
@@ -192,9 +193,9 @@ export default function AgregarUsuario(){
                                     </option>
                                 ))}
                         </select>
-                    </label>
-                    <label>
-                        Materias recursadas:
+                    </div>
+                    <div className="campo-formulario">
+                        <label className="input-label">Materias recursadas:</label>
                         <select
                             value={materiaSeleccionada}
                             onChange={(e) => setMateriaSeleccionada(e.target.value)}
@@ -211,8 +212,10 @@ export default function AgregarUsuario(){
                                 ))
                             ))}
                         </select>
+                        </div>
                         <button
                             type="button"
+                            className="boton-agregar"
                             onClick={() => {
                                 if (materiaSeleccionada) {
                                     const [materia, grupo] = materiaSeleccionada.split("-")
@@ -228,7 +231,6 @@ export default function AgregarUsuario(){
                         >
                             Agregar
                         </button>
-                    </label>
                     <div className="materias-recursadas-lista">
                         {materiasRecursadas.map((item, index) => {
                             const grupoObj = grupos.find(g => g._id === item.grupo)
@@ -248,14 +250,14 @@ export default function AgregarUsuario(){
                     <div className="botones-formulario">
                         <button 
                             type="button" 
-                            className="btn-guardar"
+                            className="boton-guardar"
                             onClick={agregarAlumno}
                         >
-                            Guardar Alumno
+                            Guardar
                         </button>
                         <button
                             type="button"
-                            className="btn-cancelar"
+                            className="boton-cancelar"
                             onClick={cancelar}
                         >
                             Cancelar
@@ -267,8 +269,8 @@ export default function AgregarUsuario(){
             return (
                 <form className="formulario-agregar">
                     <h2>Agregar Administrador</h2>
-                    <label>
-                        RFC*:
+                    <div className="campo-formulario">
+                        <label className="input-label">RFC*:</label>
                         <input 
                             type="text" 
                             placeholder="Ingrese el RFC" 
@@ -276,9 +278,9 @@ export default function AgregarUsuario(){
                             onChange={(e) => setRFC(e.target.value)}
                             required
                         />
-                    </label>
-                    <label>
-                        Nombre*:
+                    </div>
+                    <div className="campo-formulario">
+                        <label className="input-label">Nombre*:</label>
                         <input 
                             type="text" 
                             placeholder="Ingrese el nombre" 
@@ -286,9 +288,9 @@ export default function AgregarUsuario(){
                             onChange={(e) => setNombreAdmin(e.target.value)}
                             required 
                         />
-                    </label>
-                    <label>
-                        Apellido*:
+                    </div>
+                    <div className="campo-formulario">
+                        <label className="input-label">Apellido*:</label>
                         <input 
                             type="text" 
                             placeholder="Ingrese el apellido" 
@@ -296,26 +298,26 @@ export default function AgregarUsuario(){
                             onChange={(e) => setApellidoAdmin(e.target.value)}
                             required 
                         />
-                    </label>
-                    <label>
-                        Rol*:
+                    </div>
+                    <div className="campo-formulario">
+                        <label className="input-label">Rol*:</label>
                         <select value={rolAdmin} onChange={(e)=>setRolAdmin(e.target.value)} required>
                             <option value="superadmin">Superadmin</option>
                             <option value="editor">Editor</option>
                             <option value="lector">Lector</option>
                         </select>
-                    </label>
+                    </div>
                     <div className="botones-formulario">
                         <button 
                             type="button" 
-                            className="btn-guardar"
+                            className="boton-guardar"
                             onClick={agregarAdmin}
                         >
-                            Guardar Administrador
+                            Guardar
                         </button>
                         <button
                             type="button"
-                            className="btn-cancelar"
+                            className="boton-cancelar"
                             onClick={cancelar}
                         >
                             Cancelar
@@ -327,7 +329,7 @@ export default function AgregarUsuario(){
     }
 
     return(
-        <div className="contenedor-inicio">
+        <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Agregar Usuario</h1>

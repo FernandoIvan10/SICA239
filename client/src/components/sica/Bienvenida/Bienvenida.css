@@ -8,27 +8,29 @@
     background-color: #F9F9F9;
 }
 
-h2 {
+.titulo-bienvenida {
+    font-family: 'Roboto';
     padding-top: 2rem;
 }
 
-p {
+.mensaje-bienvenida {
+    font-family: 'Roboto';
     margin-top: 1rem;
     padding: 0 1rem;
     max-width: 700px;
 }
 
-.contenedor-botones{
+.contenedor-botones-bienvenida{
     width: 100%;
     max-width: 400px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
     gap: 1rem;
     margin-top: 1rem;
 }
 
-.boton{
+.boton-bienvenida{
     font-family: 'Roboto';
     font-size: 15px;
     background-color: #4CAF50; 
@@ -43,6 +45,6 @@ p {
     transition: background-color 0.3s ease;
 }
 
-.boton:hover {
+.boton-bienvenida:hover {
     background-color: #45A049;
   }

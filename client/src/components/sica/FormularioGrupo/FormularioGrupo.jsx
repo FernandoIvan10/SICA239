@@ -55,41 +55,43 @@ export default function FormularioGrupo(props) {
     }
 
     return (
-    <div className='contenedor-formulario'>
-        <h1>{props.tituloFormulario}</h1>
-        <div className='formulario-grupo'>
-            <label className='form-label'>
+    <div className="contenedor-formulario-grupo">
+        <h1 className="formulario-grupo-titulo">{props.tituloFormulario}</h1>
+        <div className="formulario-grupo">
+            <label className="formulario-grupo-label">
                 Nombre del Grupo*:
             </label>
                 <input
-                    type='text'
+                    className="formulario-grupo-input"
+                    type="text"
                     value={nombreGrupo}
                     onChange={(e) => setNombreGrupo(e.target.value)}
-                    placeholder='Escribe el nombre del grupo'
+                    placeholder="Escribe el nombre del grupo"
                 />
-            <label className='form-label'>
+            <label className="formulario-grupo-label">
                 Materias*:
             </label>
-                <div className='materias-lista'>
+                <div className="formulario-grupo-materias-lista">
                     {materias.map((materia, index) => (
-                        <div key={index} className='materia-item'>
+                        <div key={index} className="formulario-grupo-materia-item">
                             {materia}
                             <button onClick={() => eliminarMateria(index)}>X</button>
                         </div>
                     ))}
                 </div>
-                <div className='agregar-materia'>
+                <div className="formulario-grupo-agregar-materia">
                     <input
-                        type='text'
+                        className="formulario-grupo-input"
+                        type="text"
                         value={nuevaMateria}
                         onChange={(e) => setNuevaMateria(e.target.value)}
-                        placeholder='Nueva materia'
+                        placeholder="Nueva materia"
                         onFocus={() => setEnfocado(true)}
                         onBlur={() => setTimeout(() => setEnfocado(false), 150)}
                     />
-                    <button onClick={agregarMateria}>Agregar</button>
+                    <button className="formulario-grupo-agregar-materia-boton" onClick={agregarMateria}>Agregar</button>
                     {enfocado && sugerencias.length > 0 && (
-                        <ul className='sugerencias-materias'>
+                        <ul className="formulario-grupo-sugerencias-materias">
                             {sugerencias.map((s, index) => (
                                 <li
                                     key={index}
@@ -97,7 +99,7 @@ export default function FormularioGrupo(props) {
                                     setNuevaMateria(s);
                                     setEnfocado(false);
                                     }}
-                                    className='sugerencia-item'
+                                    className="formulario-grupo-sugerencia-item"
                                 >
                                     {s}
                                 </li>
@@ -105,9 +107,9 @@ export default function FormularioGrupo(props) {
                         </ul>
                     )}
                 </div>
-            <div className='botones-formulario'>
-                <button className='boton-guardar' onClick={() => props.guardar(nombreGrupo, materias)}>Guardar</button>
-                <button className='boton-cancelar' onClick={props.cancelar}>Cancelar</button>
+            <div className="formulario-grupo-botones">
+                <button className="boton-guardar" onClick={() => props.guardar(nombreGrupo, materias)}>Guardar</button>
+                <button className="boton-cancelar" onClick={props.cancelar}>Cancelar</button>
             </div>
         </div>
     </div>

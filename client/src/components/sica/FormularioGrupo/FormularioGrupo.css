@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-.contenedor-formulario {
+.contenedor-formulario-grupo {
   width: 100%;
   display: flex;
   padding: 2rem;
@@ -10,7 +10,7 @@
   align-items: center;
 }
 
-h1 {
+.formulario-grupo-titulo {
   margin-bottom: 1.5rem;
 }
 
@@ -23,11 +23,11 @@ h1 {
   max-width: 600px;
   background-color: #fff;
   border-radius: 8px;
-  padding: 2rem !important;
+  padding: 2rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.form-label{
+.formulario-grupo-label{
     font-family: 'Roboto';
     font-size: 18px;
     display: block;
@@ -37,10 +37,10 @@ h1 {
     color: #333;
 }
 
-input[type="text"] {
+.formulario-grupo-input {
   font-family: 'Roboto';
-  width: unset !important;
-  margin-top: 0 !important;
+  width: unset;
+  margin-top: 0;
   margin-right: 0.5rem;
   margin-bottom: 1.5rem;
   padding: 0.6rem;
@@ -49,14 +49,14 @@ input[type="text"] {
   border-radius: 4px;
 }
 
-.materias-lista {
+.formulario-grupo-materias-lista {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.1rem !important;
+  margin-top: 0.1rem;
 }
 
-.materia-item {
+.formulario-grupo-materia-item {
   font-family: 'Roboto';
   display: flex;
   align-items: center;
@@ -66,7 +66,7 @@ input[type="text"] {
   font-size: 0.9rem;
 }
 
-.materia-item button {
+.formulario-grupo-materia-item button {
   margin-left: 0.5rem;
   background-color: #ff4d4d;
   color: white;
@@ -76,11 +76,11 @@ input[type="text"] {
   padding: 0.2rem 0.5rem;
 }
 
-.materia-item button:hover {
+.formulario-grupo-materia-item button:hover {
   background-color: #e60000;
 }
 
-.agregar-materia {
+.formulario-grupo-agregar-materia {
   margin-top: 0.5rem;
   display: flex;
   position: relative;
@@ -88,12 +88,12 @@ input[type="text"] {
   align-items: baseline;
 }
 
-.agregar-materia input {
+.formulario-grupo-agregar-materia input {
   font-family: 'Roboto';
   flex: 1;
 }
 
-.agregar-materia button {
+.formulario-grupo-agregar-materia-boton {
   font-family: 'Roboto';
   padding: 0.6rem 1rem;
   background-color: #007bff;
@@ -102,30 +102,21 @@ input[type="text"] {
   font-size: 0.9rem;
   border-radius: 4px;
   cursor: pointer;
-  height: fit-content !important;
+  height: fit-content;
 }
 
-.agregar-materia button:hover {
+.formulario-grupo-agregar-materia-boton:hover {
   background-color: #0056b3;
 }
 
-.botones-formulario {
+.formulario-grupo-botones {
   margin-top: 2rem;
   display: flex;
   gap: 1rem;
   justify-content: inherit;
 }
 
-.botones-formulario button {
-  font-family: 'Roboto';
-  padding: 0.7rem 1.4rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.sugerencias-materias {
+.formulario-grupo-sugerencias-materias {
   font-family: 'Roboto';
   position: absolute;
   top: 100%;
@@ -135,7 +126,7 @@ input[type="text"] {
   border: 1px solid #ccc;
   list-style: none;
   margin: 0;
-  padding: 0.3rem 0;
+  padding: 0;
   z-index: 1000;
   max-height: 150px;
   overflow-y: auto;
@@ -143,41 +134,38 @@ input[type="text"] {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.sugerencia-item {
+.formulario-grupo-sugerencia-item {
   font-family: 'Roboto';
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 0.95rem;
 }
 
-.sugerencia-item:hover {
+.formulario-grupo-sugerencia-item:hover {
   background-color: #f0f0f0;
 }
 
 @media (max-width: 768px) {
 
-  .contenedor-agregar-grupo {
+  .contenedor-formulario-grupo {
     flex-direction: column;
-  }
-
-  .contenedor-formulario {
     margin-left: 0;
     padding: 1rem;
   }
 
-  .agregar-materia {
+  .formulario-grupo-agregar-materia {
     flex-direction: column;
   }
 
-  .agregar-materia button {
+  .formulario-grupo-agregar-materia-boton {
     width: 100%;
   }
 
-  .botones-formulario {
+  .formulario-grupo-botones {
     flex-direction: column;
   }
 
-  .botones-formulario button {
+  .formulario-grupo-botones button {
     width: 100%;
   }
 }

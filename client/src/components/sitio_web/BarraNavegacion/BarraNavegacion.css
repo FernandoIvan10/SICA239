@@ -45,7 +45,7 @@
     font-family: 'Roboto';
 }
 
-.button-barra-navegacion {
+.boton-barra-navegacion {
     font-family: 'Roboto';
     font-size: 15px;
     background-color: #4CAF50;
@@ -57,7 +57,7 @@
     transition: background-color 0.3s ease;
 }
 
-.button-barra-navegacion:hover {
+.boton-barra-navegacion:hover {
     background-color: #45a049;
 }
 
@@ -102,6 +102,7 @@ a {
     }
 
     .li-barra-navegacion {
+        font-family: 'Roboto';
         margin: 15px 0;
         font-size: 18px;
     }

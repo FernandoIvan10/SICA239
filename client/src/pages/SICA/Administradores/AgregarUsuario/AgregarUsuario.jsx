@@ -1,11 +1,11 @@
-import {jwtDecode} from "jwt-decode"
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import { useNavigate } from "react-router-dom"
+import {jwtDecode} from 'jwt-decode'
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import { useNavigate } from 'react-router-dom'
 import '../../../../assets/styles/global.css'
-import "./AgregarUsuario.css"
+import './AgregarUsuario.css'
 
 // Página del SICA para agregar usuarios 
 export default function AgregarUsuario(){
@@ -19,18 +19,18 @@ export default function AgregarUsuario(){
     const [grupos, setGrupos] = useState([]) // Grupos de la BD
 
     // Hooks para el formulario de administradores
-    const [RFC, setRFC] = useState("")
-    const [nombreAdmin, setNombreAdmin] = useState("")
-    const [apellidoAdmin, setApellidoAdmin] = useState("")
-    const [rolAdmin, setRolAdmin] = useState("lector")
+    const [RFC, setRFC] = useState('')
+    const [nombreAdmin, setNombreAdmin] = useState('')
+    const [apellidoAdmin, setApellidoAdmin] = useState('')
+    const [rolAdmin, setRolAdmin] = useState('lector')
 
     // Hooks para el formulario de alumnos
-    const [matricula, setMatricula] = useState("")
-    const [nombreAlumno, setNombreAlumno] = useState("")
-    const [apellidoAlumno, setApellidoAlumno] = useState("")
-    const [grupo, setGrupo] = useState("")
+    const [matricula, setMatricula] = useState('')
+    const [nombreAlumno, setNombreAlumno] = useState('')
+    const [apellidoAlumno, setApellidoAlumno] = useState('')
+    const [grupo, setGrupo] = useState('')
     const [materiasRecursadas, setMateriasRecursadas] = useState([])
-    const [materiaSeleccionada, setMateriaSeleccionada] = useState("")
+    const [materiaSeleccionada, setMateriaSeleccionada] = useState('')
 
     useEffect(() => { // Se obtiene el tipo de usuario del token de inicio de sesión
         try{
@@ -54,7 +54,7 @@ export default function AgregarUsuario(){
             setGrupos(data.grupos)
         })
         .catch(err => {
-            console.error("Error al obtener grupos:", err)
+            console.error('Error al obtener grupos:', err)
             setGrupos([])
         })
     }, [])
@@ -63,7 +63,7 @@ export default function AgregarUsuario(){
     const agregarAdmin = () => {
         if(!RFC.trim() || !nombreAdmin.trim() || !apellidoAdmin.trim() || !rolAdmin.trim()){
             // No se puede guardar el administrador si no se ha llenado todo el formulario
-            alert("Debes ingresar todos los datos en el formulario")
+            alert('Debes ingresar todos los datos en el formulario')
         }else{
             fetch('http://localhost:3000/api/admins', {
                 method: 'POST',
@@ -80,16 +80,16 @@ export default function AgregarUsuario(){
 	        })
             }).then(async res => {
                 if(res.ok){
-                    alert("Administrador agregado exitosamente")
+                    alert('Administrador agregado exitosamente')
                     // Se limpian los campos del formulario
-                    setRFC("")
-                    setNombreAdmin("")
-                    setApellidoAdmin("")
-                    setRolAdmin("lector")
+                    setRFC('')
+                    setNombreAdmin('')
+                    setApellidoAdmin('')
+                    setRolAdmin('lector')
                     return
                 }else{
                     console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                    alert("Ocurrió un error al guardar el administrador")
+                    alert('Ocurrió un error al guardar el administrador')
                     return
                 }
             })
@@ -100,7 +100,7 @@ export default function AgregarUsuario(){
     const agregarAlumno = () => {
         if(!matricula.trim() || !nombreAlumno.trim() || !apellidoAlumno.trim() || !grupo.trim()){
             // No se puede guardar el alumno si no se han llenado los campos obligatorios del formulario
-            alert("Debes ingresar los datos obligatorios en el formulario")
+            alert('Debes ingresar los datos obligatorios en el formulario')
         }else{
             fetch('http://localhost:3000/api/alumnos', {
                 method: 'POST',
@@ -118,18 +118,18 @@ export default function AgregarUsuario(){
 	        })
             }).then(async res => {
                 if(res.ok){
-                    alert("Alumno agregado exitosamente")
+                    alert('Alumno agregado exitosamente')
                     // Se limpian los campos del formulario
-                    setMatricula("")
-                    setNombreAlumno("")
-                    setApellidoAlumno("")
-                    setGrupo("")
+                    setMatricula('')
+                    setNombreAlumno('')
+                    setApellidoAlumno('')
+                    setGrupo('')
                     setMateriasRecursadas([])
-                    setMateriaSeleccionada("")
+                    setMateriaSeleccionada('')
                     return
                 }else{
                     console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                    alert("Ocurrió un error al guardar el alumno")
+                    alert('Ocurrió un error al guardar el alumno')
                     return
                 }
             })
@@ -143,13 +143,14 @@ export default function AgregarUsuario(){
 
     // Los campos se cambian dependiendo de la pestaña seleccionada (alumno o administrador)
     const renderFormulario = () => {
-        if (tipoUsuario === "alumno") {
+        if (tipoUsuario === 'alumno') {
             return (
-                <form className="formulario-agregar">
+                <form className="formulario-agregar-usuario">
                     <h2>Agregar Alumno</h2>
-                    <div className="campo-formulario">
-                        <label className="input-label">Matrícula*:</label>
-                        <input 
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">Matrícula*:</label>
+                        <input
+                            className="formulario-agregar-usuario-input" 
                             type="text" 
                             placeholder="Ingrese la matrícula" 
                             value={matricula}
@@ -157,9 +158,10 @@ export default function AgregarUsuario(){
                             required 
                         />
                     </div>
-                    <div className="campo-formulario">
-                        <label className="input-label">Nombre*:</label>
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">Nombre*:</label>
                         <input 
+                            className="formulario-agregar-usuario-input"
                             type="text" 
                             placeholder="Ingrese el nombre" 
                             value={nombreAlumno}
@@ -167,9 +169,10 @@ export default function AgregarUsuario(){
                             required 
                         />
                     </div>
-                    <div className="campo-formulario">
-                        <label className="input-label">Apellido*:</label>
-                        <input 
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">Apellido*:</label>
+                        <input
+                            className="formulario-agregar-usuario-input" 
                             type="text" 
                             placeholder="Ingrese el apellido" 
                             value={apellidoAlumno}
@@ -177,9 +180,10 @@ export default function AgregarUsuario(){
                             required 
                         />
                     </div>
-                    <div className="campo-formulario">
-                        <label className="input-label">Grupo*:</label>
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">Grupo*:</label>
                         <select
+                            className="formulario-agregar-usuario-select"
                             type="text" 
                             placeholder="Ingrese el ID del grupo" 
                             value={grupo}
@@ -194,9 +198,26 @@ export default function AgregarUsuario(){
                                 ))}
                         </select>
                     </div>
-                    <div className="campo-formulario">
-                        <label className="input-label">Materias recursadas:</label>
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">Materias recursadas:</label>
+                        <div className="formulario-agregar-usuario-materias-recursadas">
+                            {materiasRecursadas.map((item, index) => {
+                                const grupoObj = grupos.find(g => g._id === item.grupo)
+                                const materiaObj = grupoObj?.materias.find(m => m._id === item.materia)
+                                return (
+                                    <div key={index} className="formulario-agregar-usuario-materia-recursada">
+                                        {materiaObj?.nombre || "Materia desconocida"} - {grupoObj?.nombre || "Grupo desconocido"}
+                                        <button onClick={() => {
+                                            const nuevas = [...materiasRecursadas]
+                                            nuevas.splice(index, 1)
+                                            setMateriasRecursadas(nuevas)
+                                        }}>X</button>
+                                    </div>
+                                )
+                            })}
+                        </div>
                         <select
+                            className="formulario-agregar-usuario-select"
                             value={materiaSeleccionada}
                             onChange={(e) => setMateriaSeleccionada(e.target.value)}
                         >
@@ -215,7 +236,7 @@ export default function AgregarUsuario(){
                         </div>
                         <button
                             type="button"
-                            className="boton-agregar"
+                            className="formulario-agregar-usuario-boton-agregar"
                             onClick={() => {
                                 if (materiaSeleccionada) {
                                     const [materia, grupo] = materiaSeleccionada.split("-")
@@ -231,23 +252,7 @@ export default function AgregarUsuario(){
                         >
                             Agregar
                         </button>
-                    <div className="materias-recursadas-lista">
-                        {materiasRecursadas.map((item, index) => {
-                            const grupoObj = grupos.find(g => g._id === item.grupo)
-                            const materiaObj = grupoObj?.materias.find(m => m._id === item.materia)
-                            return (
-                                <div key={index} className="materia-item">
-                                    {materiaObj?.nombre || "Materia desconocida"} - {grupoObj?.nombre || "Grupo desconocido"}
-                                    <button onClick={() => {
-                                        const nuevas = [...materiasRecursadas]
-                                        nuevas.splice(index, 1)
-                                        setMateriasRecursadas(nuevas)
-                                    }}>X</button>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div className="botones-formulario">
+                    <div className="formulario-agregar-usuario-botones">
                         <button 
                             type="button" 
                             className="boton-guardar"
@@ -265,13 +270,14 @@ export default function AgregarUsuario(){
                     </div>
                 </form>
             )
-        } else if (tipoUsuario === "administrador") {
+        } else if (tipoUsuario === 'administrador') {
             return (
-                <form className="formulario-agregar">
+                <form className="formulario-agregar-usuario">
                     <h2>Agregar Administrador</h2>
-                    <div className="campo-formulario">
-                        <label className="input-label">RFC*:</label>
-                        <input 
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">RFC*:</label>
+                        <input
+                            className="formulario-agregar-usuario-input" 
                             type="text" 
                             placeholder="Ingrese el RFC" 
                             value={RFC}
@@ -279,9 +285,10 @@ export default function AgregarUsuario(){
                             required
                         />
                     </div>
-                    <div className="campo-formulario">
-                        <label className="input-label">Nombre*:</label>
-                        <input 
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">Nombre*:</label>
+                        <input
+                            className="formulario-agregar-usuario-input"
                             type="text" 
                             placeholder="Ingrese el nombre" 
                             value={nombreAdmin}
@@ -289,9 +296,10 @@ export default function AgregarUsuario(){
                             required 
                         />
                     </div>
-                    <div className="campo-formulario">
-                        <label className="input-label">Apellido*:</label>
-                        <input 
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">Apellido*:</label>
+                        <input
+                            className="formulario-agregar-usuario-input"
                             type="text" 
                             placeholder="Ingrese el apellido" 
                             value={apellidoAdmin}
@@ -299,15 +307,20 @@ export default function AgregarUsuario(){
                             required 
                         />
                     </div>
-                    <div className="campo-formulario">
-                        <label className="input-label">Rol*:</label>
-                        <select value={rolAdmin} onChange={(e)=>setRolAdmin(e.target.value)} required>
+                    <div className="formulario-agregar-usuario-campo">
+                        <label className="formulario-agregar-usuario-label">Rol*:</label>
+                        <select 
+                            className="formulario-agregar-usuario-select"
+                            value={rolAdmin} 
+                            onChange={(e)=>setRolAdmin(e.target.value)} 
+                            required
+                        >
                             <option value="superadmin">Superadmin</option>
                             <option value="editor">Editor</option>
                             <option value="lector">Lector</option>
                         </select>
                     </div>
-                    <div className="botones-formulario">
+                    <div className="formulario-agregar-usuario-botones">
                         <button 
                             type="button" 
                             className="boton-guardar"
@@ -331,7 +344,7 @@ export default function AgregarUsuario(){
     return(
         <div className="contenedor-principal">
             <MenuLateral/>
-            <div className="contenido-principal">
+            <div className="contenido-principal-agregar-usuario">
                 <h1>Agregar Usuario</h1>
                 <div className="selector-tipo">
                     <button

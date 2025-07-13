@@ -7,7 +7,7 @@
     background-color: #f9f9f9;
 }
 
-.contenido-principal {
+.contenido-principal-agregar-usuario {
     flex: 1;
     padding: 20px;
     background-color: #f9f9f9;
@@ -42,7 +42,7 @@ h2{
     text-align: center;
 }
 
-.formulario-agregar {
+.formulario-agregar-usuario {
     background-color: white;
     padding: 20px;
     padding-top: 1px;
@@ -52,27 +52,22 @@ h2{
     margin: auto;
 }
 
-.formulario-agregar label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.campo-formulario {
+.formulario-agregar-usuario-campo {
   display: flex;
   flex-direction: column;
   margin-bottom: 1.5rem;
 }
 
-.campo-formulario label {
+.formulario-agregar-usuario-label {
+  display: block;
   font-weight: bold;
   margin-bottom: 0.5rem;
   color: #333;
   font-size: 16px;
 }
 
-.campo-formulario input,
-.campo-formulario select {
+.formulario-agregar-usuario-input,
+.formulario-agregar-usuario-select {
   padding: 0.6rem;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -80,11 +75,28 @@ h2{
   margin: 0 !important;
 }
 
-.campo-formulario select {
+.formulario-agregar-usuario-select {
   background-color: #f9f9f9;
 }
 
-.boton-agregar {
+.formulario-agregar-usuario-materias-recursadas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.formulario-agregar-usuario-materia-recursada {
+  display: flex;
+  align-items: center;
+  background-color: #e6e6e6;
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+}
+
+.formulario-agregar-usuario-boton-agregar {
   font-family: 'Roboto';
   padding: 0.6rem 1rem;
   background-color: #007bff;
@@ -97,10 +109,10 @@ h2{
   width: fit-content;
 }
 
-.boton-agregar:hover {
+.formulario-agregar-usuario-boton-agregar:hover {
   background-color: #0056b3;
 }
 
-.botones-formulario{
-    justify-content: space-evenly !important;
+.formulario-agregar-usuario-botones{
+    justify-content: space-evenly;
 }

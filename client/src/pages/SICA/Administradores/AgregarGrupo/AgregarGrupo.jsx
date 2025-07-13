@@ -55,10 +55,10 @@ export default function AgregarGrupo() {
     }
 
     return (
-        <div className='contenedor-principal'>
+        <div className="contenedor-principal">
             <MenuLateral/>
             <FormularioGrupo
-                tituloFormulario = 'Agregar Nuevo Grupo'
+                tituloFormulario = "Agregar Nuevo Grupo"
                 guardar = {guardarGrupo}
                 cancelar = {cancelar}
                 reset= {resetForm}

@@ -125,16 +125,16 @@ export default function MenuLateral(){
 
     return(
         <>
-            <button className={`menu-hamburguesa ${menuAbierto ? 'oculto' : ''}`} onClick={abrirMenu}>
+            <button className={`menu-hamburguesa ${menuAbierto ? 'oculto' : ""}`} onClick={abrirMenu}>
                 ☰
             </button>
-            <div className={`contenedor-menu ${menuAbierto ? 'abierto' : ''}`}>
-                <button className='cerrar-menu' onClick={cerrarMenu}>×</button>
-                <div className='encabezado-menu'>
-                    <img src={LogoCBTA} alt='Logo'/>
+            <div className={`contenedor-menu ${menuAbierto ? 'abierto' : ""}`}>
+                <button className="cerrar-menu" onClick={cerrarMenu}>×</button>
+                <div className="encabezado-menu">
+                    <img src={LogoCBTA} alt="Logo"/>
                     <strong>SICA239</strong>
                 </div>
-                <div className='elementos-menu'>
+                <div className="elementos-menu">
                     <ul>
                         {elementosMenu.map((elemento, index)=>(
                             <li 
@@ -150,7 +150,7 @@ export default function MenuLateral(){
                                 }
                             >
                                 <span>
-                                    {elemento.icono && <elemento.icono className='icono'/>}
+                                    {elemento.icono && <elemento.icono className="icono"/>}
                                     {elemento.titulo}
                                 </span>
                                 {elemento.subelementos && (
@@ -169,7 +169,7 @@ export default function MenuLateral(){
                                                 }}
                                             >
                                                 <span>
-                                                    {subelemento.icono && <subelemento.icono className='icono'/>}
+                                                    {subelemento.icono && <subelemento.icono className="icono"/>}
                                                     {subelemento.titulo}
                                                 </span>
                                             </li>

@@ -198,7 +198,7 @@ export default function AgregarUsuario(){
                                 ))}
                         </select>
                     </div>
-                    <div className="formulario-agregar-usuario-campo">
+                    <div className="formulario-agregar-usuario-campo-materias-recursadas">
                         <label className="formulario-agregar-usuario-label">Materias recursadas:</label>
                         <div className="formulario-agregar-usuario-materias-recursadas">
                             {materiasRecursadas.map((item, index) => {
@@ -234,24 +234,26 @@ export default function AgregarUsuario(){
                             ))}
                         </select>
                         </div>
-                        <button
-                            type="button"
-                            className="formulario-agregar-usuario-boton-agregar"
-                            onClick={() => {
-                                if (materiaSeleccionada) {
-                                    const [materia, grupo] = materiaSeleccionada.split("-")
-                                    const yaAgregada = materiasRecursadas.some(mr =>
-                                        mr.materia === materia && mr.grupo === grupo
-                                    )
-                                    if (!yaAgregada) {
-                                        setMateriasRecursadas([...materiasRecursadas, { materia, grupo }])
-                                        setMateriaSeleccionada("")
+                        <div className="formulario-agregar-usuario-contenedor-boton-agregar">
+                            <button
+                                type="button"
+                                className="formulario-agregar-usuario-boton-agregar"
+                                onClick={() => {
+                                    if (materiaSeleccionada) {
+                                        const [materia, grupo] = materiaSeleccionada.split("-")
+                                        const yaAgregada = materiasRecursadas.some(mr =>
+                                            mr.materia === materia && mr.grupo === grupo
+                                        )
+                                        if (!yaAgregada) {
+                                            setMateriasRecursadas([...materiasRecursadas, { materia, grupo }])
+                                            setMateriaSeleccionada("")
+                                        }
                                     }
-                                }
-                            }}
-                        >
-                            Agregar
-                        </button>
+                                }}
+                            >
+                                Agregar
+                            </button>
+                        </div>
                     <div className="formulario-agregar-usuario-botones">
                         <button 
                             type="button" 

@@ -1,8 +1,8 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import "./CerrarSemestre.css"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import './CerrarSemestre.css'
 
 // Página del SICA para cerrar un semestre pasando las calificaciones parciales al historial académico
 export default function CerrarSemestre(){
@@ -40,28 +40,34 @@ export default function CerrarSemestre(){
     }
     
     return (
-        <div className="contenedor-inicio">
+        <div className="contenedor-principal">
             <MenuLateral/>
-            <div className="contenido-principal">
-                <h2>Cerrar Semestre</h2>
+            <div className="contenido-principal-cerrar-semestre">
+                <h1>Cerrar Semestre</h1>
                 <p>Esta acción guardará los promedios en el historial académico y eliminará todas las calificaciones parciales actuales.</p>
-                <button
-                    onClick={() => setConfirmar(true)}
-                    disabled={cargando}
-                    style={{ backgroundColor: 'red', color: 'white' }}
-                >
-                    Cerrar semestre actual
-                </button>
-
+                <div className="cerrar-semestre-botones">
+                    <button
+                        className="cerrar-semestre-boton"
+                        onClick={() => setConfirmar(true)}
+                        disabled={cargando}
+                    >
+                        Cerrar semestre actual
+                    </button>
+                </div>
                 {confirmar && (
-                    <div>
-                        <p>¿Estás seguro? Esta acción no se puede deshacer.</p>
-                        <button onClick={cerrarSemestre} disabled={cargando}>
-                            Confirmar
-                        </button>
-                        <button onClick={() => setConfirmar(false)} disabled={cargando}>
+                    <div className="cerrar-semestre-contenedor-alerta">
+                        <div className="cerrar-semestre-alerta-mensaje">
+                        <h2>¿Confirmar cierre de semestre?</h2>
+                        <p>⚠️ Esta acción no se puede deshacer. Asegúrate de haber verificado todas las calificaciones.</p>
+                        <div className="cerrar-semestre-alerta-botones">
+                            <button className="cerrar-semestre-boton-confirmar" onClick={cerrarSemestre} disabled={cargando}>
+                            Cerrar semestre permanentemente
+                            </button>
+                            <button className="cerrar-semestre-boton-cancelar" onClick={() => setConfirmar(false)} disabled={cargando}>
                             Cancelar
-                        </button>
+                            </button>
+                        </div>
+                        </div>
                     </div>
                 )}
             </div>

@@ -70,57 +70,65 @@ export default function EditarAdministrador() {
 
     if (!admin) return <p>Cargando administrador...</p>
     return (
-        <>
+        <div className="contenedor-principal">
             <MenuLateral/>
-            <form className="formulario-editar">
-                <h2>Editar Administrador</h2>
-                <label>
-                    RFC*:
-                    <input
-                    type="text"
-                    value={admin.rfc}
-                    readOnly
-                    />
-                </label>
-                <label>
-                    Nombre*:
-                    <input
-                    type="text"
-                    value={admin.nombre}
-                    onChange={(e) => setAdmin({ ...admin, nombre: e.target.value })}
-                    required
-                    />
-                </label>
-                <label>
-                    Apellido*:
-                    <input
-                    type="text"
-                    value={admin.apellido}
-                    onChange={(e) => setAdmin({ ...admin, apellido: e.target.value })}
-                    required
-                    />
-                </label>
-                <label>
-                    Rol*:
-                    <select
-                        value={admin.rol}
-                        onChange={(e) => setAdmin({ ...admin, rol: e.target.value })}
-                        required
-                    >
-                        <option value="superadmin">Superadmin</option>
-                        <option value="editor">Editor</option>
-                        <option value="lector">Lector</option>
-                    </select>
-                </label>
-                <div className="botones-formulario">
-                    <button type="button" className="btn-guardar" onClick={guardarCambios}>
-                        Guardar cambios
-                    </button>
-                    <button type="button" className="btn-cancelar" onClick={cancelar}>
-                        Cancelar
-                    </button>
+            <div className="contenido-principal-editar-admin">
+                <div>
+                    <h1>Editar Administrador</h1>
+                    <form className="formulario-editar-admin">
+                        <div className="formulario-editar-admin-campo">
+                            <label className="formulario-editar-admin-label">RFC*:</label>
+                            <input
+                            className="formulario-editar-admin-input"
+                            type="text"
+                            value={admin.rfc}
+                            readOnly
+                            />
+                        </div>
+                        <div className="formulario-editar-admin-campo">
+                            <label className="formulario-editar-admin-label">Nombre*:</label>
+                            <input
+                            className="formulario-editar-admin-input"
+                            type="text"
+                            value={admin.nombre}
+                            onChange={(e) => setAdmin({ ...admin, nombre: e.target.value })}
+                            required
+                            />
+                        </div>
+                        <div className="formulario-editar-admin-campo">
+                            <label className="formulario-editar-admin-label">Apellido*:</label>
+                            <input
+                            className="formulario-editar-admin-input"
+                            type="text"
+                            value={admin.apellido}
+                            onChange={(e) => setAdmin({ ...admin, apellido: e.target.value })}
+                            required
+                            />
+                        </div>
+                        <div className="formulario-editar-admin-campo">
+                        <label className="formulario-editar-admin-label">Rol*:</label>
+                            <select
+                                className="formulario-editar-admin-select"
+                                value={admin.rol}
+                                onChange={(e) => setAdmin({ ...admin, rol: e.target.value })}
+                                required
+                            >
+                                <option value="superadmin">Superadmin</option>
+                                <option value="editor">Editor</option>
+                                <option value="lector">Lector</option>
+                            </select>
+                        </div>
+                        <div className="formulario-editar-admin-botones">
+                            <button type="button" className="boton-guardar" onClick={guardarCambios}>
+                                Guardar cambios
+                            </button>
+                            <button type="button" className="boton-cancelar" onClick={cancelar}>
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </>
+            </div>
+        </div>
     )
 }

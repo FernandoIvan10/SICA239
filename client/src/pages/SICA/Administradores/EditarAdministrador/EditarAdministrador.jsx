@@ -1,9 +1,9 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useNavigate, useParams } from "react-router-dom"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import "./EditarAdministrador.css"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import './EditarAdministrador.css'
 
 // Página del SICA para editar usuarios administradores
 export default function EditarAdministrador() {
@@ -18,8 +18,8 @@ export default function EditarAdministrador() {
     useEffect(() => { // Se obtienen los datos del administrador a editar
         fetch(`http://localhost:3000/api/admins/${id}`, {
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         })
         .then(res => res.json())
@@ -32,33 +32,33 @@ export default function EditarAdministrador() {
             })
         })
         .catch(err => {
-            console.error("Error al obtener administrador:", err)
+            console.error('Error al obtener administrador:', err)
         })
     }, [id])
 
     // Método para editar el administrador con los nuevos datos
     const guardarCambios = () => {
         if(!admin.nombre.trim() || !admin.apellido.trim() || !admin.rol.trim()){ // Se deben rellenar todos los campos del formulario
-            alert("Todos los campos son obligatorios")
+            alert('Todos los campos son obligatorios')
             return
         }
         
         const {nombre, apellido, rol} = admin // Se obtienen los nuevos datos del formulario
 
         fetch(`http://localhost:3000/api/admins/${id}`, {
-            method: "PUT",
+            method: 'PUT',
             headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({nombre, apellido, rol})
         }).then(async res => {
             if(res.ok){
-                alert("Administrador actualizado correctamente")
-                navigate("/SICA/administradores/ver-usuarios")
+                alert('Administrador actualizado correctamente')
+                navigate('/SICA/administradores/ver-usuarios')
             } else {
                 console.error(await res.json().catch(()=>null))
-                alert("Ocurrió un error al actualizar el admin")
+                alert('Ocurrió un error al actualizar el admin')
             }
         })
     }

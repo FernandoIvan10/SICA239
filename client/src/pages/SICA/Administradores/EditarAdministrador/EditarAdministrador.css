@@ -9,13 +9,13 @@
 }
 
 .formulario-editar-admin {
+    width: 100%;
     background-color: white;
-    padding: 20px;
-    padding-top: 1px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    margin: auto;
+    max-width: 400px;
+    margin: 0;
+    padding: 1.5rem;
 }
 
 .formulario-editar-admin-campo{

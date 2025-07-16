@@ -5,7 +5,7 @@ import './Bienvenida.css'
 // Componente que renderiza el mensaje de bienvenida al SICA
 export default function Bienvenida(props){
     return(
-    <div className="contenedor-bienvenida">
+    <div className="contenido-principal">
         <h2 className="titulo-bienvenida">¡Bienvenido, {props.nombre}!</h2>
         <p className="mensaje-bienvenida">{props.descripcion}</p>
         <div className="contenedor-botones-bienvenida">

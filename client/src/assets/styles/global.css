@@ -31,6 +31,14 @@ input {
     width: 100%;
 }
 
+.contenido-principal{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F9F9F9;
+}
+
 .input-label{
     font-family: 'Roboto';
     font-size: 18px;

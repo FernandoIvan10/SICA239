@@ -55,7 +55,7 @@ export default function FormularioGrupo(props) {
     }
 
     return (
-    <div className="contenedor-formulario-grupo">
+    <div className="contenido-principal">
         <h1 className="formulario-grupo-titulo">{props.tituloFormulario}</h1>
         <div className="formulario-grupo">
             <label className="formulario-grupo-label">

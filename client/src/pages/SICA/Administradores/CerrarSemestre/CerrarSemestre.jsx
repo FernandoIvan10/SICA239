@@ -42,7 +42,7 @@ export default function CerrarSemestre(){
     return (
         <div className="contenedor-principal">
             <MenuLateral/>
-            <div className="contenido-principal-cerrar-semestre">
+            <div className="contenido-principal">
                 <h1>Cerrar Semestre</h1>
                 <p>Esta acción guardará los promedios en el historial académico y eliminará todas las calificaciones parciales actuales.</p>
                 <div className="cerrar-semestre-botones">

@@ -346,7 +346,7 @@ export default function AgregarUsuario(){
     return(
         <div className="contenedor-principal">
             <MenuLateral/>
-            <div className="contenido-principal-agregar-usuario">
+            <div className="contenido-principal">
                 <h1>Agregar Usuario</h1>
                 <div className="selector-tipo">
                     <button

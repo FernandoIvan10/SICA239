@@ -1,18 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-.contenedor-agregar-usuario {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    background-color: #f9f9f9;
-}
-
-.contenido-principal-agregar-usuario {
-    flex: 1;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
-
 .selector-tipo {
     display: flex;
     justify-content: center;

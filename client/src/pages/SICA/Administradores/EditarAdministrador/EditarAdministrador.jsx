@@ -72,7 +72,7 @@ export default function EditarAdministrador() {
     return (
         <div className="contenedor-principal">
             <MenuLateral/>
-            <div className="contenido-principal-editar-admin">
+            <div className="contenido-principal">
                 <h1>Editar Administrador</h1>
                 <form className="formulario-editar-admin">
                     <div className="formulario-editar-admin-campo">

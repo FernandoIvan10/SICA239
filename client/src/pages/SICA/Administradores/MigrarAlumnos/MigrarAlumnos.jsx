@@ -1,7 +1,7 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from './../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './MigrarAlumnos.css'
 import '../../../../assets/styles/global.css'
 
@@ -33,7 +33,7 @@ export default function MigrarAlumnos() {
                 return
             }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los grupos")
+                alert('Ocurrió un error al obtener los grupos')
                 return   
             }
         })
@@ -54,12 +54,12 @@ export default function MigrarAlumnos() {
                     setAlumnos(data)
                 } else {
                     console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                    alert("Ocurrió un error al obtener los alumnos")
+                    alert('Ocurrió un error al obtener los alumnos')
                 }
             })
             .catch(error => {
                 console.error('Error de red al obtener alumnos:', error)
-                alert("Error de red al obtener los alumnos")
+                alert('Error de red al obtener los alumnos')
             })
         }
     }, [grupoOrigen])

@@ -1,9 +1,10 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import "./GestionarHorarios.css"
-import { jwtDecode } from "jwt-decode"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import { jwtDecode } from 'jwt-decode'
+import '../../../../assets/styles/global.css'
+import './GestionarHorarios.css'
 
 // Página del sica para gestionar los horarios de los grupos
 export default function GestionarHorarios(){
@@ -29,7 +30,7 @@ export default function GestionarHorarios(){
                 return
             }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los grupos")
+                alert('Ocurrió un error al obtener los grupos')
                 return   
             }
         })
@@ -54,7 +55,7 @@ export default function GestionarHorarios(){
                 return
             }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los horarios")
+                alert('Ocurrió un error al obtener los horarios')
                 return   
             }
         })
@@ -69,11 +70,11 @@ export default function GestionarHorarios(){
     // Método para subir el horario de un grupo
     const subirHorario = async (grupoId, file) => {
         const formData = new FormData()
-        formData.append("imagen", file)
-        formData.append("grupoId", grupoId)
+        formData.append('imagen', file)
+        formData.append('grupoId', grupoId)
 
-        const res = await fetch("http://localhost:3000/api/horarios", {
-            method: "POST",
+        const res = await fetch('http://localhost:3000/api/horarios', {
+            method: 'POST',
             headers: { Authorization: `Bearer ${token}` },
             body: formData
         })
@@ -81,23 +82,23 @@ export default function GestionarHorarios(){
         if (res.ok) {
             const data = await res.json()
             cargarHorarios()
-            alert("Horario establecido exitosamente")
+            alert('Horario establecido exitosamente')
         } else {
-            alert("Error al subir el horario")
+            alert('Error al subir el horario')
         }
     }
 
     // Método para eliminar un horario
     const eliminarHorario = async (horarioId) => {
         const res = await fetch(`http://localhost:3000/api/horarios/${horarioId}`, {
-            method: "DELETE",
+            method: 'DELETE',
             headers: { Authorization: `Bearer ${token}` }
         })
 
         if (res.ok) {
             cargarHorarios()
         } else {
-            alert("Error al eliminar el horario")
+            alert('Error al eliminar el horario')
         }
     }
 
@@ -105,7 +106,7 @@ export default function GestionarHorarios(){
         return <p>Cargando datos...</p>
     }
     return(
-        <div className="contenedor-gestionar-horarios">
+        <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Horarios</h1>

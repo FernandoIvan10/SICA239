@@ -1,6 +1,6 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useEffect, useState } from 'react'
-import { useValidarToken } from './../../../hooks/useValidarToken/useValidarToken'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './MigrarAlumnos.css'
 import '../../../../assets/styles/global.css'

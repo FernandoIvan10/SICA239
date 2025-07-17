@@ -1,0 +1,82 @@
+.migrar-alumnos-campo {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+}
+
+.migrar-alumnos-campo-label {
+    font-family: 'Roboto';
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.migrar-alumnos-campo-select {
+    font-family: 'Roboto';
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.migrar-alumnos-campo-select:focus {
+    border-color: #3182ce;
+    outline: none;
+}
+
+.migrar-alumnos-contenedor-lista-alumnos {
+    margin-top: 2rem;
+}
+
+.migrar-alumnos-contenedor-lista-alumnos h2 {
+    margin-bottom: 1rem;
+}
+
+.migrar-alumnos-lista-alumnos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.migrar-alumnos-alumno {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease;
+}
+
+.migrar-alumnos-alumno:hover {
+    background-color: #f1f1f1;
+}
+
+.migrar-alumnos-alumno-label {
+    font-family: 'Roboto';
+    font-size: 1rem;
+}
+
+.migrar-alumnos-alumno-checkbox {
+    width: 18px;
+    height: 18px;
+}
+
+.migrar-alumnos-contenedor-botones {
+    margin-top: 2rem;
+}
+
+.boton-guardar:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.contenido-principal p {
+    font-family: 'Roboto';
+    margin-top: 1.5rem;
+    font-weight: 500;
+    color: #2d3748;
+}

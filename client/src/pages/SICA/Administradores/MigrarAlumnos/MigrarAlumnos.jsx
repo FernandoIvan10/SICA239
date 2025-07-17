@@ -2,6 +2,8 @@ import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
 import { useEffect, useState } from "react"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
 import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
+import './MigrarAlumnos.css'
+import '../../../../assets/styles/global.css'
 
 // Página del SICA para migrar los alumnos de un grupo (sin calificaciones) a otro
 export default function MigrarAlumnos() {
@@ -107,24 +109,22 @@ export default function MigrarAlumnos() {
     }
 
     return (
-        <div>
+        <div className="contenedor-principal">
             <MenuLateral/>
-            <div>
-                <h2>Migrar alumnos entre grupos</h2>
-
-                <div>
-                    <label>Grupo origen:</label>
-                    <select value={grupoOrigen} onChange={e => setGrupoOrigen(e.target.value)}>
+            <div className="contenido-principal">
+                <h1>Migrar alumnos entre grupos</h1>
+                <div className="migrar-alumnos-campo">
+                    <label className="migrar-alumnos-campo-label">Grupo origen:</label>
+                    <select className="migrar-alumnos-campo-select" value={grupoOrigen} onChange={e => setGrupoOrigen(e.target.value)}>
                         <option value="">Selecciona</option>
                         {grupos.map(g => (
                             <option key={g._id} value={g._id}>{g.nombre}</option>
                         ))}
                     </select>
                 </div>
-
-                <div>
-                    <label>Grupo destino:</label>
-                    <select value={grupoDestino} onChange={e => setGrupoDestino(e.target.value)}>
+                <div className="migrar-alumnos-campo">
+                    <label className="migrar-alumnos-campo-label">Grupo destino:</label>
+                    <select className="migrar-alumnos-campo-select" value={grupoDestino} onChange={e => setGrupoDestino(e.target.value)}>
                         <option value="">Selecciona</option>
                         {grupos
                             .filter(g => g._id !== grupoOrigen)
@@ -135,32 +135,32 @@ export default function MigrarAlumnos() {
                 </div>
 
                 {alumnos.length > 0 && (
-                    <div>
-                        <h3>Selecciona alumnos a migrar:</h3>
-                        <ul>
+                    <div className="migrar-alumnos-contenedor-lista-alumnos">
+                        <h2>Selecciona alumnos a migrar:</h2>
+                        <ul className="migrar-alumnos-lista-alumnos">
                             {alumnos.map(a => (
-                                <li key={a._id}>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={seleccionados.includes(a._id)}
-                                            onChange={() => manejarCheckbox(a._id)}
-                                        />
-                                        {a.nombre} {a.apellido}
-                                    </label>
+                                <li className="migrar-alumnos-alumno" key={a._id}>
+                                    <label className="migrar-alumnos-alumno-label">{a.nombre} {a.apellido}</label>
+                                    <input
+                                        className="migrar-alumnos-alumno-checkbox"
+                                        type="checkbox"
+                                        checked={seleccionados.includes(a._id)}
+                                        onChange={() => manejarCheckbox(a._id)}
+                                    />
                                 </li>
                             ))}
                         </ul>
                     </div>
                 )}
-
-                <button
-                    onClick={migrar}
-                    disabled={cargando || !grupoOrigen || !grupoDestino || seleccionados.length === 0}
-                >
-                    {cargando ? 'Migrando...' : 'Migrar alumnos'}
-                </button>
-
+                <div className="migrar-alumnos-contenedor-botones">
+                    <button
+                        className="boton-guardar"
+                        onClick={migrar}
+                        disabled={cargando || !grupoOrigen || !grupoDestino || seleccionados.length === 0}
+                    >
+                        {cargando ? 'Migrando...' : 'Migrar alumnos'}
+                    </button>
+                </div>
                 {mensaje && <p>{mensaje}</p>}
             </div>
         </div>

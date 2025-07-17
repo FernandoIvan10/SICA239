@@ -1,9 +1,9 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import "./SubirCalificaciones.css"
-import { jwtDecode } from "jwt-decode"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import './SubirCalificaciones.css'
+import { jwtDecode } from 'jwt-decode'
 
 // Página del SICA para subir calificaciones
 export default function SubirCalificaciones(){
@@ -34,7 +34,7 @@ export default function SubirCalificaciones(){
                 return
             }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los grupos")
+                alert('Ocurrió un error al obtener los grupos')
                 return   
             }
         })
@@ -42,7 +42,6 @@ export default function SubirCalificaciones(){
      
     useEffect(()=>{ // Se obtienen los alumnos y materias del grupo seleccionado
         if(grupoSeleccionado){
-            const token = localStorage.getItem("token");
             fetch(`http://localhost:3000/api/alumnos/por-grupo/${grupoSeleccionado}`, { // Obtener los alumnos del backend
                 method: 'GET',
                 headers: {
@@ -56,12 +55,12 @@ export default function SubirCalificaciones(){
                     setAlumnos(data)
                 } else {
                     console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                    alert("Ocurrió un error al obtener los alumnos")
+                    alert('Ocurrió un error al obtener los alumnos')
                 }
             })
             .catch(error => {
                 console.error('Error de red al obtener alumnos:', error)
-                alert("Error de red al obtener los alumnos")
+                alert('Error de red al obtener los alumnos')
             })
             // Actualizar materias según el grupo seleccionado
             const grupo = grupos.find(g => g._id === grupoSeleccionado)
@@ -125,7 +124,7 @@ export default function SubirCalificaciones(){
     // Método para guardar los cambios en las calificaciones
     const guardarCalificaciones = async () => {
         if (!grupoSeleccionado || !parcialSeleccionado) {
-            alert("Selecciona un grupo y un parcial antes de guardar.")
+            alert('Selecciona un grupo y un parcial antes de guardar.')
             return
         }
 
@@ -160,7 +159,7 @@ export default function SubirCalificaciones(){
                 })
                 if(!response.ok){
                     const errorData = await response.json()
-                    throw new Error("Error al capturar las calificaciones: " + errorData)
+                    throw new Error('Error al capturar las calificaciones: ' + errorData)
                 }
 
             }

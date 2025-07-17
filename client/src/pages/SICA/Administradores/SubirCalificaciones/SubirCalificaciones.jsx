@@ -179,26 +179,24 @@ export default function SubirCalificaciones(){
         )
     }
     return (
-        <div className="contenedor-inicio">
+        <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Subir Calificaciones</h1>
-
-                <div className="selectores">
-                    <select className="select-grupo" value={grupoSeleccionado} onChange={e => setGrupoSeleccionado(e.target.value)}>
+                <div className="subir-calificaciones-selectores">
+                    <select className="subir-calificaciones-selectores-select" value={grupoSeleccionado} onChange={e => setGrupoSeleccionado(e.target.value)}>
                         <option value="">Seleccionar grupo</option>
                         {grupos.map(grupo => (
                             <option key={grupo._id} value={grupo._id}>{grupo.nombre}</option>
                         ))}
                     </select>
-                    <select className="select-parcial" value={parcialSeleccionado} onChange={e => setParcialSeleccionado(e.target.value)}>
+                    <select className="subir-calificaciones-selectores-select" value={parcialSeleccionado} onChange={e => setParcialSeleccionado(e.target.value)}>
                         <option value="">Seleccionar parcial</option>
                         {parciales.map((parcial, i) => (
                             <option key={i} value={parcial}>{parcial}</option>
                         ))}
                     </select>
                 </div>
-
                 <table className="tabla-calificaciones">
                     <thead>
                         <tr>
@@ -245,7 +243,7 @@ export default function SubirCalificaciones(){
                     </tbody>
                 </table>
                 {tokenDecodificado.rol !== "lector" && 
-                    <button className="btn-guardar" onClick={guardarCalificaciones}>Guardar Calificaciones</button>
+                    <button className="boton-guardar" onClick={guardarCalificaciones}>Guardar Calificaciones</button>
                 }
             </div>
         </div>

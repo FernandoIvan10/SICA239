@@ -2,8 +2,9 @@ import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useEffect, useState } from 'react'
 import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
-import './SubirCalificaciones.css'
 import { jwtDecode } from 'jwt-decode'
+import '../../../../assets/styles/global.css'
+import './SubirCalificaciones.css'
 
 // Página del SICA para subir calificaciones
 export default function SubirCalificaciones(){

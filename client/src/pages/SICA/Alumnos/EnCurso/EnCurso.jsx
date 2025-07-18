@@ -1,10 +1,11 @@
 import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
 import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
 import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import './EnCurso.css'
 import { useEffect } from "react"
 import { jwtDecode } from "jwt-decode"
 import { useState } from "react"
+import '../../../../assets/styles/global.css'
+import './EnCurso.css'
 
 // Página de inicio del SICA para consultar las calificaciones del semestre en curso
 export default function EnCurso(){
@@ -35,7 +36,7 @@ export default function EnCurso(){
     },[])
 
     return(
-        <div className="contenedor-inicio">
+        <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Calificaciones Parciales</h1>

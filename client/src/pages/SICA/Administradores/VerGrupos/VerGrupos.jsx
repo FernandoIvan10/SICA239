@@ -1,11 +1,11 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import { MdEdit, MdDelete } from "react-icons/md"
-import "./VerGrupos.css"
-import { jwtDecode } from "jwt-decode"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import { MdEdit, MdDelete } from 'react-icons/md'
+import { jwtDecode } from 'jwt-decode'
+import './VerGrupos.css'
 
 // Página del sica para ver la lista de grupos
 export default function VerGrupos(){
@@ -36,7 +36,7 @@ export default function VerGrupos(){
                 return
             }else{
                 console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los grupos")
+                alert('Ocurrió un error al obtener los grupos')
                 return   
             }
         })
@@ -44,7 +44,7 @@ export default function VerGrupos(){
 
     // Método para eliminar un grupo
     const eliminarGrupo = async (idGrupo) => {
-        const confirmar = window.confirm("¿Estás seguro de que quieres eliminar este grupo? (Esta acción es irreversible)") // Se avierte al usuario que eliminar el grupo es irreversible
+        const confirmar = window.confirm('¿Estás seguro de que quieres eliminar este grupo? (Esta acción es irreversible)') // Se avierte al usuario que eliminar el grupo es irreversible
         if (!confirmar) return
         try {
             const respuesta = await fetch(`http://localhost:3000/api/grupos/${idGrupo}`, {
@@ -56,7 +56,7 @@ export default function VerGrupos(){
             })
 
             if (respuesta.ok) {
-                alert("Grupo eliminado correctamente")
+                alert('Grupo eliminado correctamente')
 		        obtenerGrupos() // Se vuelve a cargar la lista de grupos
             } else {
                 const data = await respuesta.json()
@@ -64,8 +64,8 @@ export default function VerGrupos(){
                 alert(data.mensaje)
             }
         } catch (error) {
-            console.error("Error al eliminar el grupo:", error)
-            alert("Error del servidor al eliminar el grupo")
+            console.error('Error al eliminar el grupo:', error)
+            alert('Error del servidor al eliminar el grupo')
         }
     }
 
@@ -103,7 +103,7 @@ export default function VerGrupos(){
                                     <td>
                                         <MdEdit 
                                             className="tabla-grupos-boton-editar"
-                                            onClick={() => navigate('/SICA/administradores/editar-grupo', { state: { grupo } })}
+                                            onClick={() => navigate("/SICA/administradores/editar-grupo", { state: { grupo } })}
                                         />
                                         <MdDelete 
                                             className="tabla-grupos-boton-eliminar"
@@ -118,7 +118,7 @@ export default function VerGrupos(){
                 {tokenDecodificado.rol !== "lector" && 
                     <button
                         className="boton-guardar"
-                        onClick={() => navigate('/SICA/administradores/agregar-grupo')}
+                        onClick={() => navigate("/SICA/administradores/agregar-grupo")}
                     >
                         Agregar Grupo
                     </button>

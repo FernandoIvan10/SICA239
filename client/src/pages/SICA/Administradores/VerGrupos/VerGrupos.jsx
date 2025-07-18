@@ -80,7 +80,7 @@ export default function VerGrupos(){
             )
         }
     return(
-        <div className="contenedor-gestionar-grupos">
+        <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>{tokenDecodificado.rol !== "lector" ? "Gestionar Grupos" : "Lista de Grupos"}</h1>
@@ -102,11 +102,11 @@ export default function VerGrupos(){
                                 {tokenDecodificado.rol !== "lector" && 
                                     <td>
                                         <MdEdit 
-                                            className="btn-editar"
+                                            className="tabla-grupos-boton-editar"
                                             onClick={() => navigate('/SICA/administradores/editar-grupo', { state: { grupo } })}
                                         />
                                         <MdDelete 
-                                            className="btn-eliminar"
+                                            className="tabla-grupos-boton-eliminar"
                                             onClick={() => eliminarGrupo(grupo._id)}
                                         />
                                     </td>
@@ -117,7 +117,7 @@ export default function VerGrupos(){
                 </table>
                 {tokenDecodificado.rol !== "lector" && 
                     <button
-                        className="btn-agregar-grupo"
+                        className="boton-guardar"
                         onClick={() => navigate('/SICA/administradores/agregar-grupo')}
                     >
                         Agregar Grupo

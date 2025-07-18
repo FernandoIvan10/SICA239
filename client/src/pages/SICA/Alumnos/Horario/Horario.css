@@ -1,5 +1,21 @@
-.contenedor-inicio{
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+.contenedor-horario{
     display: flex;
-    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.horario{
     width: 100%;
+    max-width: 800px;
+    height: auto;
+}
+
+.horario-nombre{
+    font-family: 'Roboto';
+    font-size: xx-large;
+    margin: 1rem;
+    margin-bottom: 3rem;
 }

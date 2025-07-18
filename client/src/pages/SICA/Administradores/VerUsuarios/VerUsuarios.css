@@ -1,48 +1,35 @@
-.contenedor-inicio{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
-.contenedor-lista-usuarios {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    background-color: #f9f9f9;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .tabla-usuarios {
     width: 100%;
+    max-width: 900px;
     border-collapse: collapse;
     margin: 20px 0;
 }
 
 .tabla-usuarios th, .tabla-usuarios td {
+    font-family: 'Roboto';
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 12px 16px;
     text-align: center;
 }
 
 .tabla-usuarios th {
-    background-color: #f4f4f4;
-    font-weight: bold;
+    font-family: 'Roboto';
+    background-color: #f0f0f0;
+    font-weight: 600;
+    color: #333;
 }
 
 .tabla-usuarios tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #fafafa;
 }
 
 .tabla-usuarios tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f2f2f2;
 }
 
-.btn-editar, .btn-eliminar {
+.tabla-usuarios-boton-editar, .boton-reiniciar-contraseña {
     margin: 5px;
     padding: 8px 12px;
     border: none;
@@ -51,18 +38,10 @@ h1 {
     color: white;
 }
 
-.btn-editar {
+.tabla-usuarios-boton-editar {
     background-color: #007bff;
 }
 
-.btn-eliminar {
-    background-color: #dc3545;
-}
-
-.btn-editar:hover {
+.tabla-usuarios-boton-editar:hover {
     background-color: #0056b3;
-}
-
-.btn-eliminar:hover {
-    background-color: #c82333;
 }

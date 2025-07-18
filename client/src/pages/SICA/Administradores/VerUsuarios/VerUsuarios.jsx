@@ -1,12 +1,12 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import { MdEdit } from "react-icons/md"
-import { RiResetLeftLine } from "react-icons/ri";
-import "./VerUsuarios.css"
-import { jwtDecode } from "jwt-decode"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import { MdEdit } from 'react-icons/md'
+import { RiResetLeftLine } from 'react-icons/ri'
+import './VerUsuarios.css'
+import { jwtDecode } from 'jwt-decode'
 
 // Página del SICA para ver la lista de usuarios
 export default function VerUsuarios(){
@@ -31,7 +31,7 @@ export default function VerUsuarios(){
             setAlumnos(data)
         })
         .catch(err => {
-            console.error("Error al obtener alumnos:", err)
+            console.error('Error al obtener alumnos:', err)
             setAlumnos([])
         })
     }, [])
@@ -49,7 +49,7 @@ export default function VerUsuarios(){
             setAdmins(data)
         })
         .catch(err => {
-            console.error("Error al obtener administradores:", err)
+            console.error('Error al obtener administradores:', err)
             setAdmins([])
         })
         }
@@ -59,19 +59,19 @@ export default function VerUsuarios(){
         let adminsConTipo = []
         let alumnosConTipo = []
         if(admins.length !== 0){
-            adminsConTipo = admins.map(a => ({ ...a, tipo: "Administrador" }))    
+            adminsConTipo = admins.map(a => ({ ...a, tipo: 'Administrador' }))
         }
         if(alumnos.length !== 0){
-            alumnosConTipo = alumnos.map(a => ({ ...a, tipo: "Alumno" }))
+            alumnosConTipo = alumnos.map(a => ({ ...a, tipo: 'Alumno' }))
         }
         setUsuarios([...alumnosConTipo, ...adminsConTipo]) // Se les agrega el tipo antes de almacenarlos
     }, [alumnos, admins])
 
     // Método para redirigir al usuario a la página de edición del usuario seleccionado
     const redirigirAEdicion = (usuario) => {
-        if (usuario.tipo === "Alumno") {
+        if (usuario.tipo === 'Alumno') {
         navigate(`/SICA/administradores/editar-alumno/${usuario._id}`)
-        } else if (usuario.tipo === "Administrador") {
+        } else if (usuario.tipo === 'Administrador') {
         navigate(`/SICA/administradores/editar-administrador/${usuario._id}`)
         }
     }
@@ -83,8 +83,8 @@ export default function VerUsuarios(){
         )
         if (!confirmacion) return
         
-        let url = ""
-        if (usuario.tipo === "Alumno") {
+        let url = ''
+        if (usuario.tipo === 'Alumno') {
             url=`http://localhost:3000/api/alumnos/reiniciar-contrasena/${usuario._id}`
         } else if (usuario.tipo === "Administrador") {
             url=`http://localhost:3000/api/admins/reiniciar-contrasena/${usuario._id}`
@@ -97,10 +97,10 @@ export default function VerUsuarios(){
         })
         .then(async res => {
             if(res.ok){
-                alert("Contraseña reiniciada correctamente")
+                alert('Contraseña reiniciada correctamente')
             } else {
                 console.error(await res.json().catch(()=>null))
-                alert("Ocurrió un error al reiniciar la contraseña")
+                alert('Ocurrió un error al reiniciar la contraseña')
             }
         })
     }
@@ -116,7 +116,7 @@ export default function VerUsuarios(){
         )
     }
     return(
-        <div className="contenedor-inicio">
+        <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>{tokenDecodificado.rol === "superadmin" ? "Lista de Usuarios" : "Lista de alumnos"}</h1>
@@ -144,12 +144,12 @@ export default function VerUsuarios(){
                                 <td>{usuario.tipo === "Alumno" ? usuario.grupoId.nombre : usuario.rol}</td>
                                 {tokenDecodificado.rol !== "lector" && 
                                     <td>
-                                        <MdEdit className="btn-editar" onClick={() => redirigirAEdicion(usuario)}/>
+                                        <MdEdit className="tabla-usuarios-boton-editar" onClick={() => redirigirAEdicion(usuario)}/>
                                     </td>
                                 }
                                 {tokenDecodificado.rol !== "lector" && 
                                     <td>
-                                        <RiResetLeftLine className="btn-reiniciar-contrasena" onClick={() => reiniciarContrasena(usuario)}/>
+                                        <RiResetLeftLine className="boton-reiniciar-contrasena" onClick={() => reiniciarContrasena(usuario)}/>
                                     </td>
                                 }
                             </tr>

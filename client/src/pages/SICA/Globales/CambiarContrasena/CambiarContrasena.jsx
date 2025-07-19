@@ -3,6 +3,8 @@ import {jwtDecode} from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import '../../../../assets/styles/global.css'
+import './CambiarContrasena.css'
 
 // Página del SICA para cambiar la contraseña del usuario
 export default function CambiarContrasena() {
@@ -66,38 +68,44 @@ export default function CambiarContrasena() {
   }
 
   return (
-    <>
+    <div className="contenedor-principal">
       <MenuLateral/>
-      <div style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
-        <h2>Cambio de contraseña</h2>
-        <form onSubmit={cambiarContrasena}>
-          <label htmlFor="contrasenaAntigua">Contraseña antigua:</label>
-          <input
-            id="contrasenaAntigua"
-            type="password"
-            value={contrasenaAntigua}
-            onChange={(e) => setContrasenaAntigua(e.target.value)}
-            minLength={6}
-            required
-            disabled={cargando}
-            autoFocus
-          />
-          <label htmlFor="contrasenaNueva">Contraseña nueva:</label>
-          <input
-            id="contrasenaNueva"
-            type="password"
-            value={contrasenaNueva}
-            onChange={(e) => setContrasenaNueva(e.target.value)}
-            minLength={6}
-            required
-            disabled={cargando}
-          />
-          <button type="submit" disabled={cargando} style={{ marginTop: 10 }}>
+      <div className="contenido-principal">
+        <h1>Cambio de contraseña</h1>
+        <form className="formulario-cambiar-contrasena" onSubmit={cambiarContrasena}>
+          <div className="formulario-cambiar-contrasena-campo">
+            <label className="formulario-cambiar-contrasena-label" htmlFor="contrasenaAntigua">Contraseña antigua:</label>
+            <input
+              id="contrasenaAntigua"
+              className="formulario-cambiar-contrasena-input"
+              type="password"
+              value={contrasenaAntigua}
+              onChange={(e) => setContrasenaAntigua(e.target.value)}
+              minLength={6}
+              required
+              disabled={cargando}
+              autoFocus
+            />
+          </div>
+          <div className="formulario-cambiar-contrasena-campo">
+            <label className="formulario-cambiar-contrasena-label" htmlFor="contrasenaNueva">Contraseña nueva:</label>
+            <input
+              id="contrasenaNueva"
+              className="formulario-cambiar-contrasena-input"
+              type="password"
+              value={contrasenaNueva}
+              onChange={(e) => setContrasenaNueva(e.target.value)}
+              minLength={6}
+              required
+              disabled={cargando}
+            />
+          </div>
+          <button className="boton-guardar" type="submit" disabled={cargando} style={{ marginTop: 10 }}>
             {cargando ? 'Guardando...' : 'Actualizar contraseña'}
           </button>
         </form>
-        {mensaje && <p style={{ marginTop: 10 }}>{mensaje}</p>}
+        {mensaje && <p>{mensaje}</p>}
       </div>
-    </>
+    </div>
   )
 }

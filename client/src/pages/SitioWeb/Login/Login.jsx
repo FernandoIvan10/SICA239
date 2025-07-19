@@ -1,15 +1,15 @@
-import { jwtDecode } from "jwt-decode"
-import { useNavigate } from "react-router-dom"
-import BarraNavegacion from "../../../components/sitio_web/BarraNavegacion/BarraNavegacion"
-import Formulario from "../../../components/sica/Formulario/Formulario"
-import { FaUserCircle } from "react-icons/fa"
-import { useEffect, useState } from "react"
-import "./Login.css"
+import { jwtDecode } from 'jwt-decode'
+import { useNavigate } from 'react-router-dom'
+import BarraNavegacion from '../../../components/sitio_web/BarraNavegacion/BarraNavegacion'
+import Formulario from '../../../components/sica/Formulario/Formulario'
+import { FaUserCircle } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import './Login.css'
 
 // Página para iniciar sesión
 export default function Login(){
     const navigate = useNavigate() // Para redireccionar a los usuarios
-    const token = localStorage.getItem("token") //Token de inicio de sesión
+    const token = localStorage.getItem('token') //Token de inicio de sesión
 
     useEffect(() => {
         if(token){
@@ -18,17 +18,17 @@ export default function Login(){
                 const tokenDecodificado = jwtDecode(token) // Se decodifica el token
                 if (tokenDecodificado.exp * 1000 > Date.now()) {
                     // Si el token es válido, redirigir al panel correspondiente
-                    const ruta = tokenDecodificado.rol === "alumno"
-                        ? "/SICA/alumnos/inicio"
-                        : "/SICA/administradores/inicio";
+                    const ruta = tokenDecodificado.rol === 'alumno'
+                        ? '/SICA/alumnos/inicio'
+                        : '/SICA/administradores/inicio';
                     navigate(ruta);
                 } else {
                     // Si el token expiró, eliminarlo
-                    localStorage.removeItem("token");
+                    localStorage.removeItem('token');
                 }
             }catch(error){
-                console.error("Error al decodificar el token:",error)
-                localStorage.removeItem("token")
+                console.error('Error al decodificar el token:',error)
+                localStorage.removeItem('token')
             }
         }
     }, [token, navigate])
@@ -79,9 +79,9 @@ export default function Login(){
             if (requiereCambioContrasena) {
                 navigate('/SICA/primer-cambio-contrasena')
             } else { // El usuario es redirigido al sistema
-                const token = localStorage.getItem("token")
+                const token = localStorage.getItem('token')
                 const tokenDecodificado = jwtDecode(token)
-                if(tokenDecodificado.rol === "alumno"){
+                if(tokenDecodificado.rol === 'alumno'){
                     navigate('/SICA/alumnos/inicio')
                 }else{
                     navigate('/SICA/administradores/inicio')
@@ -96,27 +96,27 @@ export default function Login(){
         <>
         {/* Barra de navegación principal */}
         <BarraNavegacion/>
-        <h1 className='h1-login'>Sistema de Calificaciones</h1>
+        <h1 className="h1-login">Sistema de Calificaciones</h1>
         {/* Tarjeta flotante que envuelve el login */}
-        <div className='tarjeta-flotante'>
+        <div className="tarjeta-flotante">
             {/* Pestañas que permiten alternar entre los formularios */}
-            <div className='pestañas'>
+            <div className="pestañas">
                 <div
-                    className={`pestaña ${activarPestaña === 'alumno' ? 'activado':''}`}
-                    onClick={()=>setActivarPestaña('alumno')}
+                    className={`pestaña ${activarPestaña === "alumno" ? "activado":""}`}
+                    onClick={()=>setActivarPestaña("alumno")}
                 >Alumnos</div>
                 <div
-                    className={`pestaña ${activarPestaña === 'administrador' ? 'activado':''}`}
-                    onClick={()=>setActivarPestaña('administrador')}
+                    className={`pestaña ${activarPestaña === "administrador" ? "activado":""}`}
+                    onClick={()=>setActivarPestaña("administrador")}
                 >Administradores</div>
             </div>                
-            <div className='contenido'>
-                {activarPestaña==='alumno' ?(
+            <div className="contenido">
+                {activarPestaña==="alumno" ?(
                     // Formulario de alumnos
                     <>
                     <Formulario
                         onSubmit={iniciarSesion}
-                        icono={<FaUserCircle className='formulario-icono'/>}
+                        icono={<FaUserCircle className="formulario-icono"/>}
                         campos={[{
                             texto:"Número de control:",
                             type:"text",
@@ -139,7 +139,7 @@ export default function Login(){
                     <>
                     <Formulario
                         onSubmit={iniciarSesion}
-                        icono={<FaUserCircle className='formulario-icono'/>}
+                        icono={<FaUserCircle className="formulario-icono"/>}
                         campos={[{
                             texto:"Usuario:",
                             type:"text",

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import '../../../../assets/styles/global.css'
-import './CambiarContrasena.css'
 
 // Página del SICA para cambiar la contraseña del usuario
 export default function CambiarContrasena() {
@@ -100,7 +99,7 @@ export default function CambiarContrasena() {
               disabled={cargando}
             />
           </div>
-          <button className="boton-guardar" type="submit" disabled={cargando} style={{ marginTop: 10 }}>
+          <button className="boton-guardar" type="submit" disabled={cargando}>
             {cargando ? 'Guardando...' : 'Actualizar contraseña'}
           </button>
         </form>

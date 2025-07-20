@@ -88,8 +88,9 @@ export default function AgregarUsuario(){
                     setRolAdmin('lector')
                     return
                 }else{
-                    console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                    alert('Ocurrió un error al guardar el administrador')
+                    const errorData = await res.json().catch(() => null)
+                    console.error(`Error ${res.status}`, errorData)
+                    alert(errorData?.mensaje || 'Ocurrió un error al guardar el administrador')
                     return
                 }
             })

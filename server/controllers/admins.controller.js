@@ -9,13 +9,13 @@ const agregarAdmin = async(req,res)=>{
 
         // Valida que todos los campos estén rellenados
         if(!rfc || !nombre || !contrasena || !rol){
-            return res.status(400).json({message:"Faltan campos obligatorios"})
+            return res.status(400).json({mensaje:"Faltan campos obligatorios."})
         }
 
         // Valida que el admin no exista
         const existeAdmin = await Administrador.findOne({rfc})
         if(existeAdmin){
-            return res.status(400).json({message:"El administrador ya existe"})
+            return res.status(400).json({mensaje:"El RFC ingresado ya se encuentra registrado en el sistema."})
         }
 
         // Se crea el nuevo admin
@@ -30,10 +30,10 @@ const agregarAdmin = async(req,res)=>{
         })
 
         await nuevoAdmin.save() // Se guarda el nuevo admin
-        return res.status(201).json({message:"Administrador creado exitosamente"})
+        return res.status(201).json({mensaje:"Administrador creado exitosamente."})
     }catch(error){
         console.error('Error al agregar al administrador:',error)
-        return res.status(500).json({message:"Error interno del servidor"})
+        return res.status(500).json({mensaje:"Error interno del servidor."})
     }
 }
 
@@ -51,7 +51,7 @@ const modificarAdmin = async (req, res) => {
         // Valida que el administrador exista
         const adminExistente = await Administrador.findById(id)
         if (!adminExistente) {
-            return res.status(404).json({ mensaje: 'El administrador especificado no existe.' })
+            return res.status(404).json({ mensaje: 'No existe el administrador especificado.' })
         }
 
         // Se actualizan sólo los campos proporcionados
@@ -170,7 +170,7 @@ const cambiarContrasena = async (req, res) => {
 
         return res.status(200).json({ mensaje: 'Contraseña cambiada correctamente.' })
     }catch(error){
-        res.status(500).json({message: 'Error al cambiar la contraseña: ', error})
+        res.status(500).json({mensaje: 'Error al cambiar la contraseña: ', error})
     }
 }
 

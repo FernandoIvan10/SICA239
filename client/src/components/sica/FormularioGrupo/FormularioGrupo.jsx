@@ -22,8 +22,14 @@ export default function FormularioGrupo(props) {
             headers: { Authorization: `Bearer ${token}` },
             })
             const data = await res.json()
-            if (res.ok) setSugerencias(data.materias.map(m => m.nombre)) // Si el backend devuelve sugerencias se muestran las sugerencias
-            else console.log('Error en fetch, status:', res.status)
+            if (res.ok){
+                setSugerencias(data.materias.map(m => m.nombre)) // Si el backend devuelve sugerencias se muestran las sugerencias
+            } else {
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al obtener las materias')
+                return
+            }
         } catch (error){
             console.log('Error en fetch:', error)
             setSugerencias([]);
@@ -40,7 +46,7 @@ export default function FormularioGrupo(props) {
         }
     }, [reset])
 
-  // Método para agregar una materia a la lista
+    // Método para agregar una materia a la lista
     const agregarMateria = () => {
         if (nuevaMateria.trim() && !materias.includes(nuevaMateria)) {
             // Si la materia no está vacía y la materia no está en la lista

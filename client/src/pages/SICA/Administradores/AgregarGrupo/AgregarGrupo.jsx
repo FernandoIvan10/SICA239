@@ -34,13 +34,14 @@ export default function AgregarGrupo() {
 	        })
         }).then(async res => {
             if(res.ok){
-                alert('Grupo guardado exitosamente')
+                alert('Grupo guardado exitosamente.')
                 setResetForm(true) // Se limpia el formulario
                 setTimeout(() => setResetForm(false), 0)
                 return
             }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert('Ocurrió un error al guardar el grupo')
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al guardar el grupo.')
                 return
             }
         })

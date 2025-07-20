@@ -16,6 +16,12 @@ const agregarGrupo = async (req, res) => {
             return res.status(400).json({ mensaje: 'El nombre del grupo es obligatorio.' })
         }
 
+        // Valida que el grupo no exista
+        const existeGrupo = await Grupo.findOne({nombre})
+        if(existeGrupo){
+            return res.status(400).json({mensaje:"El nombre de grupo ingresado ya se encuentra registrado en el sistema."})
+        }
+
         // Verifica que las materias estén definidas en un arreglo
         if (!materias || !Array.isArray(materias) || materias.length === 0) {
             return res.status(400).json({ mensaje: 'Debe proporcionar al menos una materia.' })
@@ -23,7 +29,6 @@ const agregarGrupo = async (req, res) => {
 
         let materiasIds = []
 
-        // Recorre la lista de materias
         for (const materia of materias) {
             const materiaNombre = materia.nombre
             if (!materiaNombre) { // Valida que el nombre de la materia no esté vacío
@@ -52,10 +57,10 @@ const agregarGrupo = async (req, res) => {
         })
 
         await nuevoGrupo.save() // Guarda el grupo
-        return res.status(201).json({ message: 'Grupo creado exitosamente con materias.', grupo: nuevoGrupo })
+        return res.status(201).json({ mensaje: 'Grupo creado exitosamente.'})
     } catch (error) {
-        console.error('Error al agregar el grupo con materias:', error)
-        return res.status(500).json({ menssage: 'Error interno del servidor.' })
+        console.error('Error al agregar el grupo:', error)
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
     }
 }
 
@@ -83,7 +88,7 @@ const modificarGrupo = async (req, res) => {
         if (materias && materias.length > 0) {
             const calificacionesExistentes = await Calificacion.findOne({grupoId: id})
             if(calificacionesExistentes){ // No se pueden modificar materias si hay calificaciones capturadas
-                return res.status(400).json({ mensaje: 'No se pueden modificar las materias porque el grupo ya tiene calificaciones registradas.' })
+                return res.status(400).json({ mensaje: 'No se pueden modificar las materias porque el grupo tiene calificaciones registradas.' })
             }
 
             let materiasIds = []
@@ -175,7 +180,7 @@ const migrarAlumnos = async (req, res) => {
 
     // Valida que se hayan enviado todos los parámetros
     if (!grupoOrigen || !grupoDestino || !Array.isArray(alumnos) || alumnos.length === 0) { 
-        return res.status(400).json({ mensaje: 'Faltan datos obligatorios: grupoOrigen, grupoDestino y lista de alumnos.' })
+        return res.status(400).json({ mensaje: 'Faltan datos obligatorios.' })
     }
 
     try {

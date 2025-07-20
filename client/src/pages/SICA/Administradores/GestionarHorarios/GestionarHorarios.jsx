@@ -29,9 +29,10 @@ export default function GestionarHorarios(){
                 setGrupos(data.grupos)
                 return
             }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert('Ocurrió un error al obtener los grupos')
-                return   
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al obtener los grupos.')
+                return
             }
         })
     }, [])
@@ -54,9 +55,10 @@ export default function GestionarHorarios(){
                 setHorarios(data.horarios)
                 return
             }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert('Ocurrió un error al obtener los horarios')
-                return   
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al obtener los horarios')
+                return
             }
         })
     }
@@ -84,7 +86,10 @@ export default function GestionarHorarios(){
             cargarHorarios()
             alert('Horario establecido exitosamente')
         } else {
-            alert('Error al subir el horario')
+            const errorData = await res.json().catch(() => null)
+            console.error(`Error ${res.status}`, errorData)
+            alert(errorData?.mensaje || 'Ocurrió un error al guardar el horario')
+            return
         }
     }
 
@@ -98,7 +103,10 @@ export default function GestionarHorarios(){
         if (res.ok) {
             cargarHorarios()
         } else {
-            alert('Error al eliminar el horario')
+            const errorData = await res.json().catch(() => null)
+            console.error(`Error ${res.status}`, errorData)
+            alert(errorData?.mensaje || 'Ocurrió un error al eliminar el horario')
+            return
         }
     }
 
@@ -110,6 +118,7 @@ export default function GestionarHorarios(){
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Horarios</h1>
+                <p>Nota: Espera a que el horario se haya subido completamente antes de cambiar de página</p>
                 <table className="tabla-horarios">
                     <thead>
                         <tr>

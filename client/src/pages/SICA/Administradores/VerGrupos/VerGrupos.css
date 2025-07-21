@@ -22,7 +22,7 @@
 }
 
 .tabla-grupos tr:nth-child(even) {
-    background-color: #fafafa;
+    background-color: #FCFCFC;
 }
 
 .tabla-grupos tr:hover {

@@ -31,6 +31,10 @@ input {
     font-family: 'Roboto';
 }
 
+tbody{
+    background-color: #FFF;
+}
+
 .contenedor-principal{
     display: flex;
     flex-direction: row;
@@ -107,7 +111,7 @@ input {
 }
 
 .tabla-calificaciones tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #FCFCFC;
 }
 
 .tabla-calificaciones tr:hover {

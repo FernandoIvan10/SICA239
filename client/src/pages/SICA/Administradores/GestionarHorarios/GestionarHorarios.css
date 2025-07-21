@@ -22,7 +22,7 @@
 }
 
 .tabla-horarios tr:nth-child(even) {
-    background-color: #fafafa;
+    background-color: #FCFCFC;
 }
 
 .tabla-horarios tr:hover {
@@ -58,8 +58,6 @@
     font-size: 0.9rem;
     padding: 6px;
     border-radius: 5px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
     cursor: pointer;
 }
 

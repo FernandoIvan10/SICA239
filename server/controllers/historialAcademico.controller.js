@@ -1,5 +1,6 @@
 const Calificacion = require('../models/calificacion.model')
 const Historial = require('../models/historialAcademico.model')
+const Materia = require('../models/materia.model')
 
 // Función para cerrar el semestre y guardar los promedios en el historial académico
 const cerrarSemestre = async (req, res) => {
@@ -11,15 +12,19 @@ const cerrarSemestre = async (req, res) => {
 
             if (promedio == null) continue // Ignorar si no hay promedio
 
+            const materia = await Materia.findById(materiaId).lean()
+            if (!materia) continue
+
             // Buscar o crear historial del alumno
             let historial = await Historial.findOne({ alumnoId })
-
             if (!historial) {
                 historial = new Historial({ alumnoId, calificaciones: [] })
             }
 
             const idx = historial.calificaciones.findIndex(
-                c => c.materiaId.toString() === materiaId.toString()
+                c => 
+                    c.materiaId.toString() === materiaId.toString() &&
+                    c.semestre === materia.semestre
             )
 
             if (idx !== -1) {
@@ -27,7 +32,7 @@ const cerrarSemestre = async (req, res) => {
                 historial.calificaciones[idx].nota = promedio
             } else {
                 // Agrega nueva entrada
-                historial.calificaciones.push({ materiaId, nota: promedio })
+                historial.calificaciones.push({ materiaId, nota: promedio, semestre: materia.semestre })
             }
 
             await historial.save()
@@ -43,6 +48,7 @@ const cerrarSemestre = async (req, res) => {
     }
 }
 
+// Función para obtener el historial académico de un alumno específico
 const obtenerHistorialAcademicoPorID = async (req, res) => {
     try{
         const {id} = req.params

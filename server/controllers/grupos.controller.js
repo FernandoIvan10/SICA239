@@ -9,11 +9,16 @@ const cloudinary = require('../config/cloudinary')
 // Función para agregar un nuevo grupo
 const agregarGrupo = async (req, res) => {
     try {
-        const { nombre, materias } = req.body
+        const { nombre, semestre, materias } = req.body
 
         // Valida que el campo nombre no esté vacío
         if (!nombre) {
             return res.status(400).json({ mensaje: 'El nombre del grupo es obligatorio.' })
+        }
+
+        // Valida que el campo semestre no esté vacío
+        if (!semestre) {
+            return res.status(400).json({ mensaje: 'El semestre del grupo es obligatorio.' })
         }
 
         // Valida que el grupo no exista
@@ -53,6 +58,7 @@ const agregarGrupo = async (req, res) => {
         // Crear el grupo
         const nuevoGrupo = new Grupo({
             nombre,
+            semestre,
             materias: materiasIds,
         })
 
@@ -68,7 +74,7 @@ const agregarGrupo = async (req, res) => {
 const modificarGrupo = async (req, res) => {
     try {
         const { id } = req.params
-        const { nombre, materias } = req.body
+        const { nombre, semestre, materias } = req.body
 
         // Valida que el ID sea proporcionado
         if (!id) {
@@ -85,6 +91,7 @@ const modificarGrupo = async (req, res) => {
 
         // Actualiza los campos proporcionados
         if (nombre) actualizaciones.nombre = nombre
+        if (semestre) actualizaciones.semestre = semestre
         if (materias && materias.length > 0) {
             const calificacionesExistentes = await Calificacion.findOne({grupoId: id})
             if(calificacionesExistentes){ // No se pueden modificar materias si hay calificaciones capturadas

@@ -37,27 +37,41 @@ export default function Historial(){
         }
     }, [])
 
-    return(
+    return (
         <div className="contenedor-principal">
-            <MenuLateral/>
+            <MenuLateral />
             <div className="contenido-principal">
-                <h1>Historial Academico</h1>
+            <h1>Historial Académico</h1>
+
+            {/** Agrupar por semestre */}
+            {Object.entries(
+                historial.reduce((acc, cal) => {
+                const sem = cal.semestre || 'Sin semestre'
+                if (!acc[sem]) acc[sem] = []
+                acc[sem].push(cal)
+                return acc
+                }, {})
+            ).map(([semestre, calificaciones]) => (
+                <div key={semestre} style={{ marginBottom: '2rem' }}>
+                <h2>{semestre}</h2>
                 <table className="tabla-calificaciones">
                     <thead>
-                        <tr>
-                            <th>Materia</th>
-                            <th>Promedio</th>
-                        </tr>
+                    <tr>
+                        <th>Materia</th>
+                        <th>Promedio</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {historial.map((cal, i) => (
-                            <tr key={i}>
-                                <td>{cal.materiaId?.nombre}</td>
-                                <td>{cal.nota}</td>
-                            </tr>
-                        ))}
+                    {calificaciones.map((cal, i) => (
+                        <tr key={i}>
+                        <td>{cal.materiaId?.nombre}</td>
+                        <td>{cal.nota}</td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
+                </div>
+            ))}
             </div>
         </div>
     )

@@ -5,6 +5,7 @@ import './FormularioGrupo.css'
 // Componente que renderiza el formulario para los grupos
 export default function FormularioGrupo(props) {
     const [nombreGrupo, setNombreGrupo] = useState(props.nombre || '') // Nombre del grupo
+    const [semestreGrupo, setSemestreGrupo] = useState(props.semestre || 'Semestre 1') // Semestre del grupo
     const [materias, setMaterias] = useState(props.materias || []) // Lista de materias del grupo
     const [nuevaMateria, setNuevaMateria] = useState('') // Nombre de la nueva materia
     const [sugerencias, setSugerencias] = useState([]) // Sugerencias de materias de la BD
@@ -41,6 +42,7 @@ export default function FormularioGrupo(props) {
     useEffect(() => { // Se limpian los campos del formulario al reiniciar el componente
         if (reset) {
             setNombreGrupo('')
+            setSemestreGrupo('')
             setMaterias([])
             setNuevaMateria('')
         }
@@ -67,13 +69,27 @@ export default function FormularioGrupo(props) {
             <label className="formulario-grupo-label">
                 Nombre del Grupo*:
             </label>
-                <input
-                    className="formulario-grupo-input"
-                    type="text"
-                    value={nombreGrupo}
-                    onChange={(e) => setNombreGrupo(e.target.value)}
-                    placeholder="Escribe el nombre del grupo"
-                />
+            <input
+                className="formulario-grupo-input"
+                type="text"
+                value={nombreGrupo}
+                onChange={(e) => setNombreGrupo(e.target.value)}
+                placeholder="Escribe el nombre del grupo"
+            />
+            <label className="formulario-grupo-label">
+                Semestre del Grupo*:
+            </label>
+            <select 
+                value={semestreGrupo} 
+                onChange={(e)=>setSemestreGrupo(e.target.value)} 
+            >
+                <option value="Semestre 1">Semestre 1</option>
+                <option value="Semestre 2">Semestre 2</option>
+                <option value="Semestre 3">Semestre 3</option>
+                <option value="Semestre 4">Semestre 4</option>
+                <option value="Semestre 5">Semestre 5</option>
+                <option value="Semestre 6">Semestre 6</option>
+            </select>
             <label className="formulario-grupo-label">
                 Materias*:
             </label>
@@ -114,7 +130,7 @@ export default function FormularioGrupo(props) {
                     )}
                 </div>
             <div className="formulario-grupo-botones">
-                <button className="boton-guardar" onClick={() => props.guardar(nombreGrupo, materias)}>Guardar</button>
+                <button className="boton-guardar" onClick={() => props.guardar(nombreGrupo, semestreGrupo, materias)}>Guardar</button>
                 <button className="boton-cancelar" onClick={props.cancelar}>Cancelar</button>
             </div>
         </div>

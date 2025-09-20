@@ -21,9 +21,9 @@ export default function EditarGrupo() {
     }
 
     // Método para editar el grupo con los nuevos datos
-    const guardarCambios = (nuevoNombre, nuevasMaterias) => {
-        if(!nuevoNombre.trim() || nuevasMaterias.length === 0){ // Se deben rellenar el formulario
-            alert('Debes ingresar un nombre de grupo y al menos una materia')
+    const guardarCambios = (nuevoNombre, nuevoSemestre, nuevasMaterias) => {
+        if(!nuevoNombre.trim() || !nuevoSemestre.trim() || nuevasMaterias.length === 0){ // Se deben rellenar el formulario
+            alert('Debes ingresar un nombre de grupo, un semestre y al menos una materia')
             return
         }
 
@@ -35,6 +35,7 @@ export default function EditarGrupo() {
             },
             body: JSON.stringify({
                 nombre: nuevoNombre,
+                semestre: nuevoSemestre,
                 materias: nuevasMaterias
             })
         }).then(async res => {
@@ -61,6 +62,7 @@ export default function EditarGrupo() {
                 guardar={guardarCambios}
                 cancelar={cancelar}
                 nombre={grupo.nombre}
+                semestre={grupo.semestre}
                 materias={grupo.materias.map(m => m.nombre)}
             />
         </div>

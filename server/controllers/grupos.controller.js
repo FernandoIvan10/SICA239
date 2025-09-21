@@ -47,6 +47,7 @@ const agregarGrupo = async (req, res) => {
                 // Si no existe, crea una nueva materia
                 const nuevaMateria = new Materia({
                     nombre: materiaNombre,
+                    semestre: semestre,
                 })
                 await nuevaMateria.save()
                 materiaExistente = nuevaMateria

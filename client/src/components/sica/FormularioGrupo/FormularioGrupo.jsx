@@ -80,6 +80,7 @@ export default function FormularioGrupo(props) {
                 Semestre del Grupo*:
             </label>
             <select 
+                className="formulario-grupo-select"
                 value={semestreGrupo} 
                 onChange={(e)=>setSemestreGrupo(e.target.value)} 
             >

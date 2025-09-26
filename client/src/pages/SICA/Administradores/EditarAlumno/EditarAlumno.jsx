@@ -96,7 +96,7 @@ export default function EditarAlumno() {
             <div className="contenido-principal">
                 <h1>Editar Alumno</h1>
                 <form className="formulario-editar-alumno">
-                    <div className="fomrulario-editar-alumno-campo">
+                    <div className="formulario-editar-alumno-campo">
                         <label className="formulario-editar-alumno-label">Matrícula*:</label>
                         <input
                             className="formulario-editar-alumno-input"
@@ -105,7 +105,7 @@ export default function EditarAlumno() {
                             readOnly
                         />
                     </div>
-                    <div className="fomrulario-editar-alumno-campo">
+                    <div className="formulario-editar-alumno-campo">
                         <label className="formulario-editar-alumno-label">Nombre*:</label>
                         <input
                             className="formulario-editar-alumno-input"
@@ -115,7 +115,7 @@ export default function EditarAlumno() {
                             required
                         />
                     </div>
-                    <div className="fomrulario-editar-alumno-campo">
+                    <div className="formulario-editar-alumno-campo">
                         <label className="formulario-editar-alumno-label">Apellido*:</label>
                         <input
                             className="formulario-editar-alumno-input"
@@ -125,7 +125,7 @@ export default function EditarAlumno() {
                             required
                         />
                     </div>
-                    <div className="fomrulario-editar-alumno-campo">
+                    <div className="formulario-editar-alumno-campo">
                         <label className="formulario-editar-alumno-label">Grupo*:</label>
                         <select
                             className="formulario-editar-alumno-select"
@@ -141,7 +141,7 @@ export default function EditarAlumno() {
                             ))}
                         </select>
                     </div>
-                    <div className="fomrulario-editar-alumno-campo-materias-recursadas">
+                    <div className="formulario-editar-alumno-campo-materias-recursadas">
                         <label className="formulario-editar-alumno-label">Materias recursadas:</label>
                         <div className="formulario-editar-alumno-materias-recursadas">
                             {materiasRecursadas.map((item, index) => {

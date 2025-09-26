@@ -3,11 +3,12 @@
 .formulario-editar-alumno {
     background-color: white;
     padding: 20px;
-    padding-top: 1px;
+    padding-top: 15px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     max-width: 500px;
-    margin: auto;
+    width: 100%;
+    margin: 0;
 }
 
 .formulario-editar-alumno-campo,

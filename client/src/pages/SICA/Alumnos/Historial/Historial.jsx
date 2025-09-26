@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
 import '../../../../assets/styles/global.css'
+import './Historial.css'
 
 // Página de inicio del SICA para alumnos
 export default function Historial(){
@@ -53,7 +54,7 @@ export default function Historial(){
                 }, {})
             ).map(([semestre, calificaciones]) => (
                 <div key={semestre} style={{ marginBottom: '2rem' }}>
-                <h2>{semestre}</h2>
+                <h2 className="historial-semestre">{semestre}</h2>
                 <table className="tabla-calificaciones">
                     <thead>
                     <tr>

@@ -44,7 +44,7 @@ const cerrarSemestre = async (req, res) => {
         return res.status(200).json({ mensaje: 'Semestre cerrado. Historial actualizado y calificaciones eliminadas.' })
     } catch (error) {
         console.error('Error al cerrar el semestre:', error)
-        return res.status(500).json({ mensaje: 'Error al cerrar el semestre.' })
+        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
     }
 }
 
@@ -55,7 +55,7 @@ const obtenerHistorialAcademicoPorID = async (req, res) => {
 
         const historial = await Historial.find({alumnoId: id}).populate("calificaciones.materiaId")
 
-        if(!historial || historial.length===0){
+        if(!historial || historial.length===0){ // Valida que existan calificaciones en el historial
             return res.status(404).json({mensaje: "Calificaciones no encontradas"})
         }
 

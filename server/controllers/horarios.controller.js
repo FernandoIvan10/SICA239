@@ -80,7 +80,7 @@ const obtenerHorariosPorID = async (req, res) => {
     .populate('grupoId')
     .populate('materiasRecursadas.grupo')
 
-    if(!alumno){
+    if(!alumno){ // Valida que el alumno exista
       return res.status(404).json({mensaje: "Alumno no encontrado"})
     }
     

@@ -41,8 +41,6 @@ export default function Login(){
     const [contrasenaAdmin, setContrasenaAdmin] = useState('') // Contraseña del administrador
     const [error, setError] = useState('') // Manejo de errores
 
-    // Campos del formulario de administradores
-
     // Método para iniciar sesión
     const iniciarSesion = async (e) => {
         e.preventDefault()
@@ -66,7 +64,8 @@ export default function Login(){
             // Valida que no ocurra ningún error
             if(!response.ok){
                 const errorData = await response.json()
-                throw new Error(errorData.message || 'Error al iniciar sesion')
+                setError(errorData.mensaje || 'Error al iniciar sesion')
+                return
             }
 
             const datos = await response.json()
@@ -88,7 +87,8 @@ export default function Login(){
                 }
             }
         }catch(error){
-            setError(error.message)
+            console.error('Error de red al iniciar sesión:', error)
+            alert('No se pudo conectar con el servidor')
         }
     }
 

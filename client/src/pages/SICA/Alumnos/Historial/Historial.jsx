@@ -17,25 +17,24 @@ export default function Historial(){
     const [historial, setHistorial] = useState([]) // Historial académico
 
     useEffect(() => { // Se obtiene el historial académico del alumno
-        try{
-            fetch(`/api/historial-academico/${tokenDecodificado.id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(async res => {
-                const data = await res.json()
-                if(res.ok){
-                    setHistorial(data[0].calificaciones)
-                }else{
-                    alert(data.mensaje || 'Error al obtener el historial académico')
-                }
-            })
-        }catch{
-            console.error('Error al obtener el historial académico:', error)
-            alert('No se pudo obtener el historial académico.')
-        }
+        fetch(`/api/historial-academico/${tokenDecodificado.id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(async res => {
+            const data = await res.json()
+            if(!res.ok){
+                alert(data.mensaje || 'Error al obtener el historial académico')
+                return
+            }
+            
+            setHistorial(data[0].calificaciones)
+        }).catch(err => {
+            console.error('Error al obtener el historial académico:', err)
+            alert('No se pudo conectar con el servidor.')
+        })
     }, [])
 
     return (

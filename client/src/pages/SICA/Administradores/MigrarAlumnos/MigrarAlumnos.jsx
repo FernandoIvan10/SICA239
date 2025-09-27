@@ -20,22 +20,28 @@ export default function MigrarAlumnos() {
     const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga la migración
 
     useEffect(() => { // Se obtienen los grupos del backend
-        fetch('http://localhost:3000/api/grupos',{
-            method: 'GET',
+        fetch('http://localhost:3000/api/grupos', {
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
-        }).then(async res => {
-            if (res.ok) {
-                const data = await res.json()
-                setGrupos(data.grupos)
+        })
+        .then(async res => {
+            const data = await res.json()
+            if (!res.ok) {
+                console.error(`Error ${res.status}`, await res.json().catch(() => null))
+                alert(data.mensaje || 'Error al obtener grupos')
+                setGrupos([])
                 return
-            }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert('Ocurrió un error al obtener los grupos')
-                return   
             }
+            return data
+        })
+        .then(data => {
+            setGrupos(data.grupos)
+        })
+        .catch(err => {
+            console.error('Error al obtener grupos:', err)
+            alert('No se pudo conectar con el servidor')
+            setGrupos([])
         })
     }, [])
 
@@ -49,17 +55,16 @@ export default function MigrarAlumnos() {
                 }
             })
             .then(async res => {
-                if (res.ok) {
-                    const data = await res.json()
-                    setAlumnos(data)
-                } else {
-                    console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                    alert('Ocurrió un error al obtener los alumnos')
+                const data = await res.json()
+                if(!res.ok){
+                    alert(data.mensaje || 'Error al obtener alumnos')
                 }
+                
+                setAlumnos(data)
             })
             .catch(error => {
                 console.error('Error de red al obtener alumnos:', error)
-                alert('Error de red al obtener los alumnos')
+                alert('No se pudo conectar con el servidor')
             })
         }
     }, [grupoOrigen])

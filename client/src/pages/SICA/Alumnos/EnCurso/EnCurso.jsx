@@ -25,12 +25,16 @@ export default function EnCurso(){
             }
         }).then(async res => {
             const data = await res.json()
-            if(res.ok){
-                setParciales(data.parciales)
-                setCalificaciones(data.calificaciones)
-            } else {
-                alert(data.mensaje || 'Error al obtener las calificaciones')
+            if(!res.ok){
+                alert(data.mensaje || 'Error al obtener calificaciones.')
+                return
             }
+            
+            setParciales(data.parciales)
+            setCalificaciones(data.calificaciones)
+        }).catch(err => {
+            console.error('Error al obtener las calificaciones:', err)
+            alert('No se pudo conectar con el servidor.')
         })
     },[])
 

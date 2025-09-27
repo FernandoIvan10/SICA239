@@ -49,92 +49,92 @@ export default function AgregarUsuario(){
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(res => res.json())
+        .then(async res => {
+            const data = await res.json()
+            if (!res.ok) {
+                alert(data.mensaje || 'Error al obtener grupos')
+                setGrupos([])
+                return
+            }
+            return data
+        })
         .then(data => {
             setGrupos(data.grupos)
         })
         .catch(err => {
             console.error('Error al obtener grupos:', err)
+            alert('No se pudo conectar con el servidor')
             setGrupos([])
         })
     }, [])
 
     // Función para guardar el nuevo administrador en la BD
     const agregarAdmin = () => {
-        if(!RFC.trim() || !nombreAdmin.trim() || !apellidoAdmin.trim() || !rolAdmin.trim()){
-            // No se puede guardar el administrador si no se ha llenado todo el formulario
-            alert('Debes ingresar todos los datos en el formulario')
-        }else{
-            fetch('http://localhost:3000/api/admins', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-        		rfc: RFC,
-		        nombre: nombreAdmin,
-                apellido: apellidoAdmin,
-                contrasena: RFC, //La contraseña por default es el RFC
-                rol: rolAdmin
-	        })
-            }).then(async res => {
-                if(res.ok){
-                    alert('Administrador agregado exitosamente')
-                    // Se limpian los campos del formulario
-                    setRFC('')
-                    setNombreAdmin('')
-                    setApellidoAdmin('')
-                    setRolAdmin('lector')
-                    return
-                }else{
-                    const errorData = await res.json().catch(() => null)
-                    console.error(`Error ${res.status}`, errorData)
-                    alert(errorData?.mensaje || 'Ocurrió un error al guardar el administrador')
-                    return
-                }
-            })
-        }
+        fetch('http://localhost:3000/api/admins', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+        	rfc: RFC,
+		    nombre: nombreAdmin,
+            apellido: apellidoAdmin,
+            contrasena: RFC, //La contraseña por default es el RFC
+            rol: rolAdmin
+	    })
+        }).then(async res => {
+            if(res.ok){
+                alert('Administrador agregado exitosamente')
+                // Se limpian los campos del formulario
+                setRFC('')
+                setNombreAdmin('')
+                setApellidoAdmin('')
+                setRolAdmin('lector')
+                return
+            }else{
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al guardar el administrador')
+                return
+            }
+        })
     }
 
     // Función para guardar el nuevo alumno en la BD
     const agregarAlumno = () => {
-        if(!matricula.trim() || !nombreAlumno.trim() || !apellidoAlumno.trim() || !grupo.trim()){
-            // No se puede guardar el alumno si no se han llenado los campos obligatorios del formulario
-            alert('Debes ingresar los datos obligatorios en el formulario')
-        }else{
-            fetch('http://localhost:3000/api/alumnos', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-        		matricula: matricula,
-		        nombre: nombreAlumno,
-                apellido: apellidoAlumno,
-                contrasena: matricula, //La contraseña por default es la matrícula
-                grupoNombre: grupo,
-                materiasRecursadas
-	        })
-            }).then(async res => {
-                if(res.ok){
-                    alert('Alumno agregado exitosamente')
-                    // Se limpian los campos del formulario
-                    setMatricula('')
-                    setNombreAlumno('')
-                    setApellidoAlumno('')
-                    setGrupo('')
-                    setMateriasRecursadas([])
-                    setMateriaSeleccionada('')
-                    return
-                }else{
-                    console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                    alert('Ocurrió un error al guardar el alumno')
-                    return
-                }
-            })
-        }
+        fetch('http://localhost:3000/api/alumnos', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+        	matricula: matricula,
+		    nombre: nombreAlumno,
+            apellido: apellidoAlumno,
+            contrasena: matricula, //La contraseña por default es la matrícula
+            grupoNombre: grupo,
+            materiasRecursadas
+        })
+        }).then(async res => {
+            if(res.ok){
+                alert('Alumno agregado exitosamente')
+                // Se limpian los campos del formulario
+                setMatricula('')
+                setNombreAlumno('')
+                setApellidoAlumno('')
+                setGrupo('')
+                setMateriasRecursadas([])
+                setMateriaSeleccionada('')
+                return
+            }else{
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al guardar el alumno.')
+                return
+            }
+        })
     }
 
     // Método para regresar a la lista de usuarios

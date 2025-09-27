@@ -22,8 +22,14 @@ export default function EditarAdministrador() {
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(async res => {
+            const data = await res.json()
+
+            if (!res.ok) {
+                alert(data.mensaje || 'Error al obtener administrador')
+                return
+            }
+
             setAdmin({
                 rfc: data.rfc,
                 nombre: data.nombre,
@@ -32,7 +38,8 @@ export default function EditarAdministrador() {
             })
         })
         .catch(err => {
-            console.error('Error al obtener administrador:', err)
+            console.error('Error de red al obtener administrador:', err)
+            alert('No se pudo conectar con el servidor')
         })
     }, [id])
 
@@ -57,8 +64,10 @@ export default function EditarAdministrador() {
                 alert('Administrador actualizado correctamente')
                 navigate('/SICA/administradores/ver-usuarios')
             } else {
-                console.error(await res.json().catch(()=>null))
-                alert('Ocurrió un error al actualizar el admin')
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al actualizar el administrador')
+                return
             }
         })
     }

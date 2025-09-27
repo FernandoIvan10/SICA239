@@ -26,12 +26,20 @@ export default function VerUsuarios(){
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(async res => {
+            const data = await res.json()
+
+            if(!res.ok){
+                alert(data.mensaje || 'Error al obtener alumnos')
+                setAlumnos([])
+                return
+            }
+
             setAlumnos(data)
         })
         .catch(err => {
             console.error('Error al obtener alumnos:', err)
+            alert('No se pudo conectar con el servidor.')
             setAlumnos([])
         })
     }, [])
@@ -44,12 +52,20 @@ export default function VerUsuarios(){
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(async res => {
+            const data = await res.json()
+            
+            if (!res.ok) {
+                alert(data.mensaje || 'Error al obtener administradores')
+                setAdmins([])
+                return
+            }
+
             setAdmins(data)
         })
         .catch(err => {
             console.error('Error al obtener administradores:', err)
+            alert('No se pudo conectar con el servidor')
             setAdmins([])
         })
         }
@@ -96,12 +112,17 @@ export default function VerUsuarios(){
             }
         })
         .then(async res => {
-            if(res.ok){
-                alert('Contraseña reiniciada correctamente')
-            } else {
+            const data = await res.json()
+            if(!res.ok){
                 console.error(await res.json().catch(()=>null))
-                alert('Ocurrió un error al reiniciar la contraseña')
+                alert(data.mensaje || 'Ocurrió un error al reiniciar la contraseña')
+                return
             }
+                alert('Contraseña reiniciada correctamente')
+        })
+        .catch(err => {
+            console.error('Error al reiniciar constraseña:', err)
+            alert('No se pudo conectar con el servidor')
         })
     }
 

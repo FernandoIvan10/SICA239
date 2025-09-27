@@ -43,8 +43,9 @@ export default function EditarGrupo() {
                 alert('Grupo actualizado correctamente')
                 navigate('/SICA/administradores/ver-grupos')
             } else {
-                console.error(await res.json().catch(()=>null))
-                alert('Ocurrió un error al actualizar el grupo')
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                 alert(errorData?.mensaje || 'Ocurrió un error al actualizar el grupo')
             }
         })
     }

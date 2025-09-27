@@ -23,23 +23,27 @@ export default function VerGrupos(){
 
     // Método para obtener los grupos del backend
     const obtenerGrupos = () => {
-        fetch('http://localhost:3000/api/grupos',{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        }).then(async res => {
-            if (res.ok) {
+        try{
+            fetch('http://localhost:3000/api/grupos',{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(async res => {
                 const data = await res.json()
+
+                if (!res.ok) {
+                    console.error(`Error ${res.status}`, await res.json().catch(()=>null))
+                    alert(data.mensaje || 'Ocurrió un error al obtener los grupos')
+                    return
+                }
                 setGrupos(data.grupos)
-                return
-            }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert('Ocurrió un error al obtener los grupos')
-                return   
-            }
-        })
+            })
+        }catch (err) {
+            console.error('Error al obtener grupos:', err)
+            alert('No se pudo conectar al servidor.')
+        }
     }
 
     // Método para eliminar un grupo
@@ -55,17 +59,17 @@ export default function VerGrupos(){
                 }
             })
 
-            if (respuesta.ok) {
+            const data = await respuesta.json()
+            if(!respuesta.ok){
+                console.error(`Error ${respuesta.status}`, data)
+                alert(data.mensaje || 'Ocurrió un error al eliminar el grupo.')
+                return
+            }
                 alert('Grupo eliminado correctamente')
 		        obtenerGrupos() // Se vuelve a cargar la lista de grupos
-            } else {
-                const data = await respuesta.json()
-                console.error(`Error ${respuesta.status}`, data)
-                alert(data.mensaje)
-            }
         } catch (error) {
             console.error('Error al eliminar el grupo:', error)
-            alert('Error del servidor al eliminar el grupo')
+            alert('No se pudo conectar al servidor.')
         }
     }
 

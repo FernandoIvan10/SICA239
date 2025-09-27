@@ -32,10 +32,6 @@ export default function CambiarContrasena() {
   const cambiarContrasena = async (e) => {
     e.preventDefault()
     setMensaje('')
-    if (contrasenaNueva.length < 6) {
-      setMensaje('La contraseña debe tener al menos 6 caracteres.')
-      return
-    }
     setCargando(true)
 
     const url =
@@ -55,12 +51,16 @@ export default function CambiarContrasena() {
 
       const data = await res.json()
 
-      if (!res.ok) throw new Error(data.mensaje || 'Error al cambiar contraseña')
+      if(!res.ok){
+        alert(data.mensaje || 'Error al cambiar contraseña')
+        return
+      }
 
       setMensaje('Contraseña actualizada correctamente.')
       setTimeout(() => navigate('/SICA/iniciar-sesion'), 2000)
     } catch (error) {
-      setMensaje(error.message)
+      console.error(error.message)
+      alert('No se pudo conectar con el servidor.')
     } finally {
       setCargando(false)
     }

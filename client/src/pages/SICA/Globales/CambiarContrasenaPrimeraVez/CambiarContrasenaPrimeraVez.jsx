@@ -53,13 +53,17 @@ export default function PrimerCambioContrasena() {
 
       const data = await res.json()
 
-      if (!res.ok) throw new Error(data.mensaje || 'Error al cambiar contraseña')
+      if(!res.ok){
+        alert(data.mensaje || 'Error al cambiar contraseña')
+        return
+      }
 
       setMensaje('Contraseña actualizada correctamente.')
       localStorage.removeItem('token')
       setTimeout(() => navigate('/SICA/iniciar-sesion'), 2000)
     } catch (error) {
-      setMensaje(error.message)
+      console.error(error.message)
+      alert('No se pudo conectar con el servidor.')
     } finally {
       setCargando(false)
     }

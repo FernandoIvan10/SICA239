@@ -33,6 +33,7 @@ export default function FormularioGrupo(props) {
             }
         } catch (error){
             console.log('Error en fetch:', error)
+            alert('No se pudo conectar con el servidor.')
             setSugerencias([]);
         }
     }

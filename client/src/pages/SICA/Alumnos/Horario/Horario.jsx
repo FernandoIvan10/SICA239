@@ -16,7 +16,6 @@ export default function Horario(){
     const [horarios, setHorarios] = useState([]) // Horarios del alumno 
 
     useEffect(() => { // Se obtienen los horarios del alumno
-        try{
             fetch(`/api/horarios/${tokenDecodificado.id}`, {
                 method: 'GET',
                 headers: {
@@ -25,16 +24,16 @@ export default function Horario(){
                 }
             }).then(async res => {
                 const data = await res.json()
-                if(res.ok){
-                    setHorarios(data)
-                }else{
+                if(!res.ok){
                     alert(data.mensaje || 'Error al obtener los horarios')
+                    return
                 }
+        
+                    setHorarios(data)
+            }).catch(err => {
+                console.error('Error al obtener los horarios:', err)
+                alert('No se pudo conectar con el servidor.')
             })
-        }catch{
-            console.error('Error al obtener los horarios:', error)
-            alert('No se pudo obtener el horario.')
-        }
     }, [])
 
     return(

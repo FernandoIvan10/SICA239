@@ -17,10 +17,6 @@ export default function AgregarGrupo() {
 
     // Función para guardar el grupo y las materias en la BD
     const guardarGrupo = (nombreGrupo, semestreGrupo, materias) => {
-        if(!nombreGrupo.trim() || !semestreGrupo.trim() || materias.length === 0){
-            // No se puede guardar el grupo sin un nombre de grupo, semestre y por lo menos una materia
-            alert('Debes ingresar un nombre de grupo, un semestre y al menos una materia')
-        }else{ 
     	const materiasFormateadas = materias.map(nombre => ({ nombre })) //Formato correcto para la API
         fetch('http://localhost:3000/api/grupos', { // Guarda el grupo en la BD
             method: 'POST',
@@ -46,7 +42,6 @@ export default function AgregarGrupo() {
                 return
             }
         })
-        }
     }
 
     // Método para cancelar la creación del nuevo grupo

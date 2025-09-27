@@ -24,12 +24,21 @@ export default function EditarAlumno() {
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(res => res.json())
+        .then(async res => {
+            const data = await res.json()
+            if (!res.ok) {
+                alert(data.mensaje || 'Error al obtener grupos')
+                setGrupos([])
+                return
+            }
+            return data
+        })
         .then(data => {
             setGrupos(data.grupos)
         })
         .catch(err => {
             console.error('Error al obtener grupos:', err)
+            alert('No se pudo conectar con el servidor')
             setGrupos([])
         })
     }, [])
@@ -41,8 +50,13 @@ export default function EditarAlumno() {
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(async res => {
+            const data = await res.json()
+            if(!res.ok){
+                alert(data.mensaje || 'Error al obtener alumno.')
+                return
+            }
+
             const grupo = grupos.find(g => g._id === data.grupoId)
             setAlumno({
                 matricula: data.matricula,
@@ -54,6 +68,7 @@ export default function EditarAlumno() {
         })
         .catch(err => {
             console.error('Error al obtener alumno:', err)
+            alert('No se pudo conectar con el servidor.')
         })
     }, [id, grupos])
 
@@ -67,19 +82,20 @@ export default function EditarAlumno() {
         const {nombre, apellido, grupoNombre} = alumno // Se obtienen los nuevos datos del formulario
 
         fetch(`http://localhost:3000/api/alumnos/${id}`, {
-            method: "PUT",
+            method: 'PUT',
             headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({nombre, apellido, grupoNombre, materiasRecursadas})
         }).then(async res => {
             if(res.ok){
-                alert("Alumno actualizado correctamente")
-                navigate("/SICA/administradores/ver-usuarios")
+                alert('Alumno actualizado correctamente')
+                navigate('/SICA/administradores/ver-usuarios')
             } else {
-                console.error(await res.json().catch(()=>null))
-                alert("Ocurrió un error al actualizar el alumno")
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                 alert(errorData?.mensaje || 'Ocurrió un error al actualizar el alumno')
             }
         })
     }

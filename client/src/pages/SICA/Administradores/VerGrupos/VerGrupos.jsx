@@ -38,7 +38,9 @@ export default function VerGrupos(){
                     alert(data.mensaje || 'Ocurrió un error al obtener los grupos')
                     return
                 }
-                setGrupos(data.grupos)
+                // El grupo de egresados no debe aparecer en esta pantalla
+                const gruposFiltrados = data.grupos.filter(g => g.nombre !== "Egresados")
+                setGrupos(gruposFiltrados)
             })
         }catch (err) {
             console.error('Error al obtener grupos:', err)

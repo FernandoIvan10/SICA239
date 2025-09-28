@@ -26,7 +26,9 @@ export default function GestionarHorarios(){
         }).then(async res => {
             if (res.ok) {
                 const data = await res.json()
-                setGrupos(data.grupos)
+                // El grupo de egresados no debe aparecer en esta pantalla
+                const gruposFiltrados = data.grupos.filter(g => g.nombre !== "Egresados")
+                setGrupos(gruposFiltrados)
                 return
             }else{
                 const errorData = await res.json().catch(() => null)
@@ -67,7 +69,7 @@ export default function GestionarHorarios(){
     const obtenerHorarioDeGrupo = (grupoId) => {
         if (!horarios || horarios.length === 0) return null // Tiene que existir al menos un horario
         return horarios.find(h => h.grupo._id === grupoId)
-    }    
+    }
 
     // Método para subir el horario de un grupo
     const subirHorario = async (grupoId, file) => {

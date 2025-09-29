@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useEffect, useState } from 'react'
 import '../../../../assets/styles/global.css'
 import './Horario.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página de inicio del SICA para alumnos
 export default function Horario(){
@@ -36,6 +37,11 @@ export default function Horario(){
             })
     }, [])
 
+    if(horarios.length === 0){ // Mientras no hayan horarios cargados se muestra un mensaje de carga
+        return(
+            <MensajeCarga/>
+        )
+    }
     return(
         <div className="contenedor-principal">
             <MenuLateral/>

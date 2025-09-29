@@ -4,6 +4,7 @@ import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarTok
 import { useNavigate, useParams } from 'react-router-dom'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './EditarAdministrador.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para editar usuarios administradores
 export default function EditarAdministrador() {
@@ -77,7 +78,11 @@ export default function EditarAdministrador() {
         navigate('/SICA/administradores/ver-usuarios')
     }
 
-    if (!admin) return <p>Cargando administrador...</p>
+    if (!admin){ // Mientras no se carguen los datos del administrador se muestra un mensaje de carga
+        return(
+            <MensajeCarga/>
+        )
+    }
     return (
         <div className="contenedor-principal">
             <MenuLateral/>

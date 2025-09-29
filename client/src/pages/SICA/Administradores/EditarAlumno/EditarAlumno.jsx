@@ -4,6 +4,7 @@ import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarTok
 import { useNavigate, useParams } from 'react-router-dom'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './EditarAlumno.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para editar alumnos
 export default function EditarAlumno() {
@@ -105,7 +106,11 @@ export default function EditarAlumno() {
         navigate('/SICA/administradores/ver-usuarios')
     }
 
-    if (!alumno) return <p>Cargando alumno...</p>
+    if (!alumno) { // Mientras no se carguen los datos del alumno se muestra un mensaje de carga
+        return(
+            <MensajeCarga/>
+        )
+    }
     return (
         <div className="contenedor-principal">
             <MenuLateral/>

@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
 import '../../../../assets/styles/global.css'
 import './Historial.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página de inicio del SICA para alumnos
 export default function Historial(){
@@ -37,6 +38,11 @@ export default function Historial(){
         })
     }, [])
 
+    if(historial.length === 0){ // Mientras no hayan calificaciones cargadas se muestra un mensaje de carga
+        return(
+            <MensajeCarga/>
+        )
+    }
     return (
         <div className="contenedor-principal">
             <MenuLateral />

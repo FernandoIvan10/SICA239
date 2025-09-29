@@ -7,6 +7,7 @@ import { MdEdit } from 'react-icons/md'
 import { RiResetLeftLine } from 'react-icons/ri'
 import './VerUsuarios.css'
 import { jwtDecode } from 'jwt-decode'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para ver la lista de usuarios
 export default function VerUsuarios(){
@@ -128,12 +129,7 @@ export default function VerUsuarios(){
 
     if(usuarios.length === 0){ // Mientras no haya usuarios cargados se muestra un mensaje de carga
         return(
-            <>
-                <MenuLateral/>
-                <div className="contenido-principal">
-                    <p>Cargando datos</p>
-                </div>
-            </>
+            <MensajeCarga/>
         )
     }
     return(

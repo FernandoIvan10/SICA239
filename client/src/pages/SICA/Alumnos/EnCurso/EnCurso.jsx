@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
 import '../../../../assets/styles/global.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página de inicio del SICA para consultar las calificaciones del semestre en curso
 export default function EnCurso(){
@@ -38,6 +39,11 @@ export default function EnCurso(){
         })
     },[])
 
+    if(calificaciones.length === 0){ // Mientras no haya calificaciones cargadas se muestra un mensaje de carga
+        return(
+            <MensajeCarga/>
+        )
+    }
     return(
         <div className="contenedor-principal">
             <MenuLateral/>

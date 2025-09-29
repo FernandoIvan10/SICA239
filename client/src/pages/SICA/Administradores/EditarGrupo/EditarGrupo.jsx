@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import FormularioGrupo from '../../../../components/sica/FormularioGrupo/FormularioGrupo'
 import '../../../../assets/styles/global.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para editar grupos
 export default function EditarGrupo() {
@@ -53,6 +54,12 @@ export default function EditarGrupo() {
     // Método para cancelar los cambios del grupo
     const cancelar = () => {
         navigate('/SICA/administradores/ver-grupos')
+    }
+
+    if(!grupo){ // Mientras no se carguen los datos del grupo se muestra un mensaje de carga
+        return(
+            <MensajeCarga/>
+        )
     }
 
     return (

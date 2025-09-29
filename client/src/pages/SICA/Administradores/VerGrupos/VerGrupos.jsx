@@ -6,6 +6,7 @@ import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { jwtDecode } from 'jwt-decode'
 import './VerGrupos.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del sica para ver la lista de grupos
 export default function VerGrupos(){
@@ -76,15 +77,11 @@ export default function VerGrupos(){
     }
 
     if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
-            return(
-                <>
-                    <MenuLateral/>
-                    <div className="contenido-principal">
-                        <p>Cargando datos</p>
-                    </div>
-                </>
-            )
-        }
+        return(
+            <MensajeCarga/>
+        )
+    }
+    
     return(
         <div className="contenedor-principal">
             <MenuLateral/>

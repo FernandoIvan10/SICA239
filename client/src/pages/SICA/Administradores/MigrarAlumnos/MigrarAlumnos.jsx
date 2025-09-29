@@ -4,6 +4,7 @@ import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarTok
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './MigrarAlumnos.css'
 import '../../../../assets/styles/global.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para migrar los alumnos de un grupo (sin calificaciones) a otro
 export default function MigrarAlumnos() {
@@ -113,6 +114,12 @@ export default function MigrarAlumnos() {
         }
     }
 
+    if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
+       return(
+        <MensajeCarga/>
+       ) 
+    }
+    
     return (
         <div className="contenedor-principal">
             <MenuLateral/>

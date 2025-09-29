@@ -5,6 +5,7 @@ import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { jwtDecode } from 'jwt-decode'
 import '../../../../assets/styles/global.css'
 import './GestionarHorarios.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del sica para gestionar los horarios de los grupos
 export default function GestionarHorarios(){
@@ -113,7 +114,9 @@ export default function GestionarHorarios(){
     }
 
     if (grupos.length === 0 && horarios.length === 0) { // Mientras no haya grupos cargados se muestra un mensaje de carga
-        return <p>Cargando datos...</p>
+        return (
+            <MensajeCarga/>
+        )
     }
     return(
         <div className="contenedor-principal">

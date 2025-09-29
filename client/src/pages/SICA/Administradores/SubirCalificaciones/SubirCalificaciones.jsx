@@ -5,6 +5,7 @@ import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { jwtDecode } from 'jwt-decode'
 import '../../../../assets/styles/global.css'
 import './SubirCalificaciones.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para subir calificaciones
 export default function SubirCalificaciones(){
@@ -188,14 +189,10 @@ export default function SubirCalificaciones(){
 
     if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
         return(
-            <>
-                <MenuLateral/>
-                <div className="contenido-principal">
-                    <p>Cargando datos</p>
-                </div>
-            </>
+            <MensajeCarga/>
         )
     }
+
     return (
         <div className="contenedor-principal">
             <MenuLateral/>

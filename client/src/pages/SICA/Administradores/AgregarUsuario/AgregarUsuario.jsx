@@ -6,6 +6,7 @@ import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { useNavigate } from 'react-router-dom'
 import '../../../../assets/styles/global.css'
 import './AgregarUsuario.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para agregar usuarios 
 export default function AgregarUsuario(){
@@ -344,6 +345,11 @@ export default function AgregarUsuario(){
         }
     }
 
+    if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
+        return(
+            <MensajeCarga/>
+        )
+    }
     return(
         <div className="contenedor-principal">
             <MenuLateral/>

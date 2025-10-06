@@ -302,6 +302,26 @@ const reiniciarContrasena = async (req, res) => {
     }
 }
 
+// Función para cambiar el estado (activo) de un alumno
+const cambiarEstado = async (req, res) => {
+    try{
+        const {id} = req
+
+        const alumno = await Alumno.findById(id)
+        if (!alumno) { // Valida que el alumno exista
+            return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
+        }
+
+        alumno.activo = !alumno.activo
+        await alumno.save()
+
+        return res.status(200).json({ mensaje: 'Estado cambiado correctamente.' })
+    }catch(error){
+        console.error('Error al cambiar el estado del alumno: ', error)
+        res.status(500).json({mensaje: 'Error interno del servidor.'})
+    }
+}
+
 module.exports = {
     agregarAlumno, 
     modificarAlumno, 
@@ -310,5 +330,6 @@ module.exports = {
     obtenerAlumnosPorGrupo, 
     primerCambioContrasenaAlumno, 
     cambiarContrasena,
-    reiniciarContrasena
+    reiniciarContrasena,
+    cambiarEstado
 } // Se exporta el controlador

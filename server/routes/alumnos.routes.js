@@ -2,7 +2,7 @@
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo, primerCambioContrasenaAlumno, cambiarContrasena, reiniciarContrasena} = require('../controllers/alumnos.controller')
+const {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo, primerCambioContrasenaAlumno, cambiarContrasena, reiniciarContrasena, cambiarEstado} = require('../controllers/alumnos.controller')
 
 const router = express.Router() // Se crea un router
 
@@ -50,6 +50,14 @@ router.put(
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     modificarAlumno // Se llama al controlador
+)
+
+// Ruta para cambiar el estado de un alumno (activo - inactivo)
+router.put(
+    '/alumnos/cambiar-estado/:id',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin','editor']), // Se valida el rol
+    cambiarEstado // Se llama al controlador
 )
 
 // Ruta para obtener un alumno con su ID (sólo para administradores)

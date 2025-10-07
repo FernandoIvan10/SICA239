@@ -127,6 +127,39 @@ export default function VerUsuarios(){
         })
     }
 
+    // Método para dar de baja o de alta a un alumno
+    const cambiarEstado = (usuario) => {
+        const confirmacion = confirm( // El usuario debe confirmar el cambio de estado
+            `¿Estás seguro que quieres cambiar el estado de ${usuario.nombre}?`
+        )
+        if (!confirmacion) return
+
+        fetch(`http://localhost:3000/api/alumnos/cambiar-estado/${usuario._id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(async res => {
+            const data = await res.json()
+            if(!res.ok){
+                console.error(await res.json().catch(()=>null))
+                alert(data.mensaje || 'Ocurrió un error al cambiar el estado del alumno')
+                return
+            }
+                setUsuarios(prev =>
+                    prev.map(u =>
+                        u._id === usuario._id ? { ...u, activo: !u.activo } : u
+                    )
+                )
+                alert('Estado cambiado correctamente')
+        })
+        .catch(err => {
+            console.error('Error al cambiar el estado del alumno:', err)
+            alert('No se pudo conectar con el servidor.')
+        })
+    }
+
     if(usuarios.length === 0){ // Mientras no haya usuarios cargados se muestra un mensaje de carga
         return(
             <MensajeCarga/>
@@ -148,6 +181,7 @@ export default function VerUsuarios(){
                             <th>{tokenDecodificado.rol === "superadmin" ? "Grupo/Rol" : "Grupo"}</th>
                             {tokenDecodificado.rol !== "lector" && <th>Editar</th>}
                             {tokenDecodificado.rol !== "lector" && <th>Reiniciar Contraseña</th>}
+                            {tokenDecodificado.rol !== "lector" && <th>Alta/Baja</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -169,6 +203,24 @@ export default function VerUsuarios(){
                                         <RiResetLeftLine className="boton-reiniciar-contrasena" onClick={() => reiniciarContrasena(usuario)}/>
                                     </td>
                                 }
+                                {tokenDecodificado.rol !== "lector" && (
+                                    <td
+                                        onClick={() => {
+                                            if (usuario.tipo === "Alumno") {
+                                                cambiarEstado(usuario)
+                                            }
+                                        }}
+                                        className={`estado-alumno ${
+                                            usuario.tipo === "Alumno"
+                                                ? (usuario.activo ? "baja" : "alta")
+                                                : ""
+                                        }`}
+                                    >
+                                        {usuario.tipo === "Alumno"
+                                            ? (usuario.activo ? "Dar de baja" : "Dar de alta")
+                                            : ""}
+                                    </td>
+                                )}
                             </tr>
                         ))} 
                     </tbody>

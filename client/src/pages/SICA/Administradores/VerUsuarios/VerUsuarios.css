@@ -45,3 +45,16 @@
 .tabla-usuarios-boton-editar:hover {
     background-color: #0056b3;
 }
+
+.estado-alumno {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.estado-alumno.alta {
+  color: green;
+}
+
+.estado-alumno.baja {
+  color: red;
+}

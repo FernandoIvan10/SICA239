@@ -44,20 +44,20 @@ router.put(
     reiniciarContrasena // Se llama al controlador
 )
 
-// Ruta para modificar un usuario alumno (solo para "superadmin" y "editor")
-router.put(
-    '/alumnos/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    modificarAlumno // Se llama al controlador
-)
-
 // Ruta para cambiar el estado de un alumno (activo - inactivo)
 router.put(
     '/alumnos/cambiar-estado/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin','editor']), // Se valida el rol
     cambiarEstado // Se llama al controlador
+)
+
+// Ruta para modificar un usuario alumno (solo para "superadmin" y "editor")
+router.put(
+    '/alumnos/:id',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin', 'editor']), // Se valida el rol
+    modificarAlumno // Se llama al controlador
 )
 
 // Ruta para obtener un alumno con su ID (sólo para administradores)

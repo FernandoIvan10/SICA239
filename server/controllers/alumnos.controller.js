@@ -305,7 +305,7 @@ const reiniciarContrasena = async (req, res) => {
 // Función para cambiar el estado (activo) de un alumno
 const cambiarEstado = async (req, res) => {
     try{
-        const {id} = req
+        const {id} = req.params
 
         const alumno = await Alumno.findById(id)
         if (!alumno) { // Valida que el alumno exista

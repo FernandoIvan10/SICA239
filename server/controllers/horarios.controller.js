@@ -84,6 +84,10 @@ const obtenerHorariosPorID = async (req, res) => {
       return res.status(404).json({mensaje: "Alumno no encontrado"})
     }
     
+    if (!alumno.activo) { // Verifica que el alumno esté activo
+      return res.status(403).json({ mensaje: "No existe un horario asignado" })
+    }
+
     const grupos = new Map()
 
     grupos.set(alumno.grupoId._id.toString(), alumno.grupoId.nombre)

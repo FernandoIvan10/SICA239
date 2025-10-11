@@ -81,7 +81,11 @@ export default function VerUsuarios(){
         if(alumnos.length !== 0){
             alumnosConTipo = alumnos.map(a => ({ ...a, tipo: 'Alumno' }))
         }
-        setUsuarios([...alumnosConTipo, ...adminsConTipo]) // Se les agrega el tipo antes de almacenarlos
+        let usuariosCombinados = [...alumnosConTipo, ...adminsConTipo]
+        if (tokenDecodificado.rol === 'lector') { // No se muestran los alumnos dados de baja para el admin lector
+            usuariosCombinados = usuariosCombinados.filter(u => u.activo)
+        }
+        setUsuarios(usuariosCombinados)
     }, [alumnos, admins])
 
     // Método para redirigir al usuario a la página de edición del usuario seleccionado

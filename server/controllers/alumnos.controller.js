@@ -209,12 +209,13 @@ const obtenerAlumnosPorGrupo = async (req, res) => {
         if (!grupoId) return res.status(400).json({ mensaje: 'Se requiere el ID del grupo.' })
 
         // Alumnos con el grupo como grupo principal
-        const alumnosGrupo = await Alumno.find({ grupoId }, '-contrasena')
+        const alumnosGrupo = await Alumno.find({ grupoId, activo: true }, '-contrasena')
 
         // Alumnos que recursan materias en ese grupo, pero que no pertenecen al grupo
         const alumnosRecursando = await Alumno.find({ 
             'materiasRecursadas.grupo': grupoId,
-            grupoId: { $ne: grupoId }
+            grupoId: { $ne: grupoId },
+            activo: true
         }, '-contrasena')
 
         const alumnos = [...alumnosGrupo, ...alumnosRecursando]

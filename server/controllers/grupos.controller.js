@@ -166,6 +166,13 @@ const eliminarGrupo = async (req, res) => {
             return res.status(400).json({ mensaje: 'No se puede eliminar el grupo porque tiene calificaciones registradas.' })
         }
 
+        // No se puede eliminar el grupo si hay alumnos registrados en él
+        const alumnosExistentes = await Alumno.findOne({ grupoId: id })
+        const alumnosRecursando = await Alumno.findOne({'materiasRecursadas.grupo': id})
+        if (alumnosExistentes || alumnosRecursando) {
+            return res.status(400).json({ mensaje: 'No se puede eliminar el grupo porque tiene alumnos registrados.' })
+        }
+
         const horario = await Horario.findOne({ grupo: id })
         if (horario) { // Si el grupo tiene un horario asignado este se elimina
             await cloudinary.uploader.destroy(horario.publicId) // Elimina la imagen de Cloudinary

@@ -112,6 +112,7 @@ export default function VerUsuarios(){
         }
 
         fetch(url, {
+            method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`
             }

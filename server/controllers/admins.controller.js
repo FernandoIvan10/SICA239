@@ -124,13 +124,13 @@ const obtenerAdminPorID = async (req, res) => {
 const primerCambioContrasenaAdministrador = async (req, res) => {
     try {
         const { nuevaContrasena } = req.body
-        const { usuarioId } = req.params
+        const { id } = req.params
 
         if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
             return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' })
         }
 
-        const admin = await Administrador.findById(usuarioId)
+        const admin = await Administrador.findById(id)
         if (!admin) { // Valida que el administrador exista
             return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
         }

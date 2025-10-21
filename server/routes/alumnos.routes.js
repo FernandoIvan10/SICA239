@@ -22,18 +22,18 @@ router.get(
     listarAlumnos // Se llama al controlador
 )
 
-// Ruta para cambiar la contraseña de un alumno por primera vez
-router.put(
-    '/alumnos/primer-cambio-contrasena',
-    verificarToken, // Se valida la autenticación
-    primerCambioContrasenaAlumno // Se llama al controlador
-)
-
 // Ruta para cambiar la contraseña
 router.put(
     '/alumnos/cambiar-contrasena',
     verificarToken, // Se valida la autenticación
     cambiarContrasena // Se llama al controlador
+)
+
+// Ruta para cambiar la contraseña de un alumno por primera vez
+router.put(
+    '/alumnos/primer-cambio-contrasena/:id',
+    verificarToken, // Se valida la autenticación
+    primerCambioContrasenaAlumno // Se llama al controlador
 )
 
 // Ruta para reiniciar la contraseña de un alumno (sólo para superadmin)

@@ -22,18 +22,18 @@ router.get(
     listarAdmins // Se llama al controlador
 )
 
-// Ruta para cambiar la contraseña de un administrador por primera vez
-router.put(
-    '/admins/primer-cambio-contrasena',
-    verificarToken, // Se valida la autenticación
-    primerCambioContrasenaAdministrador // Se llama al controlador
-)
-
 // Ruta para cambiar la contraseña
 router.put(
     '/admins/cambiar-contrasena',
     verificarToken, // Se valida la autenticación
     cambiarContrasena // Se llama al controlador
+)
+
+// Ruta para cambiar la contraseña de un administrador por primera vez
+router.put(
+    '/admins/primer-cambio-contrasena/:id',
+    verificarToken, // Se valida la autenticación
+    primerCambioContrasenaAdministrador // Se llama al controlador
 )
 
 // Ruta para reiniciar la contraseña de un administrador (sólo para superadmin)

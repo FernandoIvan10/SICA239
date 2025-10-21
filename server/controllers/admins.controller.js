@@ -124,7 +124,7 @@ const obtenerAdminPorID = async (req, res) => {
 const primerCambioContrasenaAdministrador = async (req, res) => {
     try {
         const { nuevaContrasena } = req.body
-        const { usuarioId } = req
+        const { usuarioId } = req.params
 
         if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
             return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' })
@@ -149,7 +149,7 @@ const primerCambioContrasenaAdministrador = async (req, res) => {
 // Función para cambiar la contraseña
 const cambiarContrasena = async (req, res) => {
     try{const {contrasenaAntigua, contrasenaNueva} = req.body
-        const {usuarioId} = req
+        const {usuarioId} = req.params
 
         if(!contrasenaAntigua || !contrasenaNueva){ // Valida que las contraseñas sean ingresadas
             return res.status(400).json({mensaje: 'Se requiere la antigua y la nueva contraseña.'})
@@ -178,7 +178,7 @@ const cambiarContrasena = async (req, res) => {
 // Función para reiniciar la contraseña (Que la contraseña sea su RFC)
 const reiniciarContrasena = async (req, res) => {
     try{
-        const {id} = req
+        const {id} = req.params
         
         const admin = await Administrador.findById(id)
         if(!admin){ // Valida que el administrador exista

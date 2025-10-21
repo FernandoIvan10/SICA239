@@ -230,7 +230,7 @@ const obtenerAlumnosPorGrupo = async (req, res) => {
 const primerCambioContrasenaAlumno = async (req, res) => {
     try {
         const { nuevaContrasena } = req.body
-        const { usuarioId } = req
+        const { usuarioId } = req.params
 
         if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
             return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' })
@@ -256,7 +256,7 @@ const primerCambioContrasenaAlumno = async (req, res) => {
 const cambiarContrasena = async (req, res) =>{
     try{
         const {contrasenaAntigua, contrasenaNueva} = req.body
-        const {usuarioId} = req
+        const {usuarioId} = req.params
 
         if(!contrasenaAntigua || !contrasenaNueva){ // Valida que se hayan ingresado las contraseñas
             return res.status(400).json({mensaje: 'Se requiere la antigua y la nueva contraseña.'})
@@ -285,7 +285,7 @@ const cambiarContrasena = async (req, res) =>{
 // Función para reiniciar la contraseña (Que la contraseña sea su Matrícula)
 const reiniciarContrasena = async (req, res) => {
     try{
-        const {id} = req
+        const {id} = req.params
         
         const alumno = await Alumno.findById(id)
         if(!alumno){ // Valida que el alumno exista

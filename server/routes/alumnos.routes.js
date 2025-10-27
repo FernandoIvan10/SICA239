@@ -40,7 +40,7 @@ router.put(
 router.put(
     '/alumnos/reiniciar-contrasena/:id',
     verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
+    verificarRol(['superadmin','editor']), // Se valida el rol
     reiniciarContrasena // Se llama al controlador
 )
 

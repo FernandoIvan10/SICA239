@@ -16,10 +16,10 @@ export default function CambiarContrasena() {
   const [contrasenaNueva, setContrasenaNueva] = useState('')
   const [mensaje, setMensaje] = useState('') // Mensaje de éxito o error
   const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga
+  const tokenDecodificado = jwtDecode(token)
 
   useEffect(() => { // Se obtiene el tipo de usuario del token de inicio de sesión
     try {
-      const tokenDecodificado = jwtDecode(token)
       setRol(tokenDecodificado.rol)
     } catch(error) {
       console.log(error)
@@ -36,8 +36,8 @@ export default function CambiarContrasena() {
 
     const url =
       rol === 'alumno'
-        ? '/api/alumnos/cambiar-contrasena'
-        : '/api/admins/cambiar-contrasena'
+        ? `/api/alumnos/cambiar-contrasena/${tokenDecodificado.id}`
+        : `/api/admins/cambiar-contrasena/${tokenDecodificado.id}`
 
     try {
       const res = await fetch(url, {

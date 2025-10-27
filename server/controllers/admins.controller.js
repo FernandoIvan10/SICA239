@@ -149,13 +149,13 @@ const primerCambioContrasenaAdministrador = async (req, res) => {
 // Función para cambiar la contraseña
 const cambiarContrasena = async (req, res) => {
     try{const {contrasenaAntigua, contrasenaNueva} = req.body
-        const {usuarioId} = req.params
+        const {id} = req.params
 
         if(!contrasenaAntigua || !contrasenaNueva){ // Valida que las contraseñas sean ingresadas
             return res.status(400).json({mensaje: 'Se requiere la antigua y la nueva contraseña.'})
         }
 
-        const administrador = await Administrador.findById(usuarioId)
+        const administrador = await Administrador.findById(id)
         if (!administrador) { // Valida que el administrador exista
             return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
         }

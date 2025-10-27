@@ -24,7 +24,7 @@ router.get(
 
 // Ruta para cambiar la contraseña
 router.put(
-    '/admins/cambiar-contrasena',
+    '/admins/cambiar-contrasena/:id',
     verificarToken, // Se valida la autenticación
     cambiarContrasena // Se llama al controlador
 )

@@ -256,13 +256,13 @@ const primerCambioContrasenaAlumno = async (req, res) => {
 const cambiarContrasena = async (req, res) =>{
     try{
         const {contrasenaAntigua, contrasenaNueva} = req.body
-        const {usuarioId} = req.params
+        const {id} = req.params
 
         if(!contrasenaAntigua || !contrasenaNueva){ // Valida que se hayan ingresado las contraseñas
             return res.status(400).json({mensaje: 'Se requiere la antigua y la nueva contraseña.'})
         }
 
-        const alumno = await Alumno.findById(usuarioId)
+        const alumno = await Alumno.findById(id)
         if (!alumno) { // Valida que el alumno exista
             return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
         }

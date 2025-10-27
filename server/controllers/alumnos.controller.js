@@ -230,13 +230,13 @@ const obtenerAlumnosPorGrupo = async (req, res) => {
 const primerCambioContrasenaAlumno = async (req, res) => {
     try {
         const { nuevaContrasena } = req.body
-        const { usuarioId } = req.params
+        const { id } = req.params
 
         if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
             return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' })
         }
 
-        const alumno = await Alumno.findById(usuarioId)
+        const alumno = await Alumno.findById(id)
         if (!alumno) { // Valida que el alumno exista
             return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
         }

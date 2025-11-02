@@ -86,7 +86,7 @@ const obtenerCalificacionesPorID = async (req, res) => {
         const calificaciones = await Calificacion.find({alumnoId: id}).populate('materiaId')
 
         if(!calificaciones || calificaciones.length === 0){
-            return res.status(404).json({mensaje: "Calificaciones no encontradas"})
+            return res.status(404).json({mensaje: "Calificaciones no encontradas."})
         } 
 
         // Se les da un mejor formato a los datos

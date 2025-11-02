@@ -13,7 +13,8 @@ const alumnoEsquema = new mongoose.Schema({
         grupo: { type: mongoose.Schema.Types.ObjectId, ref: 'Grupo', required: true }
     }],
     fechaCreacion:{type:Date, default:Date.now},
-    requiereCambioContrasena:{type:Boolean, default:true}
+    requiereCambioContrasena:{type:Boolean, default:true},
+    activo:{type:Boolean, default:true}
 }, { collection: 'alumnos' })
 
 // Se exporta el esquema

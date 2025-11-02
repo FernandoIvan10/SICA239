@@ -8,6 +8,7 @@ const historialAcademicoEsquema = new mongoose.Schema({
         {
             materiaId: {type:mongoose.Schema.Types.ObjectId, ref:'Materia'},
             nota: {type:Number},
+            semestre: {type:String},
         }
     ],
 }, { collection: 'historialacademico' })

@@ -24,22 +24,24 @@ const agregarAlumno = async (req, res) => {
         // Valida que el alumno no exista
         const existeAlumno = await Alumno.findOne({ matricula })
         if (existeAlumno) {
-            return res.status(400).json({ mensaje: 'El alumno ya existe.' })
+            return res.status(400).json({ mensaje: 'La matrícula ingresada ya se encuentra registrada en el sistema.' })
         }
 
         // Valida que las materias recursadas tengan la estructura correcta
         if (materiasRecursadas && !Array.isArray(materiasRecursadas)) {
-            return res.status(400).json({ mensaje: 'materiasRecursadas debe ser un arreglo.' })
+            console.error('materiasRecursadas debe ser un arreglo.')
+            return res.status(500).json({ mensaje: 'Error interno del servidor.'})
         }
         if (materiasRecursadas && materiasRecursadas.some(m => !m.materia || !m.grupo)) {
-            return res.status(400).json({ mensaje: 'Cada materia recursada debe tener materia y grupo.' })
+            console.error('Cada materia recursada debe tener materia y grupo.')
+            return res.status(500).json({ mensaje: 'Error interno del servidor.' })
         }
-        if(materiasRecursadas){
+        if(materiasRecursadas){ // Se valida que las materias y los grupos existan
             for (const item of materiasRecursadas) {
                 const materiaValida = await Materia.findById(item.materia)
                 const grupoValido = await Grupo.findById(item.grupo)
                 if (!materiaValida || !grupoValido) {
-                    return res.status(400).json({ mensaje: 'Materia o grupo inválido en materiasRecursadas.' })
+                    return res.status(404).json({ mensaje: 'No se encontró la materia o grupo a recursar.'})
                 }
             }
         }
@@ -89,7 +91,7 @@ const modificarAlumno = async (req, res) => {
             // Se valida que el nuevo grupo exista
             const grupoExistente = await Grupo.findOne({ nombre: grupoNombre })
             if (!grupoExistente) {
-                return res.status(400).json({ mensaje: 'El grupo especificado no existe.' })
+                return res.status(404).json({ mensaje: 'El grupo especificado no existe.' })
             }
             // Valida que el alumno no tenga calificaciones en el grupo anterior
             if (alumnoExistente.grupoId.toString() !== grupoExistente._id.toString()) {
@@ -99,7 +101,7 @@ const modificarAlumno = async (req, res) => {
                 })
                 if (tieneCalificaciones) {
                     return res.status(400).json({
-                        mensaje: 'No se puede cambiar el grupo del alumno porque ya tiene calificaciones registradas en su grupo actual.'
+                        mensaje: 'No se puede cambiar el grupo del alumno porque tiene calificaciones registradas en su grupo actual.'
                     })
                 }
             }
@@ -190,7 +192,7 @@ const obtenerAlumnoPorID = async (req, res) => {
         const alumno = await Alumno.findById(id)
             .select('-contrasena') // No enviar contraseña
 
-        if (!alumno) {
+        if (!alumno) { // Se valida que el alumno exista
             return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
         }
 
@@ -207,12 +209,13 @@ const obtenerAlumnosPorGrupo = async (req, res) => {
         if (!grupoId) return res.status(400).json({ mensaje: 'Se requiere el ID del grupo.' })
 
         // Alumnos con el grupo como grupo principal
-        const alumnosGrupo = await Alumno.find({ grupoId }, '-contrasena')
+        const alumnosGrupo = await Alumno.find({ grupoId, activo: true }, '-contrasena')
 
         // Alumnos que recursan materias en ese grupo, pero que no pertenecen al grupo
         const alumnosRecursando = await Alumno.find({ 
             'materiasRecursadas.grupo': grupoId,
-            grupoId: { $ne: grupoId }
+            grupoId: { $ne: grupoId },
+            activo: true
         }, '-contrasena')
 
         const alumnos = [...alumnosGrupo, ...alumnosRecursando]
@@ -227,14 +230,14 @@ const obtenerAlumnosPorGrupo = async (req, res) => {
 const primerCambioContrasenaAlumno = async (req, res) => {
     try {
         const { nuevaContrasena } = req.body
-        const { usuarioId } = req
+        const { id } = req.params
 
         if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
             return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' })
         }
 
-        const alumno = await Alumno.findById(usuarioId)
-        if (!alumno) {
+        const alumno = await Alumno.findById(id)
+        if (!alumno) { // Valida que el alumno exista
             return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
         }
 
@@ -253,19 +256,19 @@ const primerCambioContrasenaAlumno = async (req, res) => {
 const cambiarContrasena = async (req, res) =>{
     try{
         const {contrasenaAntigua, contrasenaNueva} = req.body
-        const {usuarioId} = req
+        const {id} = req.params
 
-        if(!contrasenaAntigua || !contrasenaNueva){
+        if(!contrasenaAntigua || !contrasenaNueva){ // Valida que se hayan ingresado las contraseñas
             return res.status(400).json({mensaje: 'Se requiere la antigua y la nueva contraseña.'})
         }
 
-        const alumno = await Alumno.findById(usuarioId)
-        if (!alumno) {
+        const alumno = await Alumno.findById(id)
+        if (!alumno) { // Valida que el alumno exista
             return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
         }
 
         const esValido = await bcrypt.compare(contrasenaAntigua, alumno.contrasena)
-        if(!esValido){
+        if(!esValido){ // Valida que la contraseña antigua coincida
             return res.status(401).json({mensaje: 'Contraseña incorrrecta.'})
         }
 
@@ -274,17 +277,18 @@ const cambiarContrasena = async (req, res) =>{
 
         return res.status(200).json({ mensaje: 'Contraseña cambiada correctamente.' })
     }catch(error){
-        res.status(500).json({message: 'Error al cambiar la contraseña: ', error})
+        console.error('Error al cambiar la contraseña: ', error)
+        res.status(500).json({mensaje: 'Error interno del servidor.'})
     }
 }
 
 // Función para reiniciar la contraseña (Que la contraseña sea su Matrícula)
 const reiniciarContrasena = async (req, res) => {
     try{
-        const {id} = req
+        const {id} = req.params
         
         const alumno = await Alumno.findById(id)
-        if(!alumno){
+        if(!alumno){ // Valida que el alumno exista
             return res.status(404).json({ mensaje: 'Alumo no encontrado.' })
         }
 
@@ -294,7 +298,28 @@ const reiniciarContrasena = async (req, res) => {
         
         return res.status(200).json({mensaje: 'La contraseña ahora es la matrícula del usuario.'})
     }catch(error){
-        res.status(500).json({mensaje: 'Error al reiniciar la contraseña: ', error})
+        console.error('Error al reiniciar la contraseña: ', error)
+        res.status(500).json({mensaje: 'Error interno del servidor.'})
+    }
+}
+
+// Función para cambiar el estado (activo) de un alumno
+const cambiarEstado = async (req, res) => {
+    try{
+        const {id} = req.params
+
+        const alumno = await Alumno.findById(id)
+        if (!alumno) { // Valida que el alumno exista
+            return res.status(404).json({ mensaje: 'Alumno no encontrado.' })
+        }
+
+        alumno.activo = !alumno.activo
+        await alumno.save()
+
+        return res.status(200).json({ mensaje: 'Estado cambiado correctamente.' })
+    }catch(error){
+        console.error('Error al cambiar el estado del alumno: ', error)
+        res.status(500).json({mensaje: 'Error interno del servidor.'})
     }
 }
 
@@ -306,5 +331,6 @@ module.exports = {
     obtenerAlumnosPorGrupo, 
     primerCambioContrasenaAlumno, 
     cambiarContrasena,
-    reiniciarContrasena
+    reiniciarContrasena,
+    cambiarEstado
 } // Se exporta el controlador

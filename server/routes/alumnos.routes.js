@@ -2,7 +2,7 @@
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo, primerCambioContrasenaAlumno, cambiarContrasena, reiniciarContrasena} = require('../controllers/alumnos.controller')
+const {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo, primerCambioContrasenaAlumno, cambiarContrasena, reiniciarContrasena, cambiarEstado} = require('../controllers/alumnos.controller')
 
 const router = express.Router() // Se crea un router
 
@@ -22,26 +22,34 @@ router.get(
     listarAlumnos // Se llama al controlador
 )
 
-// Ruta para cambiar la contraseña de un alumno por primera vez
-router.put(
-    '/alumnos/primer-cambio-contrasena',
-    verificarToken, // Se valida la autenticación
-    primerCambioContrasenaAlumno // Se llama al controlador
-)
-
 // Ruta para cambiar la contraseña
 router.put(
-    '/alumnos/cambiar-contrasena',
+    '/alumnos/cambiar-contrasena/:id',
     verificarToken, // Se valida la autenticación
     cambiarContrasena // Se llama al controlador
+)
+
+// Ruta para cambiar la contraseña de un alumno por primera vez
+router.put(
+    '/alumnos/primer-cambio-contrasena/:id',
+    verificarToken, // Se valida la autenticación
+    primerCambioContrasenaAlumno // Se llama al controlador
 )
 
 // Ruta para reiniciar la contraseña de un alumno (sólo para superadmin)
 router.put(
     '/alumnos/reiniciar-contrasena/:id',
     verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
+    verificarRol(['superadmin','editor']), // Se valida el rol
     reiniciarContrasena // Se llama al controlador
+)
+
+// Ruta para cambiar el estado de un alumno (activo - inactivo)
+router.put(
+    '/alumnos/cambiar-estado/:id',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin','editor']), // Se valida el rol
+    cambiarEstado // Se llama al controlador
 )
 
 // Ruta para modificar un usuario alumno (solo para "superadmin" y "editor")

@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 // Esquema de la colección de Grupos
 const grupoEsquema = new mongoose.Schema({
     nombre:{type:String, unique:true, required:true},
+    semestre:{type:String, required:true},
     materias:[ // lista de materias
         {
             type:mongoose.Schema.Types.ObjectId,

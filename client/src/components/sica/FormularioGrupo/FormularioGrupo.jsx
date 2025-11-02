@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react"
-import "./FormularioGrupo.css"
+import { useEffect, useState } from 'react'
+import '../../../assets/styles/global.css'
+import './FormularioGrupo.css'
 
 // Componente que renderiza el formulario para los grupos
 export default function FormularioGrupo(props) {
-    const [nombreGrupo, setNombreGrupo] = useState(props.nombre || "") // Nombre del grupo
+    const [nombreGrupo, setNombreGrupo] = useState(props.nombre || '') // Nombre del grupo
+    const [semestreGrupo, setSemestreGrupo] = useState(props.semestre || 'Semestre 1') // Semestre del grupo
     const [materias, setMaterias] = useState(props.materias || []) // Lista de materias del grupo
-    const [nuevaMateria, setNuevaMateria] = useState("") // Nombre de la nueva materia
+    const [nuevaMateria, setNuevaMateria] = useState('') // Nombre de la nueva materia
     const [sugerencias, setSugerencias] = useState([]) // Sugerencias de materias de la BD
     const [enfocado, setEnfocado] = useState(false) // Estado del campo para agregar materias (enfocado o no enfocado)
     const {reset} = props
@@ -13,18 +15,25 @@ export default function FormularioGrupo(props) {
     useEffect(() => { // Se muestran sugerencias al escribir una nueva materia
         const fetchSugerencias = async () => {
         if (!enfocado) return setSugerencias([]) // Si el campo no está enfocado no se envían sugerencias
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem('token')
         try {
             // Si el campo está vacío muestra todas las sugerencias
-            const query = nuevaMateria.trim() ? `?q=${encodeURIComponent(nuevaMateria)}` : ""
+            const query = nuevaMateria.trim() ? `?q=${encodeURIComponent(nuevaMateria)}` : ''
             const res = await fetch(`http://localhost:3000/api/materias${query}`, {
             headers: { Authorization: `Bearer ${token}` },
             })
             const data = await res.json()
-            if (res.ok) setSugerencias(data.materias.map(m => m.nombre)) // Si el backend devuelve sugerencias se muestran las sugerencias
-            else console.log("Error en fetch, status:", res.status)
+            if (res.ok){
+                setSugerencias(data.materias.map(m => m.nombre)) // Si el backend devuelve sugerencias se muestran las sugerencias
+            } else {
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al obtener las materias')
+                return
+            }
         } catch (error){
-            console.log("Error en fetch:", error)
+            console.log('Error en fetch:', error)
+            alert('No se pudo conectar con el servidor.')
             setSugerencias([]);
         }
     }
@@ -33,52 +42,70 @@ export default function FormularioGrupo(props) {
 
     useEffect(() => { // Se limpian los campos del formulario al reiniciar el componente
         if (reset) {
-            setNombreGrupo("")
+            setNombreGrupo('')
+            setSemestreGrupo('')
             setMaterias([])
-            setNuevaMateria("")
+            setNuevaMateria('')
         }
     }, [reset])
 
-  // Método para agregar una materia a la lista
+    // Método para agregar una materia a la lista
     const agregarMateria = () => {
         if (nuevaMateria.trim() && !materias.includes(nuevaMateria)) {
             // Si la materia no está vacía y la materia no está en la lista
             setMaterias([...materias, nuevaMateria])
-            setNuevaMateria("")
-
+            setNuevaMateria('')
         }
     }
 
     // Método para eliminar una materia de la lista
-    const eliminarMateria = (materia) => {
-        setMaterias(materias.filter((m) => m !== materia))
+    const eliminarMateria = (index) => {
+        setMaterias((prev) => prev.filter((_, i) => i !== index));
     }
 
     return (
-    <div className="contenedor-formulario">
-        <h1>{props.tituloFormulario}</h1>
+    <div className="contenido-principal">
+        <h1 className="formulario-grupo-titulo">{props.tituloFormulario}</h1>
         <div className="formulario-grupo">
-            <label>
+            <label className="formulario-grupo-label">
                 Nombre del Grupo*:
-                <input
-                    type="text"
-                    value={nombreGrupo}
-                    onChange={(e) => setNombreGrupo(e.target.value)}
-                    placeholder="Escribe el nombre del grupo"
-                />
             </label>
-            <label>
+            <input
+                className="formulario-grupo-input"
+                type="text"
+                value={nombreGrupo}
+                onChange={(e) => setNombreGrupo(e.target.value)}
+                placeholder="Escribe el nombre del grupo"
+            />
+            <label className="formulario-grupo-label">
+                Semestre del Grupo*:
+            </label>
+            <select 
+                className="formulario-grupo-select"
+                value={semestreGrupo} 
+                onChange={(e)=>setSemestreGrupo(e.target.value)} 
+            >
+                <option value="Semestre 1">Semestre 1</option>
+                <option value="Semestre 2">Semestre 2</option>
+                <option value="Semestre 3">Semestre 3</option>
+                <option value="Semestre 4">Semestre 4</option>
+                <option value="Semestre 5">Semestre 5</option>
+                <option value="Semestre 6">Semestre 6</option>
+            </select>
+            <label className="formulario-grupo-label">
                 Materias*:
-                <div className="materias-lista">
+            </label>
+                <div className="formulario-grupo-materias-lista">
                     {materias.map((materia, index) => (
-                        <div key={index} className="materia-item">
+                        <div key={index} className="formulario-grupo-materia-item">
                             {materia}
-                            <button onClick={() => eliminarMateria(materia)}>X</button>
+                            <button onClick={() => eliminarMateria(index)}>X</button>
                         </div>
                     ))}
                 </div>
-                <div className="agregar-materia">
+                <div className="formulario-grupo-agregar-materia">
                     <input
+                        className="formulario-grupo-input"
                         type="text"
                         value={nuevaMateria}
                         onChange={(e) => setNuevaMateria(e.target.value)}
@@ -86,9 +113,9 @@ export default function FormularioGrupo(props) {
                         onFocus={() => setEnfocado(true)}
                         onBlur={() => setTimeout(() => setEnfocado(false), 150)}
                     />
-                    <button onClick={agregarMateria}>Agregar</button>
+                    <button className="formulario-grupo-agregar-materia-boton" onClick={agregarMateria}>Agregar</button>
                     {enfocado && sugerencias.length > 0 && (
-                        <ul className="sugerencias-materias">
+                        <ul className="formulario-grupo-sugerencias-materias">
                             {sugerencias.map((s, index) => (
                                 <li
                                     key={index}
@@ -96,7 +123,7 @@ export default function FormularioGrupo(props) {
                                     setNuevaMateria(s);
                                     setEnfocado(false);
                                     }}
-                                    className="sugerencia-item"
+                                    className="formulario-grupo-sugerencia-item"
                                 >
                                     {s}
                                 </li>
@@ -104,10 +131,9 @@ export default function FormularioGrupo(props) {
                         </ul>
                     )}
                 </div>
-            </label>
-            <div className="botones-formulario">
-                <button onClick={() => props.guardar(nombreGrupo, materias)}>Guardar</button>
-                <button onClick={props.cancelar}>Cancelar</button>
+            <div className="formulario-grupo-botones">
+                <button className="boton-guardar" onClick={() => props.guardar(nombreGrupo, semestreGrupo, materias)}>Guardar</button>
+                <button className="boton-cancelar" onClick={props.cancelar}>Cancelar</button>
             </div>
         </div>
     </div>

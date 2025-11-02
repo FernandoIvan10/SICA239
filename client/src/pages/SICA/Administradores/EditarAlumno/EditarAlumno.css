@@ -1,90 +1,107 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-.contenedor-inicio {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
-.contenedor-agregar-usuario {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    background-color: #f9f9f9;
-}
-
-.contenido-principal {
-    flex: 1;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.selector-tipo {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    align-items: center;  /* Centra verticalmente si es necesario */
-}
-
-.btn-selector {
-    padding: 10px 20px;
-    margin: 0 5px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    cursor: pointer;
-    border-radius: 5px;
-    position: relative;  /* Evita que el botón cambie su posición */
-    z-index: 1;  /* Evita problemas de solapamiento */
-}
-
-.btn-selector.activo {
-    background-color: #28a745;
-    color: white;
-    border-color: #28a745;
-}
-
-.btn-guardar {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: 1px solid #28a745; /* El borde permanece constante */
-    border-radius: 5px;
-    cursor: pointer;
-    position: relative;  /* Fija su posición */
-    z-index: 1;  /* Evita problemas de solapamiento */
-    text-align: center;
-    /* Evitar cualquier cambio al pasar el cursor */
-    transition: none; /* Evita cambios de transición inesperados */
-    margin: 0; /* Asegura que no haya márgenes que causen el desplazamiento */
-}
-
-.formulario-editar {
+.formulario-editar-alumno {
     background-color: white;
     padding: 20px;
+    padding-top: 15px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     max-width: 500px;
-    margin: auto;
-}
-
-.formulario-editar label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.formulario-editar input, 
-.formulario-editar select {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
+    margin: 0;
+}
+
+.formulario-editar-alumno-campo,
+.formulario-editar-alumno-campo-materias-recursadas {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.formulario-editar-alumno-campo-materias-recursadas{
+    margin-bottom: 0.5rem !important;
+}
+
+.formulario-editar-alumno-label {
+  font-family: 'Roboto';
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 16px;
+}
+
+.formulario-editar-alumno-input,
+.formulario-editar-alumno-select {
+  font-family: 'Roboto';
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0;
+}
+
+.formulario-editar-alumno-select {
+    background-color: #f9f9f9;
+}
+
+.formulario-editar-alumno-materias-recursadas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.formulario-editar-alumno-materia-recursada {
+    font-family: 'Roboto';
+    display: flex;
+    align-items: center;
+    background-color: #e6e6e6;
     border-radius: 4px;
-    box-sizing: border-box;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+}
+
+.formulario-editar-alumno-materia-recursada button {
+    margin-left: 0.5rem;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+}
+
+.formulario-editar-alumno-materia-recursada button:hover {
+    background-color: #e60000;
+}
+
+.formulario-editar-alumno-contenedor-boton-agregar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 2rem;
+}
+
+.formulario-editar-alumno-boton-agregar {
+  font-family: 'Roboto';
+  padding: 0.6rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  height: fit-content;
+  width: fit-content;
+}
+
+.formulario-editar-alumno-boton-agregar:hover {
+    background-color: #0056b3;
+}
+
+.formulario-editar-alumno-botones{
+    display: flex;
+    justify-content: space-evenly;
 }

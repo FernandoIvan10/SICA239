@@ -1,16 +1,14 @@
-import Input from "../../sitio_web/Input/Input"
-import "./Formulario.css"
+import Input from '../../sitio_web/Input/Input'
+import '../../../assets/styles/global.css'
+import './Formulario.css'
 
-// Componente que renderiza un formulario
+// Componente que renderiza un formulario simple
 export default function Formulario(props){
     return(
-        // Formulario
         <form 
             className="formulario"
             onSubmit={props.onSubmit}>
-                {/* Renderiza el icono sólo si lo tiene */}
                 {props.icono && <div className="formulario-icono">{props.icono}</div>}
-            {/* Campos del formulario */}
             <div className="formulario-campos">
             {props.campos.map((campo, index)=>(
                     <Input
@@ -23,7 +21,6 @@ export default function Formulario(props){
                     />
             ))}
             </div>
-            {/* Botones del formulario */}
             <div className="fomulario-botones">
             {props.botones.map((boton, index)=>(
                     <button className="formulario-boton">{boton.texto}</button>

@@ -1,7 +1,10 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import './MigrarAlumnos.css'
+import '../../../../assets/styles/global.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para migrar los alumnos de un grupo (sin calificaciones) a otro
 export default function MigrarAlumnos() {
@@ -18,22 +21,28 @@ export default function MigrarAlumnos() {
     const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga la migración
 
     useEffect(() => { // Se obtienen los grupos del backend
-        fetch('http://localhost:3000/api/grupos',{
-            method: 'GET',
+        fetch('http://localhost:3000/api/grupos', {
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
-        }).then(async res => {
-            if (res.ok) {
-                const data = await res.json()
-                setGrupos(data.grupos)
+        })
+        .then(async res => {
+            const data = await res.json()
+            if (!res.ok) {
+                console.error(`Error ${res.status}`, await res.json().catch(() => null))
+                alert(data.mensaje || 'Error al obtener grupos')
+                setGrupos([])
                 return
-            }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los grupos")
-                return   
             }
+            return data
+        })
+        .then(data => {
+            setGrupos(data.grupos)
+        })
+        .catch(err => {
+            console.error('Error al obtener grupos:', err)
+            alert('No se pudo conectar con el servidor')
+            setGrupos([])
         })
     }, [])
 
@@ -47,17 +56,16 @@ export default function MigrarAlumnos() {
                 }
             })
             .then(async res => {
-                if (res.ok) {
-                    const data = await res.json()
-                    setAlumnos(data)
-                } else {
-                    console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                    alert("Ocurrió un error al obtener los alumnos")
+                const data = await res.json()
+                if(!res.ok){
+                    alert(data.mensaje || 'Error al obtener alumnos')
                 }
+                
+                setAlumnos(data)
             })
             .catch(error => {
                 console.error('Error de red al obtener alumnos:', error)
-                alert("Error de red al obtener los alumnos")
+                alert('No se pudo conectar con el servidor')
             })
         }
     }, [grupoOrigen])
@@ -106,25 +114,29 @@ export default function MigrarAlumnos() {
         }
     }
 
+    if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
+       return(
+        <MensajeCarga/>
+       ) 
+    }
+    
     return (
-        <div>
+        <div className="contenedor-principal">
             <MenuLateral/>
-            <div>
-                <h2>Migrar alumnos entre grupos</h2>
-
-                <div>
-                    <label>Grupo origen:</label>
-                    <select value={grupoOrigen} onChange={e => setGrupoOrigen(e.target.value)}>
+            <div className="contenido-principal">
+                <h1>Migrar alumnos entre grupos</h1>
+                <div className="migrar-alumnos-campo">
+                    <label className="migrar-alumnos-campo-label">Grupo origen:</label>
+                    <select className="migrar-alumnos-campo-select" value={grupoOrigen} onChange={e => setGrupoOrigen(e.target.value)}>
                         <option value="">Selecciona</option>
                         {grupos.map(g => (
                             <option key={g._id} value={g._id}>{g.nombre}</option>
                         ))}
                     </select>
                 </div>
-
-                <div>
-                    <label>Grupo destino:</label>
-                    <select value={grupoDestino} onChange={e => setGrupoDestino(e.target.value)}>
+                <div className="migrar-alumnos-campo">
+                    <label className="migrar-alumnos-campo-label">Grupo destino:</label>
+                    <select className="migrar-alumnos-campo-select" value={grupoDestino} onChange={e => setGrupoDestino(e.target.value)}>
                         <option value="">Selecciona</option>
                         {grupos
                             .filter(g => g._id !== grupoOrigen)
@@ -135,32 +147,32 @@ export default function MigrarAlumnos() {
                 </div>
 
                 {alumnos.length > 0 && (
-                    <div>
-                        <h3>Selecciona alumnos a migrar:</h3>
-                        <ul>
+                    <div className="migrar-alumnos-contenedor-lista-alumnos">
+                        <h2>Selecciona alumnos a migrar:</h2>
+                        <ul className="migrar-alumnos-lista-alumnos">
                             {alumnos.map(a => (
-                                <li key={a._id}>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={seleccionados.includes(a._id)}
-                                            onChange={() => manejarCheckbox(a._id)}
-                                        />
-                                        {a.nombre} {a.apellido}
-                                    </label>
+                                <li className="migrar-alumnos-alumno" key={a._id}>
+                                    <label className="migrar-alumnos-alumno-label">{a.nombre} {a.apellido}</label>
+                                    <input
+                                        className="migrar-alumnos-alumno-checkbox"
+                                        type="checkbox"
+                                        checked={seleccionados.includes(a._id)}
+                                        onChange={() => manejarCheckbox(a._id)}
+                                    />
                                 </li>
                             ))}
                         </ul>
                     </div>
                 )}
-
-                <button
-                    onClick={migrar}
-                    disabled={cargando || !grupoOrigen || !grupoDestino || seleccionados.length === 0}
-                >
-                    {cargando ? 'Migrando...' : 'Migrar alumnos'}
-                </button>
-
+                <div className="migrar-alumnos-contenedor-botones">
+                    <button
+                        className="boton-guardar"
+                        onClick={migrar}
+                        disabled={cargando || !grupoOrigen || !grupoDestino || seleccionados.length === 0}
+                    >
+                        {cargando ? 'Migrando...' : 'Migrar alumnos'}
+                    </button>
+                </div>
                 {mensaje && <p>{mensaje}</p>}
             </div>
         </div>

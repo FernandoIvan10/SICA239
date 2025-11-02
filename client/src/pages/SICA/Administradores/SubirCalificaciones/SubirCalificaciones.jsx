@@ -1,9 +1,11 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import "./SubirCalificaciones.css"
-import { jwtDecode } from "jwt-decode"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import { jwtDecode } from 'jwt-decode'
+import '../../../../assets/styles/global.css'
+import './SubirCalificaciones.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para subir calificaciones
 export default function SubirCalificaciones(){
@@ -21,28 +23,34 @@ export default function SubirCalificaciones(){
     const [calificaciones, setCalificaciones] = useState({}) // Calificaciones del grupo seleccionado
 
     useEffect(()=>{ // Se obtienen los grupos del backend
-        fetch('http://localhost:3000/api/grupos',{
-            method: 'GET',
+        fetch('http://localhost:3000/api/grupos', {
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
-        }).then(async res => {
-            if (res.ok) {
-                const data = await res.json()
-                setGrupos(data.grupos)
-                return
-            }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los grupos")
-                return   
-            }
         })
-    })
+        .then(async res => {
+            const data = await res.json()
+            if (!res.ok) {
+                alert(data.mensaje || 'Error al obtener grupos')
+                setGrupos([])
+                return
+            }
+            return data
+        })
+        .then(data => {
+            // El grupo de egresados no debe aparecer en esta pantalla
+            const gruposFiltrados = data.grupos.filter(g => g.nombre !== "Egresados")
+            setGrupos(gruposFiltrados)
+        })
+        .catch(err => {
+            console.error('Error al obtener grupos:', err)
+            alert('No se pudo conectar con el servidor')
+            setGrupos([])
+        })
+    }, [])
      
     useEffect(()=>{ // Se obtienen los alumnos y materias del grupo seleccionado
         if(grupoSeleccionado){
-            const token = localStorage.getItem("token");
             fetch(`http://localhost:3000/api/alumnos/por-grupo/${grupoSeleccionado}`, { // Obtener los alumnos del backend
                 method: 'GET',
                 headers: {
@@ -51,17 +59,18 @@ export default function SubirCalificaciones(){
                 }
             })
             .then(async res => {
-                if (res.ok) {
-                    const data = await res.json()
-                    setAlumnos(data)
-                } else {
+                const data = await res.json()
+                if (!res.ok) {
                     console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                    alert("Ocurrió un error al obtener los alumnos")
+                    alert(data.mensaje || 'Ocurrió un error al obtener los alumnos')
+                    return
                 }
+                
+                setAlumnos(data)
             })
             .catch(error => {
                 console.error('Error de red al obtener alumnos:', error)
-                alert("Error de red al obtener los alumnos")
+                alert('No se pudo conectar con el servidor.')
             })
             // Actualizar materias según el grupo seleccionado
             const grupo = grupos.find(g => g._id === grupoSeleccionado)
@@ -80,28 +89,32 @@ export default function SubirCalificaciones(){
                 'Authorization': `Bearer ${token}`
             }
         }).then(async res => {
-            if (res.ok) {
-                const data = await res.json()
-                const calificacionesMap = {}
-                for (const c of data.calificaciones) {
-                    const parcialData = c.parciales.find(p => p.parcial === parcialSeleccionado)
-                    if (!parcialData) continue
+            const data = await res.json()
 
-                    const alumnoId = typeof c.alumnoId === 'object' ? c.alumnoId._id : c.alumnoId
-                    const materiaId = typeof c.materiaId === 'object' ? c.materiaId._id : c.materiaId
-
-                    if (!calificacionesMap[alumnoId]) calificacionesMap[alumnoId] = {}
-                    calificacionesMap[alumnoId][materiaId] = {
-                        nota: parcialData.nota,
-                        calificacionId: c._id
-                    }
-                }
-                setCalificaciones(calificacionesMap)
-            } else {
+            if(!res.ok){
                 console.error(`Error ${res.status}`, await res.json().catch(() => null))
+                alert(data.mensaje || 'Ocurrió un error al obtener las calificaciones parciales.')
+                return
             }
+            
+            const calificacionesMap = {}
+            for (const c of data.calificaciones) {
+                const parcialData = c.parciales.find(p => p.parcial === parcialSeleccionado)
+                if (!parcialData) continue
+
+                const alumnoId = typeof c.alumnoId === 'object' ? c.alumnoId._id : c.alumnoId
+                const materiaId = typeof c.materiaId === 'object' ? c.materiaId._id : c.materiaId
+
+                if (!calificacionesMap[alumnoId]) calificacionesMap[alumnoId] = {}
+                calificacionesMap[alumnoId][materiaId] = {
+                    nota: parcialData.nota,
+                    calificacionId: c._id
+                }
+            }
+            setCalificaciones(calificacionesMap)
         }).catch(err => {
             console.error('Error al obtener calificaciones:', err)
+            alert('No se pudo conectar al servidor.')
         })
     }, [grupoSeleccionado, parcialSeleccionado])
 
@@ -125,80 +138,80 @@ export default function SubirCalificaciones(){
     // Método para guardar los cambios en las calificaciones
     const guardarCalificaciones = async () => {
         if (!grupoSeleccionado || !parcialSeleccionado) {
-            alert("Selecciona un grupo y un parcial antes de guardar.")
+            alert('Selecciona un grupo y un parcial antes de guardar.')
             return
         }
 
-        for (const alumno of alumnos) {
-            const materiasAlumno = materias.filter(m => {
-                const esDelGrupo = alumno.grupoId?.toString() === grupoSeleccionado
-                const esRecursada = alumno.materiasRecursadas?.some(mr => 
-                    mr.grupo?.toString() === grupoSeleccionado && mr.materia?.toString() === m._id
-                )
-                return esDelGrupo || esRecursada
-            })
-
-            for (const materia of materiasAlumno) {
-                const calificacionData = calificaciones[alumno._id]?.[materia._id]
-                if (!calificacionData || calificacionData.nota === '' || calificacionData.nota === undefined) continue
-
-                const body = {
-                    alumnoId: alumno._id,
-                    materiaId: materia._id,
-                    grupoId: grupoSeleccionado,
-                    parcial: parcialSeleccionado,
-                    nota: Number(calificacionData.nota)
-                }
-
-                const response = await fetch('http://localhost:3000/api/calificaciones', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(body)
+        try{
+            for (const alumno of alumnos) {
+                const materiasAlumno = materias.filter(m => {
+                    const esDelGrupo = alumno.grupoId?.toString() === grupoSeleccionado
+                    const esRecursada = alumno.materiasRecursadas?.some(mr => 
+                        mr.grupo?.toString() === grupoSeleccionado && mr.materia?.toString() === m._id
+                    )
+                    return esDelGrupo || esRecursada
                 })
-                if(!response.ok){
-                    const errorData = await response.json()
-                    throw new Error("Error al capturar las calificaciones: " + errorData)
-                }
 
+                for (const materia of materiasAlumno) {
+                    const calificacionData = calificaciones[alumno._id]?.[materia._id]
+                    if (!calificacionData || calificacionData.nota === '' || calificacionData.nota === undefined) continue
+
+                    const body = {
+                        alumnoId: alumno._id,
+                        materiaId: materia._id,
+                        grupoId: grupoSeleccionado,
+                        parcial: parcialSeleccionado,
+                        nota: Number(calificacionData.nota)
+                    }
+
+                    const response = await fetch('http://localhost:3000/api/calificaciones', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(body)
+                    })
+                    if(!response.ok){
+                        const errorData = await response.json()
+                        alert(errorData.mensaje || 'Error al capturar las calificaciones')
+                        return
+                    }
+
+                }
             }
+            alert('Calificaciones guardadas.')
+        }catch (err) {
+            console.error('Error al guardar calificaciones:', err)
+            alert('No se pudo conectar al servidor.')
         }
-        alert('Calificaciones guardadas.')
     }
 
     if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
         return(
-            <>
-                <MenuLateral/>
-                <div className="contenido-principal">
-                    <p>Cargando datos</p>
-                </div>
-            </>
+            <MensajeCarga/>
         )
     }
+
     return (
-        <div className="contenedor-inicio">
+        <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Subir Calificaciones</h1>
-
-                <div className="selectores">
-                    <select className="select-grupo" value={grupoSeleccionado} onChange={e => setGrupoSeleccionado(e.target.value)}>
+                <div className="subir-calificaciones-selectores">
+                    <select className="subir-calificaciones-selectores-select" value={grupoSeleccionado} onChange={e => setGrupoSeleccionado(e.target.value)}>
                         <option value="">Seleccionar grupo</option>
                         {grupos.map(grupo => (
                             <option key={grupo._id} value={grupo._id}>{grupo.nombre}</option>
                         ))}
                     </select>
-                    <select className="select-parcial" value={parcialSeleccionado} onChange={e => setParcialSeleccionado(e.target.value)}>
+                    <select className="subir-calificaciones-selectores-select" value={parcialSeleccionado} onChange={e => setParcialSeleccionado(e.target.value)}>
                         <option value="">Seleccionar parcial</option>
                         {parciales.map((parcial, i) => (
                             <option key={i} value={parcial}>{parcial}</option>
                         ))}
                     </select>
                 </div>
-
                 <table className="tabla-calificaciones">
                     <thead>
                         <tr>
@@ -245,7 +258,7 @@ export default function SubirCalificaciones(){
                     </tbody>
                 </table>
                 {tokenDecodificado.rol !== "lector" && 
-                    <button className="btn-guardar" onClick={guardarCalificaciones}>Guardar Calificaciones</button>
+                    <button className="boton-guardar" onClick={guardarCalificaciones}>Guardar Calificaciones</button>
                 }
             </div>
         </div>

@@ -1,49 +1,68 @@
-.contenedor-inicio{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
-.contenedor-gestionar-horarios {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    background-color: #f9f9f9;
-}
-
-.contenido-principal {
-    flex: 1;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .tabla-horarios {
     width: 100%;
+    max-width: 800px;
     border-collapse: collapse;
     margin: 20px 0;
 }
 
 .tabla-horarios th, .tabla-horarios td {
+    font-family: 'Roboto';
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 12px 16px;
     text-align: center;
 }
 
 .tabla-horarios th {
-    background-color: #f4f4f4;
-    font-weight: bold;
+    font-family: 'Roboto';
+    background-color: #f0f0f0;
+    font-weight: 600;
+    color: #333;
 }
 
 .tabla-horarios tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #FCFCFC;
 }
 
 .tabla-horarios tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f2f2f2;
+}
+
+.tabla-horarios img {
+    width: 200px;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    object-fit: contain;
+}
+
+.tabla-horarios button {
+    font-family: 'Roboto';
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.tabla-horarios button:hover {
+    background-color: #c0392b;
+}
+
+.tabla-horarios input[type="file"] {
+    font-family: 'Roboto';
+    font-size: 0.9rem;
+    padding: 6px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tabla-horarios span {
+    font-family: 'Roboto';
+    color: #888;
+    font-style: italic;
 }

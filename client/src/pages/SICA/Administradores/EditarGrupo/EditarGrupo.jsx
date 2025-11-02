@@ -1,9 +1,10 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useNavigate, useLocation } from "react-router-dom"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import FormularioGrupo from "../../../../components/sica/FormularioGrupo/FormularioGrupo"
-import "./EditarGrupo.css"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import FormularioGrupo from '../../../../components/sica/FormularioGrupo/FormularioGrupo'
+import '../../../../assets/styles/global.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para editar grupos
 export default function EditarGrupo() {
@@ -16,14 +17,14 @@ export default function EditarGrupo() {
     const grupo = location.state?.grupo // Grupo a editar
     
     if (!grupo) { // Si no se recibe un grupo se redirige a la vista de grupos        
-        navigate("/SICA/administradores/ver-grupos")
+        navigate('/SICA/administradores/ver-grupos')
         return null
     }
 
     // Método para editar el grupo con los nuevos datos
-    const guardarCambios = (nuevoNombre, nuevasMaterias) => {
-        if(!nuevoNombre.trim() || nuevasMaterias.length === 0){ // Se deben rellenar el formulario
-            alert("Debes ingresar un nombre de grupo y al menos una materia")
+    const guardarCambios = (nuevoNombre, nuevoSemestre, nuevasMaterias) => {
+        if(!nuevoNombre.trim() || !nuevoSemestre.trim() || nuevasMaterias.length === 0){ // Se deben rellenar el formulario
+            alert('Debes ingresar un nombre de grupo, un semestre y al menos una materia')
             return
         }
 
@@ -35,32 +36,41 @@ export default function EditarGrupo() {
             },
             body: JSON.stringify({
                 nombre: nuevoNombre,
+                semestre: nuevoSemestre,
                 materias: nuevasMaterias
             })
         }).then(async res => {
             if(res.ok){
-                alert("Grupo actualizado correctamente")
-                navigate("/SICA/administradores/ver-grupos")
+                alert('Grupo actualizado correctamente')
+                navigate('/SICA/administradores/ver-grupos')
             } else {
-                console.error(await res.json().catch(()=>null))
-                alert("Ocurrió un error al actualizar el grupo")
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                 alert(errorData?.mensaje || 'Ocurrió un error al actualizar el grupo')
             }
         })
     }
 
     // Método para cancelar los cambios del grupo
     const cancelar = () => {
-        navigate("/SICA/administradores/ver-grupos")
+        navigate('/SICA/administradores/ver-grupos')
+    }
+
+    if(!grupo){ // Mientras no se carguen los datos del grupo se muestra un mensaje de carga
+        return(
+            <MensajeCarga/>
+        )
     }
 
     return (
-        <div className="contenedor-agregar-grupo">
+        <div className="contenedor-principal">
             <MenuLateral />
             <FormularioGrupo
                 tituloFormulario="Editar Grupo"
                 guardar={guardarCambios}
                 cancelar={cancelar}
                 nombre={grupo.nombre}
+                semestre={grupo.semestre}
                 materias={grupo.materias.map(m => m.nombre)}
             />
         </div>

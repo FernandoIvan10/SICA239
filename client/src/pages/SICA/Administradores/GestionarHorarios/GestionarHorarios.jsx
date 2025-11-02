@@ -1,9 +1,11 @@
-import MenuLateral from "../../../../components/sica/MenuLateral/MenuLateral"
-import { useEffect, useState } from "react"
-import { useValidarToken } from "../../../../hooks/useValidarToken/useValidarToken"
-import { useValidarRol } from "../../../../hooks/useValidarRol/useValidarRol"
-import "./GestionarHorarios.css"
-import { jwtDecode } from "jwt-decode"
+import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import { useEffect, useState } from 'react'
+import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
+import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
+import { jwtDecode } from 'jwt-decode'
+import '../../../../assets/styles/global.css'
+import './GestionarHorarios.css'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del sica para gestionar los horarios de los grupos
 export default function GestionarHorarios(){
@@ -25,12 +27,15 @@ export default function GestionarHorarios(){
         }).then(async res => {
             if (res.ok) {
                 const data = await res.json()
-                setGrupos(data.grupos)
+                // El grupo de egresados no debe aparecer en esta pantalla
+                const gruposFiltrados = data.grupos.filter(g => g.nombre !== "Egresados")
+                setGrupos(gruposFiltrados)
                 return
             }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los grupos")
-                return   
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al obtener los grupos.')
+                return
             }
         })
     }, [])
@@ -53,9 +58,10 @@ export default function GestionarHorarios(){
                 setHorarios(data.horarios)
                 return
             }else{
-                console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                alert("Ocurrió un error al obtener los horarios")
-                return   
+                const errorData = await res.json().catch(() => null)
+                console.error(`Error ${res.status}`, errorData)
+                alert(errorData?.mensaje || 'Ocurrió un error al obtener los horarios')
+                return
             }
         })
     }
@@ -64,16 +70,16 @@ export default function GestionarHorarios(){
     const obtenerHorarioDeGrupo = (grupoId) => {
         if (!horarios || horarios.length === 0) return null // Tiene que existir al menos un horario
         return horarios.find(h => h.grupo._id === grupoId)
-    }    
+    }
 
     // Método para subir el horario de un grupo
     const subirHorario = async (grupoId, file) => {
         const formData = new FormData()
-        formData.append("imagen", file)
-        formData.append("grupoId", grupoId)
+        formData.append('imagen', file)
+        formData.append('grupoId', grupoId)
 
-        const res = await fetch("http://localhost:3000/api/horarios", {
-            method: "POST",
+        const res = await fetch('http://localhost:3000/api/horarios', {
+            method: 'POST',
             headers: { Authorization: `Bearer ${token}` },
             body: formData
         })
@@ -81,34 +87,43 @@ export default function GestionarHorarios(){
         if (res.ok) {
             const data = await res.json()
             cargarHorarios()
-            alert("Horario establecido exitosamente")
+            alert('Horario establecido exitosamente')
         } else {
-            alert("Error al subir el horario")
+            const errorData = await res.json().catch(() => null)
+            console.error(`Error ${res.status}`, errorData)
+            alert(errorData?.mensaje || 'Ocurrió un error al guardar el horario')
+            return
         }
     }
 
     // Método para eliminar un horario
     const eliminarHorario = async (horarioId) => {
         const res = await fetch(`http://localhost:3000/api/horarios/${horarioId}`, {
-            method: "DELETE",
+            method: 'DELETE',
             headers: { Authorization: `Bearer ${token}` }
         })
 
         if (res.ok) {
             cargarHorarios()
         } else {
-            alert("Error al eliminar el horario")
+            const errorData = await res.json().catch(() => null)
+            console.error(`Error ${res.status}`, errorData)
+            alert(errorData?.mensaje || 'Ocurrió un error al eliminar el horario')
+            return
         }
     }
 
     if (grupos.length === 0 && horarios.length === 0) { // Mientras no haya grupos cargados se muestra un mensaje de carga
-        return <p>Cargando datos...</p>
+        return (
+            <MensajeCarga/>
+        )
     }
     return(
-        <div className="contenedor-gestionar-horarios">
+        <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Horarios</h1>
+                <p>Nota: Espera a que el horario se haya subido completamente antes de cambiar de página</p>
                 <table className="tabla-horarios">
                     <thead>
                         <tr>

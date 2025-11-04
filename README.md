@@ -14,6 +14,7 @@ Sistema diseñado para facilitar la consulta de calificaciones de los alumnos de
 - **Frontend**: React, Vite
 - **Backend**: Node.js, Express
 - **Base de datos**: MongoDB
+- **Servicios externos**: Cloudinary
 
 ## Requisitos previos
 
@@ -21,6 +22,7 @@ Para desplegar este sistema, asegúrate de tener instalados los siguientes compo
 
 - Node.js (versión 16 o superior)
 - MongoDB
+- Cuenta en Cloudinary
 
 ## Despliegue en producción
 
@@ -40,9 +42,20 @@ Para desplegar este sistema, asegúrate de tener instalados los siguientes compo
 
 3. Configura las variables de entorno. Crea un archivo `.env` en el directorio `server` con el siguiente contenido:
 
+   > **MONGO_URI** — dirección de conexión a tu base de datos MongoDB.  
+   > **CLAVE_SECRETA** — clave de seguridad creada por el administrador para cifrar los tokens de inicio de sesión.  
+   > **CLOUDINARY_CLOUD_NAME** — nombre de tu cuenta de Cloudinary.  
+   > **CLOUDINARY_API_KEY** — clave pública de tu cuenta de Cloudinary.  
+   > **CLOUDINARY_API_SECRET** — clave privada de tu cuenta de Cloudinary.  
+
+   Ejemplo de archivo `.env`:
+
    ```env
    MONGO_URI=<tu-URI-de-MongoDB>
-   CLAVE_SECRETA=<una-clave-secreta>
+   CLAVE_SECRETA=<tu-clave-secreta>
+   CLOUDINARY_CLOUD_NAME=<tu-cloud-name>
+   CLOUDINARY_API_KEY=<tu-api-key>
+   CLOUDINARY_API_SECRET=<tu-api-secret>
    ```
 
 4. Genera los archivos estáticos del frontend:

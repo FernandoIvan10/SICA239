@@ -17,7 +17,7 @@ export default function Horario(){
     const [horarios, setHorarios] = useState([]) // Horarios del alumno 
 
     useEffect(() => { // Se obtienen los horarios del alumno
-            fetch(`/api/horarios/${tokenDecodificado.id}`, {
+            fetch(`http://localhost:3000/api/horarios/${tokenDecodificado.id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

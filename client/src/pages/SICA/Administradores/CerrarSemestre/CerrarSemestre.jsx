@@ -17,7 +17,7 @@ export default function CerrarSemestre(){
     const cerrarSemestre = async () => {
         setCargando(true)
         try {
-            const res = await fetch('/api/historial-academico', {
+            const res = await fetch('http://localhost:3000/api/historial-academico', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

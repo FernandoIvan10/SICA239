@@ -84,7 +84,7 @@ export default function MigrarAlumnos() {
         setCargando(true)
         setMensaje('')
         try {
-            const res = await fetch('/api/grupos/migrar-alumnos', {
+            const res = await fetch('http://localhost:3000/api/grupos/migrar-alumnos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

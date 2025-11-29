@@ -36,8 +36,8 @@ export default function CambiarContrasena() {
 
     const url =
       rol === 'alumno'
-        ? `/api/alumnos/cambiar-contrasena/${tokenDecodificado.id}`
-        : `/api/admins/cambiar-contrasena/${tokenDecodificado.id}`
+        ? `http://localhost:3000/api/alumnos/cambiar-contrasena/${tokenDecodificado.id}`
+        : `http://localhost:3000/api/admins/cambiar-contrasena/${tokenDecodificado.id}`
 
     try {
       const res = await fetch(url, {

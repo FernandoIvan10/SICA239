@@ -18,7 +18,7 @@ export default function Historial(){
     const [historial, setHistorial] = useState([]) // Historial académico
 
     useEffect(() => { // Se obtiene el historial académico del alumno
-        fetch(`/api/historial-academico/${tokenDecodificado.id}`, {
+        fetch(`http://localhost:3000/api/historial-academico/${tokenDecodificado.id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

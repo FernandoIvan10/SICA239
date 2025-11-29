@@ -81,10 +81,18 @@ export default function VerUsuarios(){
         if(alumnos.length !== 0){
             alumnosConTipo = alumnos.map(a => ({ ...a, tipo: 'Alumno' }))
         }
-        let usuariosCombinados = [...alumnosConTipo, ...adminsConTipo]
+        let usuariosCombinados = [...adminsConTipo, ...alumnosConTipo]
         if (tokenDecodificado.rol === 'lector') { // No se muestran los alumnos dados de baja para el admin lector
             usuariosCombinados = usuariosCombinados.filter(u => u.activo)
         }
+
+        usuariosCombinados.sort((a, b) => { // La lista de alumnos debe estar ordenada por grupo
+            if (a.tipo === 'Alumno' && b.tipo === 'Alumno') {
+                return a.grupoId.nombre.localeCompare(b.grupoId.nombre)
+            }
+            return 0
+        })
+
         setUsuarios(usuariosCombinados)
     }, [alumnos, admins])
 

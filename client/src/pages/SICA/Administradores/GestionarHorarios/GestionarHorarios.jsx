@@ -29,6 +29,9 @@ export default function GestionarHorarios(){
                 const data = await res.json()
                 // El grupo de egresados no debe aparecer en esta pantalla
                 const gruposFiltrados = data.grupos.filter(g => g.nombre !== "Egresados")
+                gruposFiltrados.sort((a, b) => { // Los grupos deben estar ordenados por nombre
+                    return a.nombre.localeCompare(b.nombre)
+                })
                 setGrupos(gruposFiltrados)
                 return
             }else{

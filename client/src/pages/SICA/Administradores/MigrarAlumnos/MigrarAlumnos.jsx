@@ -37,7 +37,11 @@ export default function MigrarAlumnos() {
             return data
         })
         .then(data => {
-            setGrupos(data.grupos)
+            let listaGrupos = data.grupos
+            listaGrupos.sort((a, b) => { // Los grupos deben estar ordenados por nombre
+                return a.nombre.localeCompare(b.nombre)
+            })
+            setGrupos(listaGrupos)
         })
         .catch(err => {
             console.error('Error al obtener grupos:', err)

@@ -200,7 +200,7 @@ export default function SubirCalificaciones(){
         <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
-                <h1>Subir Calificaciones</h1>
+                <h1>Capturar Calificaciones</h1>
                 <div className="subir-calificaciones-selectores">
                     <select className="subir-calificaciones-selectores-select" value={grupoSeleccionado} onChange={e => setGrupoSeleccionado(e.target.value)}>
                         <option value="">Seleccionar grupo</option>

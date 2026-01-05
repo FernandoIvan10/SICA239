@@ -8,7 +8,7 @@ const router = express.Router() // Se crea un router
 
 // Ruta para agregar un grupo (para "superadmin" y "editor")
 router.post(
-    '/grupos',
+    '/',
     verificarToken, // Se valida la autenticación 
     verificarRol(['superadmin','editor']), // Se valida el rol
     agregarGrupo
@@ -16,7 +16,7 @@ router.post(
 
 // Ruta para listar los grupos (Sólo para administradores)
 router.get(
-    '/grupos',
+    '/',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     listarGrupos // Se llama al controlador
@@ -24,7 +24,7 @@ router.get(
 
 // Ruta para migrar alumnos de un grupo a otro (para "superadmin" y "editor")
 router.post(
-    '/grupos/migrar-alumnos',
+    '/migrar-alumnos',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     migrarAlumnos // Se llama al controlador
@@ -32,7 +32,7 @@ router.post(
 
 // Ruta para modificar un grupo (para "superadmin" y "editor")
 router.put(
-    '/grupos/:id',
+    '/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     modificarGrupo // Se llama al controlador
@@ -40,7 +40,7 @@ router.put(
 
 // Ruta para eliminar un grupo (para "superadmin" y "editor")
 router.delete(
-    '/grupos/:id',
+    '/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     eliminarGrupo // Se llama al controlador

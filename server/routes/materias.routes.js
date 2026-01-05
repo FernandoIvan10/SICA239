@@ -8,7 +8,7 @@ const router = express.Router() // Se crea un router
 
 // Ruta para buscar materias (Sólo para administradores)
 router.get(
-  '/materias',
+  '/',
   verificarToken, // Se valida la autenticación
   verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
   buscarMaterias // Se llama al controlador

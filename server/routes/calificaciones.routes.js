@@ -8,7 +8,7 @@ const router = express.Router() // Se crea un router
 
 // Ruta para agregar calificaciones (para "superadmin" y "editor")
 router.post(
-    '/calificaciones',
+    '/',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     agregarCalificacion // Se llama al controlador
@@ -16,7 +16,7 @@ router.post(
 
 // Ruta para listar las calificaciones (Sólo para administradores)
 router.get(
-    '/calificaciones',
+    '/',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin','editor','lector']), // Se valida el rol
     listarCalificaciones // Se llama al controlador
@@ -24,7 +24,7 @@ router.get(
 
 // Ruta para obtener las calificaciones de un alumno
 router.get(
-    '/calificaciones/:id',
+    '/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['alumno']), // Se valida el rol
     obtenerCalificacionesPorID // Se llama al controlador

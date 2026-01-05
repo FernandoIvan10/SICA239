@@ -8,7 +8,7 @@ const router = express.Router() // Se crea un router
 
 // Ruta para agregar un administrador (solo para "superadmin")
 router.post(
-    '/admins',
+    '/',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin']), // Se valida el rol
     agregarAdmin // Se llama al controlador
@@ -16,7 +16,7 @@ router.post(
 
 // Ruta para listar administradores (solo para "superadmin")
 router.get(
-    '/admins',
+    '/',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin']), // Se valida el rol
     listarAdmins // Se llama al controlador
@@ -24,21 +24,21 @@ router.get(
 
 // Ruta para cambiar la contraseña
 router.put(
-    '/admins/cambiar-contrasena/:id',
+    '/cambiar-contrasena/:id',
     verificarToken, // Se valida la autenticación
     cambiarContrasena // Se llama al controlador
 )
 
 // Ruta para cambiar la contraseña de un administrador por primera vez
 router.put(
-    '/admins/primer-cambio-contrasena/:id',
+    '/primer-cambio-contrasena/:id',
     verificarToken, // Se valida la autenticación
     primerCambioContrasenaAdministrador // Se llama al controlador
 )
 
 // Ruta para reiniciar la contraseña de un administrador (sólo para superadmin)
 router.put(
-    '/admins/reiniciar-contrasena/:id',
+    '/reiniciar-contrasena/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin']), // Se valida el rol
     reiniciarContrasena // Se llama al controlador
@@ -46,7 +46,7 @@ router.put(
 
 // Ruta para modificar un usuario administrador (solo para "superadmin")
 router.put(
-    '/admins/:id',
+    '/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin']), // Se valida el rol
     modificarAdmin // Se llama al controlador
@@ -54,7 +54,7 @@ router.put(
 
 // Ruta para obtener un administrador con su ID (sólo para administradores)
 router.get(
-    '/admins/:id',
+    '/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     obtenerAdminPorID// Se llama al controlador

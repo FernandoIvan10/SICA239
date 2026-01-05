@@ -8,7 +8,7 @@ const router = express.Router() // Se crea un router
 
 // Ruta para agregar un alumno (solo para "superadmin" y "editor")
 router.post(
-    '/alumnos',
+    '/',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     agregarAlumno // Se llama al controlador
@@ -16,7 +16,7 @@ router.post(
 
 // Ruta para listar alumnos (sólo para administradores)
 router.get(
-    '/alumnos',
+    '/',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     listarAlumnos // Se llama al controlador
@@ -24,21 +24,21 @@ router.get(
 
 // Ruta para cambiar la contraseña
 router.put(
-    '/alumnos/cambiar-contrasena/:id',
+    '/cambiar-contrasena/:id',
     verificarToken, // Se valida la autenticación
     cambiarContrasena // Se llama al controlador
 )
 
 // Ruta para cambiar la contraseña de un alumno por primera vez
 router.put(
-    '/alumnos/primer-cambio-contrasena/:id',
+    '/primer-cambio-contrasena/:id',
     verificarToken, // Se valida la autenticación
     primerCambioContrasenaAlumno // Se llama al controlador
 )
 
 // Ruta para reiniciar la contraseña de un alumno (sólo para superadmin)
 router.put(
-    '/alumnos/reiniciar-contrasena/:id',
+    '/reiniciar-contrasena/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin','editor']), // Se valida el rol
     reiniciarContrasena // Se llama al controlador
@@ -46,7 +46,7 @@ router.put(
 
 // Ruta para cambiar el estado de un alumno (activo - inactivo)
 router.put(
-    '/alumnos/cambiar-estado/:id',
+    '/cambiar-estado/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin','editor']), // Se valida el rol
     cambiarEstado // Se llama al controlador
@@ -54,7 +54,7 @@ router.put(
 
 // Ruta para modificar un usuario alumno (solo para "superadmin" y "editor")
 router.put(
-    '/alumnos/:id',
+    '/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     modificarAlumno // Se llama al controlador
@@ -62,7 +62,7 @@ router.put(
 
 // Ruta para obtener un alumno con su ID (sólo para administradores)
 router.get(
-    '/alumnos/:id',
+    '/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     obtenerAlumnoPorID// Se llama al controlador
@@ -70,7 +70,7 @@ router.get(
 
 // Ruta para obtener los alumnos que toman materias con un grupo específico (sólo para administradores)
 router.get(
-    '/alumnos/por-grupo/:grupoId',
+    '/por-grupo/:grupoId',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
     obtenerAlumnosPorGrupo // Se llama al controlador

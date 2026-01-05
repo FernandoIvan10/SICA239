@@ -8,7 +8,7 @@ const router = express.Router() // Se crea un router
 
 // Ruta para cerrar el semestre (solo para "superadmin")
 router.post(
-    '/historial-academico',
+    '/',
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin']), // Se valida el rol
     cerrarSemestre // Se llama al controlador
@@ -16,7 +16,7 @@ router.post(
 
 // Ruta para obtener el historial académico de un alumno
 router.get(
-    '/historial-academico/:id',
+    '/:id',
     verificarToken, // Se valida la autenticación
     verificarRol(['alumno']), // Se valida el rol
     obtenerHistorialAcademicoPorID // Se llama al controlador

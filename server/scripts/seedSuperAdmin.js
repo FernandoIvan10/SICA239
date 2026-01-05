@@ -12,33 +12,32 @@ const rl = readline.createInterface({
 
 // Helper para preguntar
 const preguntar = (pregunta) => 
-    new Promise((resolve) => rl.question(pregunta, resolve));
+    new Promise((resolve) => rl.question(pregunta, resolve))
 
 async function seedSuperAdmin() {
     try {
         await conectarBD() // Conectar a la base de datos
 
         // Verificar si el superadministrador ya existe
-        const existe = await Administrador.findOne({ rol: 'superadmin' });
+        const existe = await Administrador.findOne({ rol: 'superadmin' })
         if (existe) {
-            console.log('✔ El superadministrador ya existe.');
+            console.log('✔ El superadministrador ya existe.')
             return
         }
 
-        console.log('=== Creación de superadministrador inicial ===');
+        console.log('=== Creación de superadministrador inicial ===')
 
         // Recabar datos del superadministrador
-        const rfc = await preguntar('RFC: ');
-        const nombre = await preguntar('Nombre: ');
-        const apellido = await preguntar('Apellido: ');
-        const contrasena = await preguntar('Contraseña: ');
+        const rfc = await preguntar('RFC: ')
+        const nombre = await preguntar('Nombre: ')
+        const apellido = await preguntar('Apellido: ')
+        const contrasena = await preguntar('Contraseña: ')
 
         if (!rfc || !nombre || !apellido || !contrasena) {
-            throw new Error('Todos los campos son obligatorios.');
-            return
+            throw new Error('Todos los campos son obligatorios.')
         }
 
-        const hashContrasena = await bcrypt.hash(contrasena, 10);
+        const hashContrasena = await bcrypt.hash(contrasena, 10)
 
         const admin = new Administrador({
             rfc,
@@ -47,17 +46,17 @@ async function seedSuperAdmin() {
             contrasena: hashContrasena,
             rol: 'superadmin',
             requiereCambioContrasena: false
-        });
+        })
 
-        await admin.save();
+        await admin.save()
 
-        console.log(`✔ Superadministrador ${nombre} ${apellido} creado correctamente.`);
+        console.log(`✔ Superadministrador ${nombre} ${apellido} creado correctamente.`)
     } catch (error) {
-        console.error('✖ Error al crear el superadministrador:', error.message);
+        console.error('✖ Error al crear el superadministrador:', error.message)
     }finally {
-        rl.close();
+        rl.close()
     }
 
 }
 
-seedSuperAdmin();
+seedSuperAdmin()

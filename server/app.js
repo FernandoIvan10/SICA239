@@ -45,8 +45,8 @@ if (process.env.NODE_ENV === 'production') {
 
 // Manejo de errores
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ mensaje: 'Internal server error' });
-});
+  console.error(err)
+  res.status(500).json({ message: 'Internal server error' })
+})
 
-module.exports = app;
+module.exports = app

@@ -1,63 +1,57 @@
-// imports
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarAdmin, modificarAdmin, listarAdmins, obtenerAdminPorID, primerCambioContrasenaAdministrador, cambiarContrasena, reiniciarContrasena} = require('../controllers/admins.controller')
+const {
+    agregarAdmin,
+    modificarAdmin,
+    listarAdmins,
+    obtenerAdminPorID,
+    primerCambioContrasenaAdministrador,
+    cambiarContrasena,
+    reiniciarContrasena
+} = require('../controllers/admins.controller')
 
-const router = express.Router() // Se crea un router
+const router = express.Router()
 
-// Ruta para agregar un administrador (solo para "superadmin")
-router.post(
-    '/',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
-    agregarAdmin // Se llama al controlador
+// Todas las rutas requieren autenticación
+router.use(verificarToken)
+
+router
+    .route('/')
+        .post( // Agregar nuevo administrador
+            verificarRol(['superadmin']),
+            agregarAdmin
+        )
+        .get( // Listar administradores
+            verificarRol(['superadmin']),
+            listarAdmins
+        )
+
+router
+    .route('/:id')
+        .put( // Modificar administrador
+            verificarRol(['superadmin']),
+            modificarAdmin
+        )
+        .get( // Obtener administrador
+            verificarRol(['superadmin', 'editor', 'lector']),
+            obtenerAdminPorID
+        )
+
+router.put( // Cambiar contraseña
+    '/:id/contrasena',
+    cambiarContrasena
 )
 
-// Ruta para listar administradores (solo para "superadmin")
-router.get(
-    '/',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
-    listarAdmins // Se llama al controlador
+router.put( // Primer cambio de contraseña
+    '/:id/contrasena/primer-cambio',
+    primerCambioContrasenaAdministrador
 )
 
-// Ruta para cambiar la contraseña
-router.put(
-    '/cambiar-contrasena/:id',
-    verificarToken, // Se valida la autenticación
-    cambiarContrasena // Se llama al controlador
+router.put( // Reiniciar contraseña
+    '/:id/contrasena/reinicio',
+    verificarRol(['superadmin']),
+    reiniciarContrasena
 )
 
-// Ruta para cambiar la contraseña de un administrador por primera vez
-router.put(
-    '/primer-cambio-contrasena/:id',
-    verificarToken, // Se valida la autenticación
-    primerCambioContrasenaAdministrador // Se llama al controlador
-)
-
-// Ruta para reiniciar la contraseña de un administrador (sólo para superadmin)
-router.put(
-    '/reiniciar-contrasena/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
-    reiniciarContrasena // Se llama al controlador
-)
-
-// Ruta para modificar un usuario administrador (solo para "superadmin")
-router.put(
-    '/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
-    modificarAdmin // Se llama al controlador
-)
-
-// Ruta para obtener un administrador con su ID (sólo para administradores)
-router.get(
-    '/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
-    obtenerAdminPorID// Se llama al controlador
-)
-
-module.exports = router // Se exporta el router
+module.exports = router

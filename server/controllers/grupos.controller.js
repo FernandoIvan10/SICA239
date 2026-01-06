@@ -191,7 +191,8 @@ const eliminarGrupo = async (req, res) => {
 
 // Función para migrar alumnos de un grupo a otro
 const migrarAlumnos = async (req, res) => {
-    const { grupoOrigen, grupoDestino, alumnos } = req.body
+    const grupoOrigen = req.params.id
+    const { grupoDestino, alumnos } = req.body
 
     // Valida que se hayan enviado todos los parámetros
     if (!grupoOrigen || !grupoDestino || !Array.isArray(alumnos) || alumnos.length === 0) { 

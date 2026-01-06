@@ -1,57 +1,51 @@
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarGrupo, modificarGrupo, listarGrupos, eliminarGrupo, migrarAlumnos} = require('../controllers/grupos.controller')
+const {
+    agregarGrupo,
+    modificarGrupo,
+    listarGrupos,
+    eliminarGrupo,
+    migrarAlumnos
+} = require('../controllers/grupos.controller')
 const {obtenerAlumnosPorGrupo} = require('../controllers/alumnos.controller')
 
-const router = express.Router() // Se crea un router
+const router = express.Router()
 
-// Ruta para agregar un grupo (para "superadmin" y "editor")
-router.post(
-    '/',
-    verificarToken, // Se valida la autenticación 
-    verificarRol(['superadmin','editor']), // Se valida el rol
-    agregarGrupo
+router.use(verificarToken) // Todas las rutas requieren autenticación
+
+router
+    .route('/')
+        .post( // Agregar grupo
+            verificarRol(['superadmin', 'editor']),
+            agregarGrupo
+        )
+        .get( // Listar grupos
+            verificarRol(['superadmin','editor','lector']),
+            listarGrupos
+        )
+
+router
+    .route('/:id')
+        .put( // Modificar grupo
+            verificarRol(['superadmin', 'editor']),
+            modificarGrupo
+        )
+        .delete( // Eliminar grupo
+            verificarRol(['superadmin', 'editor']),
+            eliminarGrupo
+        )
+
+router.post( // Migrar alumnos entre grupos
+    '/:id/migraciones',
+    verificarRol(['superadmin', 'editor']),
+    migrarAlumnos
 )
 
-// Ruta para listar los grupos (Sólo para administradores)
-router.get(
-    '/',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
-    listarGrupos // Se llama al controlador
-)
-
-// Ruta para migrar alumnos de un grupo a otro (para "superadmin" y "editor")
-router.post(
-    '/migrar-alumnos',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    migrarAlumnos // Se llama al controlador
-)
-
-// Ruta para modificar un grupo (para "superadmin" y "editor")
-router.put(
-    '/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    modificarGrupo // Se llama al controlador
-)
-
-// Ruta para eliminar un grupo (para "superadmin" y "editor")
-router.delete(
-    '/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    eliminarGrupo // Se llama al controlador
-)
-
-// Ruta para obtener los alumnos que toman materias con un grupo específico (sólo para administradores)
-router.get(
+router.get( // Obtener alumnos por grupo
     '/:id/alumnos',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
-    obtenerAlumnosPorGrupo // Se llama al controlador
+    verificarRol(['superadmin', 'editor', 'lector']),
+    obtenerAlumnosPorGrupo
 )
 
-module.exports = router // Se exporta el router
+module.exports = router

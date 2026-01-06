@@ -2,15 +2,18 @@
 const mongoose = require('mongoose')
 
 // Esquema de la colección de Administradores
-const administradorEsquema = new mongoose.Schema({
-    rfc:{type:String, unique:true, required:true},
-    nombre:{type:String},
-    apellido:{type:String},
-    contrasena:{type:String, required:true},
+const administradorSchema = new mongoose.Schema({
+    rfc:{type:String, unique:true, required:true, uppercase:true, trim:true},
+    nombre:{type:String, required:true, trim:true},
+    apellido:{type:String, required:true, trim:true},
+    contrasena:{type:String, required:true, select:false},
     rol:{type:String, enum:['superadmin','editor','lector'], required:true},
-    fechaCreacion:{type:Date, default:Date.now},
     requiereCambioContrasena:{type:Boolean, default:true}
-}, { collection: 'administradores' })
+}, 
+{  
+    collection: 'administradores',
+    timestamps:true
+})
 
 // Se exporta el esquema
-module.exports = mongoose.model('Administrador',administradorEsquema)
+module.exports = mongoose.model('Administrador',administradorSchema)

@@ -25,15 +25,10 @@ router
             listarHorarios
         )
 
-router
-    .route('/:id')
-        .get( // Obtener un horario
-            verificarRol(['alumno']),
-            obtenerHorariosPorID
-        )
-        .delete( // Eliminar horario
-            verificarRol(['superadmin', 'editor']),
-            eliminarHorario
-        )
+router.delete( // Eliminar horario
+    '/:id',
+    verificarRol(['superadmin', 'editor']),
+    eliminarHorario
+)
 
 module.exports = router

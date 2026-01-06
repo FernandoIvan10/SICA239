@@ -13,6 +13,7 @@ const {
 } = require('../controllers/alumnos.controller')
 const { obtenerCalificacionesPorID } = require('../controllers/calificaciones.controller')
 const { obtenerHistorialAcademicoPorID } = require('../controllers/historialAcademico.controller')
+const { obtenerHorariosPorID } = require('../controllers/horarios.controller')
 
 const router = express.Router()
 
@@ -72,6 +73,12 @@ router.get( // Obtener historial académico de un alumno
     '/:id/historial-academico',
     verificarRol(['alumno']),
     obtenerHistorialAcademicoPorID
+)
+
+router.get( // Obtener los horarios de un alumno
+    '/:id/horarios',
+    verificarRol(['alumno']),
+    obtenerHorariosPorID
 )
 
 module.exports = router

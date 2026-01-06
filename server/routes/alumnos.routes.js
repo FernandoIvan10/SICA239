@@ -12,6 +12,7 @@ const {
     cambiarEstado
 } = require('../controllers/alumnos.controller')
 const { obtenerCalificacionesPorID } = require('../controllers/calificaciones.controller')
+const { obtenerHistorialAcademicoPorID } = require('../controllers/historialAcademico.controller')
 
 const router = express.Router()
 
@@ -65,6 +66,12 @@ router.get( // Obtener calificaciones de un alumno
     '/:id/calificaciones',
     verificarRol(['alumno']),
     obtenerCalificacionesPorID
+)
+
+router.get( // Obtener historial académico de un alumno
+    '/:id/historial-academico',
+    verificarRol(['alumno']),
+    obtenerHistorialAcademicoPorID
 )
 
 module.exports = router

@@ -1,25 +1,16 @@
-// imports
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {cerrarSemestre, obtenerHistorialAcademicoPorID} = require('../controllers/historialAcademico.controller')
+const {cerrarSemestre} = require('../controllers/historialAcademico.controller')
 
-const router = express.Router() // Se crea un router
+const router = express.Router()
 
-// Ruta para cerrar el semestre (solo para "superadmin")
-router.post(
+router.use(verificarToken) // Todas las rutas requieren autenticación
+
+router.post( // Guardar historial académico
     '/',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin']), // Se valida el rol
-    cerrarSemestre // Se llama al controlador
+    verificarRol(['superadmin']),
+    cerrarSemestre
 )
 
-// Ruta para obtener el historial académico de un alumno
-router.get(
-    '/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['alumno']), // Se valida el rol
-    obtenerHistorialAcademicoPorID // Se llama al controlador
-)
-
-module.exports = router // Se exporta el router
+module.exports = router

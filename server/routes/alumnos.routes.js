@@ -11,6 +11,7 @@ const {
     reiniciarContrasena,
     cambiarEstado
 } = require('../controllers/alumnos.controller')
+const { obtenerCalificacionesPorID } = require('../controllers/calificaciones.controller')
 
 const router = express.Router()
 
@@ -58,6 +59,12 @@ router.put( // Cambiar estado (activo/inactivo)
     '/:id/estado',
     verificarRol(['superadmin','editor']),
     cambiarEstado
+)
+
+router.get( // Obtener calificaciones de un alumno
+    '/:id/calificaciones',
+    verificarRol(['alumno']),
+    obtenerCalificacionesPorID
 )
 
 module.exports = router

@@ -1,33 +1,24 @@
-// imports
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarCalificacion, listarCalificaciones, obtenerCalificacionesPorID} = require('../controllers/calificaciones.controller')
+const {
+    agregarCalificacion,
+    listarCalificaciones,
+} = require('../controllers/calificaciones.controller')
 
-const router = express.Router() // Se crea un router
+const router = express.Router()
 
-// Ruta para agregar calificaciones (para "superadmin" y "editor")
-router.post(
-    '/',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    agregarCalificacion // Se llama al controlador
-)
+router.use(verificarToken) // Todas las rutas requieren autenticación
 
-// Ruta para listar las calificaciones (Sólo para administradores)
-router.get(
-    '/',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin','editor','lector']), // Se valida el rol
-    listarCalificaciones // Se llama al controlador
-)
+router
+    .route('/')
+        .post( // Agregar calificaciones
+            verificarRol(['superadmin', 'editor']),
+            agregarCalificacion
+        )
+        .get( // Listar calificaciones
+            verificarRol(['superadmin','editor','lector']),
+            listarCalificaciones
+        )
 
-// Ruta para obtener las calificaciones de un alumno
-router.get(
-    '/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['alumno']), // Se valida el rol
-    obtenerCalificacionesPorID // Se llama al controlador
-)
-
-module.exports = router // Se exporta el router
+module.exports = router

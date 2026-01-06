@@ -18,7 +18,7 @@ export default function EnCurso(){
     const [calificaciones, setCalificaciones] = useState([]) // Calificaciones hasta el momento
 
     useEffect(()=>{ // Se obtienen las calificaciones del alumno
-        fetch(`http://localhost:3000/api/calificaciones/${tokenDecodificado.id}`, {
+        fetch(`http://localhost:3000/api/alumnos/${tokenDecodificado.id}/calificaciones`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

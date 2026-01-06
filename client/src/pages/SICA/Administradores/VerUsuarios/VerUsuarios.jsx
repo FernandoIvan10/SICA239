@@ -114,9 +114,9 @@ export default function VerUsuarios(){
         
         let url = ''
         if (usuario.tipo === 'Alumno') {
-            url=`http://localhost:3000/api/alumnos/reiniciar-contrasena/${usuario._id}`
+            url=`http://localhost:3000/api/alumnos/${usuario._id}/contrasena/reinicio`
         } else if (usuario.tipo === "Administrador") {
-            url=`http://localhost:3000/api/admins/reiniciar-contrasena/${usuario._id}`
+            url=`http://localhost:3000/api/admins/${usuario._id}/contrasena/reinicio`
         }
 
         fetch(url, {
@@ -147,7 +147,7 @@ export default function VerUsuarios(){
         )
         if (!confirmacion) return
 
-        fetch(`http://localhost:3000/api/alumnos/cambiar-estado/${usuario._id}`, {
+        fetch(`http://localhost:3000/api/alumnos/${usuario._id}/estado`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`

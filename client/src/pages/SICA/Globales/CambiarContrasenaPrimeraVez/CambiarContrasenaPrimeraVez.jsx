@@ -39,8 +39,8 @@ export default function PrimerCambioContrasena() {
 
     const url =
       rol === 'alumno'
-        ? `http://localhost:3000/api/alumnos/primer-cambio-contrasena/${tokenDecodificado.id}`
-        : `http://localhost:3000/api/admins/primer-cambio-contrasena/${tokenDecodificado.id}`
+        ? `http://localhost:3000/api/alumnos/${tokenDecodificado.id}/contrasena/primer-cambio`
+        : `http://localhost:3000/api/admins/${tokenDecodificado.id}/contrasena/primer-cambio`
 
     try {
       const res = await fetch(url, {

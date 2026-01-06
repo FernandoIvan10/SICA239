@@ -52,7 +52,7 @@ export default function MigrarAlumnos() {
 
     useEffect(() => { // Se obtienen los alumnos del grupo seleccionado
         if(grupoOrigen){
-            fetch(`http://localhost:3000/api/alumnos/por-grupo/${grupoOrigen}`, {
+            fetch(`http://localhost:3000/api/grupos/${grupoOrigen}/alumnos`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,14 +88,13 @@ export default function MigrarAlumnos() {
         setCargando(true)
         setMensaje('')
         try {
-            const res = await fetch('http://localhost:3000/api/grupos/migrar-alumnos', {
+            const res = await fetch(`http://localhost:3000/api/grupos/${grupoOrigen}/migraciones`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    grupoOrigen,
                     grupoDestino,
                     alumnos: seleccionados,
                 }),

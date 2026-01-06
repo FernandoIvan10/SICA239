@@ -1,17 +1,16 @@
-// rutas/materias.routes.js
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const { buscarMaterias } = require('../controllers/materias.controller')
 
-const router = express.Router() // Se crea un router
+const router = express.Router()
 
-// Ruta para buscar materias (Sólo para administradores)
-router.get(
+router.use(verificarToken) // Todas las rutas requieren autenticación
+
+router.get( // Listar materias
   '/',
-  verificarToken, // Se valida la autenticación
-  verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
-  buscarMaterias // Se llama al controlador
+  verificarRol(['superadmin', 'editor', 'lector']),
+  buscarMaterias
 )
 
-module.exports = router // Se exporta el router
+module.exports = router

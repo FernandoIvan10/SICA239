@@ -1,79 +1,63 @@
-// imports
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
-const {agregarAlumno, modificarAlumno, listarAlumnos, obtenerAlumnoPorID, obtenerAlumnosPorGrupo, primerCambioContrasenaAlumno, cambiarContrasena, reiniciarContrasena, cambiarEstado} = require('../controllers/alumnos.controller')
+const {
+    agregarAlumno,
+    modificarAlumno,
+    listarAlumnos,
+    obtenerAlumnoPorID,
+    primerCambioContrasenaAlumno,
+    cambiarContrasena,
+    reiniciarContrasena,
+    cambiarEstado
+} = require('../controllers/alumnos.controller')
 
-const router = express.Router() // Se crea un router
+const router = express.Router()
 
-// Ruta para agregar un alumno (solo para "superadmin" y "editor")
-router.post(
-    '/',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    agregarAlumno // Se llama al controlador
+router.use(verificarToken) // Todas las rutas requieren autenticación
+
+router.
+    route('/')
+        .post( // Agregar nuevo alumno
+            verificarRol(['superadmin', 'editor']),
+            agregarAlumno
+        )
+        .get( // Listar alumnos
+            verificarRol(['superadmin', 'editor', 'lector']),
+            listarAlumnos
+        )
+
+router.
+        route('/:id')
+            .put( // Modificar alumno
+                verificarRol(['superadmin', 'editor']),
+                modificarAlumno
+            )
+            .get( // Obtener alumno
+                verificarRol(['superadmin', 'editor', 'lector']),
+                obtenerAlumnoPorID
+            )
+
+router.put( // Cambiar contraseña
+    '/:id/contrasena',
+    cambiarContrasena
 )
 
-// Ruta para listar alumnos (sólo para administradores)
-router.get(
-    '/',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
-    listarAlumnos // Se llama al controlador
+router.put( // Primer cambio de contraseña
+    '/:id/contrasena/primer-cambio',
+    primerCambioContrasenaAlumno
 )
 
-// Ruta para cambiar la contraseña
-router.put(
-    '/cambiar-contrasena/:id',
-    verificarToken, // Se valida la autenticación
-    cambiarContrasena // Se llama al controlador
+router.put( // Reiniciar contraseña
+    '/:id/contrasena/reinicio',
+    verificarRol(['superadmin','editor']),
+    reiniciarContrasena
 )
 
-// Ruta para cambiar la contraseña de un alumno por primera vez
-router.put(
-    '/primer-cambio-contrasena/:id',
-    verificarToken, // Se valida la autenticación
-    primerCambioContrasenaAlumno // Se llama al controlador
+router.put( // Cambiar estado (activo/inactivo)
+    '/:id/estado',
+    verificarRol(['superadmin','editor']),
+    cambiarEstado
 )
 
-// Ruta para reiniciar la contraseña de un alumno (sólo para superadmin)
-router.put(
-    '/reiniciar-contrasena/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin','editor']), // Se valida el rol
-    reiniciarContrasena // Se llama al controlador
-)
-
-// Ruta para cambiar el estado de un alumno (activo - inactivo)
-router.put(
-    '/cambiar-estado/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin','editor']), // Se valida el rol
-    cambiarEstado // Se llama al controlador
-)
-
-// Ruta para modificar un usuario alumno (solo para "superadmin" y "editor")
-router.put(
-    '/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor']), // Se valida el rol
-    modificarAlumno // Se llama al controlador
-)
-
-// Ruta para obtener un alumno con su ID (sólo para administradores)
-router.get(
-    '/:id',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
-    obtenerAlumnoPorID// Se llama al controlador
-)
-
-// Ruta para obtener los alumnos que toman materias con un grupo específico (sólo para administradores)
-router.get(
-    '/por-grupo/:grupoId',
-    verificarToken, // Se valida la autenticación
-    verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
-    obtenerAlumnosPorGrupo // Se llama al controlador
-)
-
-module.exports = router // Se exporta el router
+module.exports = router

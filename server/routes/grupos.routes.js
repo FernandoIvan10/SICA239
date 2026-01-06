@@ -1,8 +1,8 @@
-// imports
 const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const {agregarGrupo, modificarGrupo, listarGrupos, eliminarGrupo, migrarAlumnos} = require('../controllers/grupos.controller')
+const {obtenerAlumnosPorGrupo} = require('../controllers/alumnos.controller')
 
 const router = express.Router() // Se crea un router
 
@@ -44,6 +44,14 @@ router.delete(
     verificarToken, // Se valida la autenticación
     verificarRol(['superadmin', 'editor']), // Se valida el rol
     eliminarGrupo // Se llama al controlador
+)
+
+// Ruta para obtener los alumnos que toman materias con un grupo específico (sólo para administradores)
+router.get(
+    '/:id/alumnos',
+    verificarToken, // Se valida la autenticación
+    verificarRol(['superadmin', 'editor', 'lector']), // Se valida el rol
+    obtenerAlumnosPorGrupo // Se llama al controlador
 )
 
 module.exports = router // Se exporta el router

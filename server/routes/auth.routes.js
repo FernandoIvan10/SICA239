@@ -1,9 +1,7 @@
-// imports
 const express = require('express')
 const router = express.Router()
 const {loginController} = require('../controllers/auth.controller')
 
-// Ruta para iniciar sesión
-router.post('/login', loginController)
+router.post('/login', loginController) // Inicio de sesión
 
-module.exports = router // Se exportan las rutas
+module.exports = router

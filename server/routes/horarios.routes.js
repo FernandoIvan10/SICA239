@@ -6,7 +6,6 @@ const {
     subirHorario,
     eliminarHorario,
     listarHorarios,
-    obtenerHorariosPorID 
 } = require('../controllers/horarios.controller')
 
 const router = express.Router()

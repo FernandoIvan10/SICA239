@@ -1,39 +1,22 @@
-// imports
-const Administrador = require('../models/administrador.model')
-const bcrypt = require('bcrypt')
+const { crearAdministrador } = require('../services/admins.service')
 
-// Función que agrega un nuevo usuario administrador
-const agregarAdmin = async(req,res)=>{
+// Función para agregar un nuevo administrador
+const agregarAdmin = async(req, res) => {
     try{
-        const {rfc, nombre, apellido, contrasena, rol, requiereCambioContrasena = true} = req.body
-
-        // Valida que todos los campos estén rellenados
-        if(!rfc || !nombre || !contrasena || !rol){
-            return res.status(400).json({message:"Faltan campos obligatorios."})
-        }
-
-        // Valida que el admin no exista
-        const existeAdmin = await Administrador.findOne({rfc})
-        if(existeAdmin){
-            return res.status(400).json({message:"El RFC ingresado ya se encuentra registrado en el sistema."})
-        }
-
-        // Se crea el nuevo admin
-        const contrasenaEncriptada = await bcrypt.hash(contrasena, 10)
-        const nuevoAdmin = new Administrador({
-            rfc,
-            nombre,
-            apellido,
-            contrasena: contrasenaEncriptada,
-            rol,
-            requiereCambioContrasena
-        })
-
-        await nuevoAdmin.save() // Se guarda el nuevo admin
-        return res.status(201).json({message:"Administrador creado exitosamente."})
+        await crearAdministrador(req.body)
+        return res.status(201).json({message:"Administrador creado"})
     }catch(error){
-        console.error('Error al agregar al administrador:',error)
-        return res.status(500).json({message:"Error interno del servidor."})
+        switch(error.code){
+            case 'CAMPOS_FALTANTES':
+                return  res.status(400).json({message: error.message})
+            
+            case 'RFC_DUPLICADO':
+                return res.status(409).json({message: error.message})
+            
+            default:
+                console.error(error)
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
     }
 }
 
@@ -204,4 +187,4 @@ module.exports = {
     primerCambioContrasenaAdministrador,
     cambiarContrasena,
     reiniciarContrasena
-} // Se exporta el controlador
+}

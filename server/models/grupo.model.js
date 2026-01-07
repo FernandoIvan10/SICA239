@@ -1,9 +1,8 @@
-// imports
 const mongoose = require('mongoose')
 
 // Esquema de la colección de Grupos
-const grupoEsquema = new mongoose.Schema({
-    nombre:{type:String, unique:true, required:true},
+const grupoSchema = new mongoose.Schema({
+    nombre:{type:String, unique:true, required:true, trim:true},
     semestre:{type:String, required:true},
     materias:[ // lista de materias
         {
@@ -11,7 +10,9 @@ const grupoEsquema = new mongoose.Schema({
             ref:'Materia',
         },
     ]
-}, { collection: 'grupos' })
+}, {
+    collection: 'grupos',
+    timestamps:true,
+})
 
-// Se exporta el esquema
-module.exports = mongoose.model('Grupo',grupoEsquema)
+module.exports = mongoose.model('Grupo',grupoSchema)

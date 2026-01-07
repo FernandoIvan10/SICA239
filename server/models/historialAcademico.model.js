@@ -1,17 +1,18 @@
-// imports
 const mongoose = require('mongoose')
 
-// Esquema de la colección de los historiales académicos
-const historialAcademicoEsquema = new mongoose.Schema({
-    alumnoId: {type:mongoose.Schema.Types.ObjectId, ref:'Alumno'},
+// Esquema de la colección del historial académico
+const historialAcademicoSchema = new mongoose.Schema({
+    alumnoId: {type:mongoose.Schema.Types.ObjectId, ref:'Alumno', required:true},
     calificaciones:[
         {
-            materiaId: {type:mongoose.Schema.Types.ObjectId, ref:'Materia'},
-            nota: {type:Number},
-            semestre: {type:String},
+            materiaId: {type:mongoose.Schema.Types.ObjectId, ref:'Materia', required:true},
+            nota: {type:Number, required:true, min:0, max:10},
+            semestre: {type:String, required:true},
         }
     ],
-}, { collection: 'historialacademico' })
+}, { 
+    collection: 'historialacademico',
+    timestamps: true 
+})
 
-// Se exporta el esquema
-module.exports = mongoose.model('HistorialAcademico',historialAcademicoEsquema)
+module.exports = mongoose.model('HistorialAcademico',historialAcademicoSchema)

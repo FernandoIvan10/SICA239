@@ -1,6 +1,7 @@
 const Administrador = require('../models/administrador.model')
 const bcrypt = require('bcrypt')
 
+// Función para agregar un nuevo usuario administrador
 async function crearAdministrador(data) {
     const { 
         rfc,
@@ -37,6 +38,32 @@ async function crearAdministrador(data) {
     })
 }
 
+// Función para modificar un administrador
+async function modificarAdministrador(id, data) {
+    const admin = await Administrador.findById(id)
+    if (!admin) { // El administrador debe existir
+        const error = new Error('Administrador no encontrado')
+        error.code = 'ADMINISTRADOR_NO_ENCONTRADO'
+        throw error
+    }
+
+    const { nombre, apellido, rol } = data
+
+    if(!nombre && !apellido && !rol){
+        const error = new Error('No se proporcionaron campos para actualizar')
+        error.code = 'SIN_CAMBIOS'
+        throw error
+    }
+
+    // Se actualizan sólo los campos proporcionados
+    if(nombre) admin.nombre = nombre
+    if(apellido) admin.apellido = apellido
+    if(rol) admin.rol = rol
+
+    return admin.save()
+}
+
 module.exports = {
-    crearAdministrador
+    crearAdministrador,
+    modificarAdministrador
 }

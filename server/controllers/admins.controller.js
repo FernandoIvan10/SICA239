@@ -24,34 +24,27 @@ const agregarAdmin = async(req, res) => {
 const modificarAdmin = async (req, res) => {
     try {
         const { id } = req.params // ID del administrador a modificar
-        const { nombre, apellido, rol } = req.body
-
-        // Valida que el ID sea proporcionado
-        if (!id) {
-            return res.status(400).json({ message: 'El ID del administrador es obligatorio.' })
+        const payload = { // Datos a modificar
+            nombre: req.body.nombre,
+            apellido: req.body.apellido,
+            rol: req.body.rol
         }
 
-        // Valida que el administrador exista
-        const adminExistente = await Administrador.findById(id)
-        if (!adminExistente) {
-            return res.status(404).json({ message: 'No existe el administrador especificado.' })
-        }
+        await modificarAdministrador(id, payload);
 
-        // Se actualizan sólo los campos proporcionados
-        if (nombre) adminExistente.nombre = nombre
-        if (apellido) adminExistente.apellido = apellido
-        if (rol) adminExistente.rol = rol
-
-        // Se guardan los cambios en la base de datos
-        await adminExistente.save()
-
-        return res.status(200).json({ 
-            message: 'Administrador modificado exitosamente.',
-            admin: adminExistente 
-        })
+        return res.status(200).json({ message: 'Administrador modificado' })
     } catch (error) {
-        console.error('Error al modificar el administrador:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch (error.code) {
+            case 'ADMINISTRADOR_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+            
+            case 'SIN_CAMBIOS':
+                return res.status(400).json({ message: error.message })
+            
+            default:
+                console.error(error)
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 

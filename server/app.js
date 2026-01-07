@@ -31,7 +31,7 @@ app.use('/api/historial-academico', historialAcademicoRoutes)
 
 // Manejo de rutas no encontradas
 app.use('/api', (req, res)=>{
-    res.status(404).json({mensaje: 'Ruta API no encontrada'})
+    res.status(404).json({message: 'Ruta API no encontrada'})
 })
 
 // Se sirven las rutas de React en producción

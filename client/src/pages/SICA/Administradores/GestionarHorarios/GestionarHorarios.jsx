@@ -37,7 +37,7 @@ export default function GestionarHorarios(){
             }else{
                 const errorData = await res.json().catch(() => null)
                 console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.mensaje || 'Ocurrió un error al obtener los grupos.')
+                alert(errorData?.message || 'Ocurrió un error al obtener los grupos.')
                 return
             }
         })
@@ -63,7 +63,7 @@ export default function GestionarHorarios(){
             }else{
                 const errorData = await res.json().catch(() => null)
                 console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.mensaje || 'Ocurrió un error al obtener los horarios')
+                alert(errorData?.message || 'Ocurrió un error al obtener los horarios')
                 return
             }
         })
@@ -94,7 +94,7 @@ export default function GestionarHorarios(){
         } else {
             const errorData = await res.json().catch(() => null)
             console.error(`Error ${res.status}`, errorData)
-            alert(errorData?.mensaje || 'Ocurrió un error al guardar el horario')
+            alert(errorData?.message || 'Ocurrió un error al guardar el horario')
             return
         }
     }
@@ -111,7 +111,7 @@ export default function GestionarHorarios(){
         } else {
             const errorData = await res.json().catch(() => null)
             console.error(`Error ${res.status}`, errorData)
-            alert(errorData?.mensaje || 'Ocurrió un error al eliminar el horario')
+            alert(errorData?.message || 'Ocurrió un error al eliminar el horario')
             return
         }
     }

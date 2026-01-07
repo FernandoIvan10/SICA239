@@ -53,7 +53,7 @@ export default function AgregarUsuario(){
         .then(async res => {
             const data = await res.json()
             if (!res.ok) {
-                alert(data.mensaje || 'Error al obtener grupos')
+                alert(data.message || 'Error al obtener grupos')
                 setGrupos([])
                 return
             }
@@ -100,7 +100,7 @@ export default function AgregarUsuario(){
             }else{
                 const errorData = await res.json().catch(() => null)
                 console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.mensaje || 'Ocurrió un error al guardar el administrador')
+                alert(errorData?.message || 'Ocurrió un error al guardar el administrador')
                 return
             }
         })
@@ -136,7 +136,7 @@ export default function AgregarUsuario(){
             }else{
                 const errorData = await res.json().catch(() => null)
                 console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.mensaje || 'Ocurrió un error al guardar el alumno.')
+                alert(errorData?.message || 'Ocurrió un error al guardar el alumno.')
                 return
             }
         })

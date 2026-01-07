@@ -11,7 +11,7 @@ const buscarMaterias = async (req, res) => {
         res.status(200).json({ materias })
     } catch (error) {
         console.error('Error al buscar materias:', error)
-        res.status(500).json({ mensaje: 'Error interno del servidor' })
+        res.status(500).json({ message: 'Error interno del servidor' })
     }
 }
 

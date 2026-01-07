@@ -26,7 +26,7 @@ export default function Horario(){
             }).then(async res => {
                 const data = await res.json()
                 if(!res.ok){
-                    alert(data.mensaje || 'Error al obtener los horarios')
+                    alert(data.message || 'Error al obtener los horarios')
                     return
                 }
         

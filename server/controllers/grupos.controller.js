@@ -13,23 +13,23 @@ const agregarGrupo = async (req, res) => {
 
         // Valida que el campo nombre no esté vacío
         if (!nombre) {
-            return res.status(400).json({ mensaje: 'El nombre del grupo es obligatorio.' })
+            return res.status(400).json({ message: 'El nombre del grupo es obligatorio.' })
         }
 
         // Valida que el campo semestre no esté vacío
         if (!semestre) {
-            return res.status(400).json({ mensaje: 'El semestre del grupo es obligatorio.' })
+            return res.status(400).json({ message: 'El semestre del grupo es obligatorio.' })
         }
 
         // Valida que el grupo no exista
         const existeGrupo = await Grupo.findOne({nombre})
         if(existeGrupo){
-            return res.status(400).json({mensaje:"El nombre de grupo ingresado ya se encuentra registrado en el sistema."})
+            return res.status(400).json({message:"El nombre de grupo ingresado ya se encuentra registrado en el sistema."})
         }
 
         // Verifica que las materias estén definidas en un arreglo
         if (!materias || !Array.isArray(materias) || materias.length === 0) {
-            return res.status(400).json({ mensaje: 'Debe proporcionar al menos una materia.' })
+            return res.status(400).json({ message: 'Debe proporcionar al menos una materia.' })
         }
 
         let materiasIds = []
@@ -37,7 +37,7 @@ const agregarGrupo = async (req, res) => {
         for (const materia of materias) {
             const materiaNombre = materia.nombre
             if (!materiaNombre) { // Valida que el nombre de la materia no esté vacío
-                return res.status(400).json({ mensaje: 'El nombre de cada materia es obligatorio.' })
+                return res.status(400).json({ message: 'El nombre de cada materia es obligatorio.' })
             }
 
             // Valida que la materia no exista
@@ -64,10 +64,10 @@ const agregarGrupo = async (req, res) => {
         })
 
         await nuevoGrupo.save() // Guarda el grupo
-        return res.status(201).json({ mensaje: 'Grupo creado exitosamente.'})
+        return res.status(201).json({ message: 'Grupo creado exitosamente.'})
     } catch (error) {
         console.error('Error al agregar el grupo:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -79,13 +79,13 @@ const modificarGrupo = async (req, res) => {
 
         // Valida que el ID sea proporcionado
         if (!id) {
-            return res.status(400).json({ mensaje: 'El ID del grupo es obligatorio.' })
+            return res.status(400).json({ message: 'El ID del grupo es obligatorio.' })
         }        
 
         // Valida que el grupo exista
         const grupoExistente = await Grupo.findById(id)
         if (!grupoExistente) {
-            return res.status(404).json({ mensaje: 'Grupo no encontrado.' })
+            return res.status(404).json({ message: 'Grupo no encontrado.' })
         }
 
         const actualizaciones = {}
@@ -96,7 +96,7 @@ const modificarGrupo = async (req, res) => {
         if (materias && materias.length > 0) {
             const calificacionesExistentes = await Calificacion.findOne({grupoId: id})
             if(calificacionesExistentes){ // No se pueden modificar materias si hay calificaciones capturadas
-                return res.status(400).json({ mensaje: 'No se pueden modificar las materias porque el grupo tiene calificaciones registradas.' })
+                return res.status(400).json({ message: 'No se pueden modificar las materias porque el grupo tiene calificaciones registradas.' })
             }
 
             let materiasIds = []
@@ -119,12 +119,12 @@ const modificarGrupo = async (req, res) => {
         const grupoActualizado = await Grupo.findByIdAndUpdate(id, actualizaciones, { new: true })
 
         return res.status(200).json({
-            mensaje: 'Grupo actualizado exitosamente.',
+            message: 'Grupo actualizado exitosamente.',
             grupo: grupoActualizado,
         })
     } catch (error) {
         console.error('Error al modificar el grupo:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -136,12 +136,12 @@ const listarGrupos = async (req, res) => {
 
         // Retorna la lista de grupos
         return res.status(200).json({
-            mensaje: 'Grupos obtenidos exitosamente.',
+            message: 'Grupos obtenidos exitosamente.',
             grupos,
         })
     } catch (error) {
         console.error('Error al listar los grupos:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -151,26 +151,26 @@ const eliminarGrupo = async (req, res) => {
         const { id } = req.params
 
         if (!id) { // Valida que hayan enviado el id del grupo
-            return res.status(400).json({ mensaje: 'El ID del grupo es obligatorio.' })
+            return res.status(400).json({ message: 'El ID del grupo es obligatorio.' })
         }
 
         // Verifica que el grupo exista
         const grupoExistente = await Grupo.findById(id);
         if (!grupoExistente) {
-            return res.status(404).json({ mensaje: 'Grupo no encontrado.' })
+            return res.status(404).json({ message: 'Grupo no encontrado.' })
         }
 
         // No se puede eliminar el grupo si hay calificaciones capturadas
         const calificacionesExistentes = await Calificacion.findOne({ grupoId: id })
         if (calificacionesExistentes) {
-            return res.status(400).json({ mensaje: 'No se puede eliminar el grupo porque tiene calificaciones registradas.' })
+            return res.status(400).json({ message: 'No se puede eliminar el grupo porque tiene calificaciones registradas.' })
         }
 
         // No se puede eliminar el grupo si hay alumnos registrados en él
         const alumnosExistentes = await Alumno.findOne({ grupoId: id })
         const alumnosRecursando = await Alumno.findOne({'materiasRecursadas.grupo': id})
         if (alumnosExistentes || alumnosRecursando) {
-            return res.status(400).json({ mensaje: 'No se puede eliminar el grupo porque tiene alumnos registrados.' })
+            return res.status(400).json({ message: 'No se puede eliminar el grupo porque tiene alumnos registrados.' })
         }
 
         const horario = await Horario.findOne({ grupo: id })
@@ -182,10 +182,10 @@ const eliminarGrupo = async (req, res) => {
         // Elimina el grupo
         await Grupo.findByIdAndDelete(id)
 
-        return res.status(200).json({ mensaje: 'Grupo eliminado exitosamente.' })
+        return res.status(200).json({ message: 'Grupo eliminado exitosamente.' })
     } catch (error) {
         console.error('Error al eliminar el grupo:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -196,7 +196,7 @@ const migrarAlumnos = async (req, res) => {
 
     // Valida que se hayan enviado todos los parámetros
     if (!grupoOrigen || !grupoDestino || !Array.isArray(alumnos) || alumnos.length === 0) { 
-        return res.status(400).json({ mensaje: 'Faltan datos obligatorios.' })
+        return res.status(400).json({ message: 'Faltan datos obligatorios.' })
     }
 
     try {
@@ -205,7 +205,7 @@ const migrarAlumnos = async (req, res) => {
         const destinoExiste = await Grupo.findById(grupoDestino)
 
         if (!origenExiste || !destinoExiste) {
-            return res.status(404).json({ mensaje: 'Uno o ambos grupos especificados no existen.' })
+            return res.status(404).json({ message: 'Uno o ambos grupos especificados no existen.' })
         }
 
         // Actualizar grupo de cada alumno
@@ -215,12 +215,12 @@ const migrarAlumnos = async (req, res) => {
         )
 
         return res.status(200).json({
-            mensaje: `Migración completada. ${resultados.modifiedCount} alumno(s) actualizados.`,
+            message: `Migración completada. ${resultados.modifiedCount} alumno(s) actualizados.`,
         })
 
     } catch (error) {
         console.error('Error al migrar alumnos:', error)
-        return res.status(500).json({ mensaje: 'Error interno al migrar alumnos.' })
+        return res.status(500).json({ message: 'Error interno al migrar alumnos.' })
     }
 }
 

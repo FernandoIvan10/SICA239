@@ -28,7 +28,7 @@ export default function EditarAlumno() {
         .then(async res => {
             const data = await res.json()
             if (!res.ok) {
-                alert(data.mensaje || 'Error al obtener grupos')
+                alert(data.message || 'Error al obtener grupos')
                 setGrupos([])
                 return
             }
@@ -58,7 +58,7 @@ export default function EditarAlumno() {
         .then(async res => {
             const data = await res.json()
             if(!res.ok){
-                alert(data.mensaje || 'Error al obtener alumno.')
+                alert(data.message || 'Error al obtener alumno.')
                 return
             }
 
@@ -100,7 +100,7 @@ export default function EditarAlumno() {
             } else {
                 const errorData = await res.json().catch(() => null)
                 console.error(`Error ${res.status}`, errorData)
-                 alert(errorData?.mensaje || 'Ocurrió un error al actualizar el alumno')
+                 alert(errorData?.message || 'Ocurrió un error al actualizar el alumno')
             }
         })
     }

@@ -30,7 +30,7 @@ export default function MigrarAlumnos() {
             const data = await res.json()
             if (!res.ok) {
                 console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                alert(data.mensaje || 'Error al obtener grupos')
+                alert(data.message || 'Error al obtener grupos')
                 setGrupos([])
                 return
             }
@@ -62,7 +62,7 @@ export default function MigrarAlumnos() {
             .then(async res => {
                 const data = await res.json()
                 if(!res.ok){
-                    alert(data.mensaje || 'Error al obtener alumnos')
+                    alert(data.message || 'Error al obtener alumnos')
                 }
                 
                 setAlumnos(data)
@@ -102,8 +102,8 @@ export default function MigrarAlumnos() {
 
             const data = await res.json()
 
-            if (!res.ok) throw new Error(data.mensaje || 'Error al migrar alumnos')
-            setMensaje(data.mensaje)
+            if (!res.ok) throw new Error(data.message || 'Error al migrar alumnos')
+            setMensaje(data.message)
 
             // Limpia el estado
             setSeleccionados([])

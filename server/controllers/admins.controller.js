@@ -9,13 +9,13 @@ const agregarAdmin = async(req,res)=>{
 
         // Valida que todos los campos estén rellenados
         if(!rfc || !nombre || !contrasena || !rol){
-            return res.status(400).json({mensaje:"Faltan campos obligatorios."})
+            return res.status(400).json({message:"Faltan campos obligatorios."})
         }
 
         // Valida que el admin no exista
         const existeAdmin = await Administrador.findOne({rfc})
         if(existeAdmin){
-            return res.status(400).json({mensaje:"El RFC ingresado ya se encuentra registrado en el sistema."})
+            return res.status(400).json({message:"El RFC ingresado ya se encuentra registrado en el sistema."})
         }
 
         // Se crea el nuevo admin
@@ -30,10 +30,10 @@ const agregarAdmin = async(req,res)=>{
         })
 
         await nuevoAdmin.save() // Se guarda el nuevo admin
-        return res.status(201).json({mensaje:"Administrador creado exitosamente."})
+        return res.status(201).json({message:"Administrador creado exitosamente."})
     }catch(error){
         console.error('Error al agregar al administrador:',error)
-        return res.status(500).json({mensaje:"Error interno del servidor."})
+        return res.status(500).json({message:"Error interno del servidor."})
     }
 }
 
@@ -45,13 +45,13 @@ const modificarAdmin = async (req, res) => {
 
         // Valida que el ID sea proporcionado
         if (!id) {
-            return res.status(400).json({ mensaje: 'El ID del administrador es obligatorio.' })
+            return res.status(400).json({ message: 'El ID del administrador es obligatorio.' })
         }
 
         // Valida que el administrador exista
         const adminExistente = await Administrador.findById(id)
         if (!adminExistente) {
-            return res.status(404).json({ mensaje: 'No existe el administrador especificado.' })
+            return res.status(404).json({ message: 'No existe el administrador especificado.' })
         }
 
         // Se actualizan sólo los campos proporcionados
@@ -63,12 +63,12 @@ const modificarAdmin = async (req, res) => {
         await adminExistente.save()
 
         return res.status(200).json({ 
-            mensaje: 'Administrador modificado exitosamente.',
+            message: 'Administrador modificado exitosamente.',
             admin: adminExistente 
         })
     } catch (error) {
         console.error('Error al modificar el administrador:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -98,7 +98,7 @@ const listarAdmins = async (req, res) => {
         return res.status(200).json(admins)
     } catch (error) {
         console.error('Error al listar administradores:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -111,12 +111,12 @@ const obtenerAdminPorID = async (req, res) => {
             .select('-contrasena') // No enviar contraseña
 
         if (!admin) { // Valida que el administrador exista
-            return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
+            return res.status(404).json({ message: 'Administrador no encontrado.' })
         }
         return res.status(200).json(admin)
     } catch (error) {
         console.error('Error al obtener el administrador:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -127,22 +127,22 @@ const primerCambioContrasenaAdministrador = async (req, res) => {
         const { id } = req.params
 
         if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
-            return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' })
+            return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres.' })
         }
 
         const admin = await Administrador.findById(id)
         if (!admin) { // Valida que el administrador exista
-            return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
+            return res.status(404).json({ message: 'Administrador no encontrado.' })
         }
 
         admin.contrasena = await bcrypt.hash(nuevaContrasena, 10)
         admin.requiereCambioContrasena = false
         await admin.save()
 
-        return res.status(200).json({ mensaje: 'Contraseña actualizada correctamente.' })
+        return res.status(200).json({ message: 'Contraseña actualizada correctamente.' })
     } catch (error) {
         console.error('Error al cambiar contraseña del administrador:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -152,26 +152,26 @@ const cambiarContrasena = async (req, res) => {
         const {id} = req.params
 
         if(!contrasenaAntigua || !contrasenaNueva){ // Valida que las contraseñas sean ingresadas
-            return res.status(400).json({mensaje: 'Se requiere la antigua y la nueva contraseña.'})
+            return res.status(400).json({message: 'Se requiere la antigua y la nueva contraseña.'})
         }
 
         const administrador = await Administrador.findById(id)
         if (!administrador) { // Valida que el administrador exista
-            return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
+            return res.status(404).json({ message: 'Administrador no encontrado.' })
         }
 
         const esValido = await bcrypt.compare(contrasenaAntigua, administrador.contrasena)
         if(!esValido){ // Se valida que la contraseña antigua coincida
-            return res.status(401).json({mensaje: 'Contraseña incorrrecta.'})
+            return res.status(401).json({message: 'Contraseña incorrrecta.'})
         }
 
         administrador.contrasena = await bcrypt.hash(contrasenaNueva, 10)
         await administrador.save()
 
-        return res.status(200).json({ mensaje: 'Contraseña cambiada correctamente.' })
+        return res.status(200).json({ message: 'Contraseña cambiada correctamente.' })
     }catch(error){
         console.error('Error al cambiar la contraseña: ', error)
-        res.status(500).json({mensaje: 'Error interno del servidor.'})
+        res.status(500).json({message: 'Error interno del servidor.'})
     }
 }
 
@@ -182,17 +182,17 @@ const reiniciarContrasena = async (req, res) => {
         
         const admin = await Administrador.findById(id)
         if(!admin){ // Valida que el administrador exista
-            return res.status(404).json({ mensaje: 'Administrador no encontrado.' })
+            return res.status(404).json({ message: 'Administrador no encontrado.' })
         }
 
         admin.contrasena = await bcrypt.hash(admin.rfc, 10)
         admin.requiereCambioContrasena = true
         admin.save()
         
-        return res.status(200).json({mensaje: 'La contraseña ahora es el RFC del usuario.'})
+        return res.status(200).json({message: 'La contraseña ahora es el RFC del usuario.'})
     }catch(error){
         console.error('Error al reiniciar la contraseña: ', error)
-        return res.status(500).json({mensaje:"Error interno del servidor."})
+        return res.status(500).json({message:"Error interno del servidor."})
     }
 }
 

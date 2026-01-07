@@ -27,7 +27,7 @@ export default function CerrarSemestre(){
 
             const data = await res.json()
 
-            if (!res.ok) throw new Error(data.mensaje || 'Error al cerrar el semestre')
+            if (!res.ok) throw new Error(data.message || 'Error al cerrar el semestre')
 
             alert('Semestre cerrado con éxito. Las calificaciones han sido archivadas.')
         } catch (error) {

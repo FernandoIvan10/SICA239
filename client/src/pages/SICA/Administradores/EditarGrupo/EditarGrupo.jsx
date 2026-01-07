@@ -46,7 +46,7 @@ export default function EditarGrupo() {
             } else {
                 const errorData = await res.json().catch(() => null)
                 console.error(`Error ${res.status}`, errorData)
-                 alert(errorData?.mensaje || 'Ocurrió un error al actualizar el grupo')
+                 alert(errorData?.message || 'Ocurrió un error al actualizar el grupo')
             }
         })
     }

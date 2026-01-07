@@ -41,10 +41,10 @@ const cerrarSemestre = async (req, res) => {
         // Borra todas las calificaciones del semestre actual
         await Calificacion.deleteMany({})
 
-        return res.status(200).json({ mensaje: 'Semestre cerrado. Historial actualizado y calificaciones eliminadas.' })
+        return res.status(200).json({ message: 'Semestre cerrado. Historial actualizado y calificaciones eliminadas.' })
     } catch (error) {
         console.error('Error al cerrar el semestre:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -56,13 +56,13 @@ const obtenerHistorialAcademicoPorID = async (req, res) => {
         const historial = await Historial.find({alumnoId: id}).populate("calificaciones.materiaId")
 
         if(!historial || historial.length===0){ // Valida que existan calificaciones en el historial
-            return res.status(404).json({mensaje: "Calificaciones no encontradas"})
+            return res.status(404).json({message: "Calificaciones no encontradas"})
         }
 
         return res.status(200).json(historial)
     }catch(error){
         console.error("Error al obtener las calificaciones: ", error)
-        return res.status(500).json({mensaje: "Error interno del servidor."})
+        return res.status(500).json({message: "Error interno del servidor."})
     }
 }
 

@@ -27,7 +27,7 @@ export default function Historial(){
         }).then(async res => {
             const data = await res.json()
             if(!res.ok){
-                alert(data.mensaje || 'Error al obtener el historial académico')
+                alert(data.message || 'Error al obtener el historial académico')
                 return
             }
             

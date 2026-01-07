@@ -55,7 +55,7 @@ export default function PrimerCambioContrasena() {
       const data = await res.json()
 
       if(!res.ok){
-        alert(data.mensaje || 'Error al cambiar contraseña')
+        alert(data.message || 'Error al cambiar contraseña')
         return
       }
 

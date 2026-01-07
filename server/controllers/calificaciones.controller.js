@@ -11,7 +11,7 @@ const agregarCalificacion = async (req, res) => {
 
         // Validar que todos los campos obligatorios estén presentes
         if (!alumnoId || !materiaId || !grupoId || !parcialInput || nota === undefined) {
-            return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' })
+            return res.status(400).json({ message: 'Faltan campos obligatorios.' })
         }
 
         let calificacion = await Calificacion.findOne({
@@ -46,7 +46,7 @@ const agregarCalificacion = async (req, res) => {
         return res.status(200).json({calificacion})
     } catch (error) {
         console.error('Error al agregar la calificación:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -69,12 +69,12 @@ const listarCalificaciones = async (req, res) => {
             .exec()
             
         return res.status(200).json({
-            mensaje: 'Calificaciones obtenidas exitosamente.',
+            message: 'Calificaciones obtenidas exitosamente.',
             calificaciones,
         })
     } catch (error) {
         console.error('Error al listar las calificaciones:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -86,7 +86,7 @@ const obtenerCalificacionesPorID = async (req, res) => {
         const calificaciones = await Calificacion.find({alumnoId: id}).populate('materiaId')
 
         if(!calificaciones || calificaciones.length === 0){
-            return res.status(404).json({mensaje: "Calificaciones no encontradas."})
+            return res.status(404).json({message: "Calificaciones no encontradas."})
         } 
 
         // Se les da un mejor formato a los datos
@@ -112,7 +112,7 @@ const obtenerCalificacionesPorID = async (req, res) => {
         return res.status(200).json({parciales, calificaciones: resultado})
     }catch (error){
         console.error("Error al obtener las calificaciones: ", error)
-        return res.status(500).json({mensaje: "Error interno del servidor."})
+        return res.status(500).json({message: "Error interno del servidor."})
     }
 }
 

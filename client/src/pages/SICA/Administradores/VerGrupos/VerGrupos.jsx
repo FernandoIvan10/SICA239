@@ -36,7 +36,7 @@ export default function VerGrupos(){
 
                 if (!res.ok) {
                     console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                    alert(data.mensaje || 'Ocurrió un error al obtener los grupos')
+                    alert(data.message || 'Ocurrió un error al obtener los grupos')
                     return
                 }
                 // El grupo de egresados no debe aparecer en esta pantalla
@@ -70,7 +70,7 @@ export default function VerGrupos(){
             const data = await respuesta.json()
             if(!respuesta.ok){
                 console.error(`Error ${respuesta.status}`, data)
-                alert(data.mensaje || 'Ocurrió un error al eliminar el grupo.')
+                alert(data.message || 'Ocurrió un error al eliminar el grupo.')
                 return
             }
                 alert('Grupo eliminado correctamente')

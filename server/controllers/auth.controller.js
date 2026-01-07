@@ -17,23 +17,23 @@ const loginController = async(req,res)=>{
         if(tipoUsuario==='alumno'){
             user = await Alumno.findOne({matricula:usuario})
             if(!user){ // Se valida que el usuario exista
-                return res.status(404).json({mensaje: 'Usuario no encontrado'})
+                return res.status(404).json({message: 'Usuario no encontrado'})
             }
             rol = 'alumno'
         }else if(tipoUsuario==='administrador'){
             user = await Administrador.findOne({rfc:usuario})
             if(!user){ // Se valida que el usuario exista
-                return res.status(404).json({mensaje: 'Usario no encontrado'})
+                return res.status(404).json({message: 'Usuario no encontrado'})
             }
             rol = user.rol
         }else{
-            return res.status(400).json({mensaje:'Tipo de usuario invalido'})
+            return res.status(400).json({message:'Tipo de usuario invalido'})
         }
 
         // Se valida que la contraseña sea correcta
         const esValido = await bcrypt.compare(contrasena, user.contrasena)
         if(!esValido){
-            return res.status(401).json({mensaje: 'Contraseña incorrecta'})
+            return res.status(401).json({message: 'Contraseña incorrecta'})
         }
 
         // Se genera un token de sesión
@@ -45,7 +45,7 @@ const loginController = async(req,res)=>{
         
         // Respuesta exitosa
         res.status(200).json({
-            mensaje: 'Inicio de sesión exitoso',
+            message: 'Inicio de sesión exitoso',
             token,
             rol,
             nombre: user.nombre,
@@ -54,7 +54,7 @@ const loginController = async(req,res)=>{
         }) 
     }catch(error){
         console.error('Error al iniciar sesión', error)
-        res.status(500).json({mensaje: 'Error interno del servidor.'})
+        res.status(500).json({message: 'Error interno del servidor.'})
     }
 }
 

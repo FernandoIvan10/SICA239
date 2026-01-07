@@ -31,7 +31,7 @@ export default function VerUsuarios(){
             const data = await res.json()
 
             if(!res.ok){
-                alert(data.mensaje || 'Error al obtener alumnos')
+                alert(data.message || 'Error al obtener alumnos')
                 setAlumnos([])
                 return
             }
@@ -57,7 +57,7 @@ export default function VerUsuarios(){
             const data = await res.json()
             
             if (!res.ok) {
-                alert(data.mensaje || 'Error al obtener administradores')
+                alert(data.message || 'Error al obtener administradores')
                 setAdmins([])
                 return
             }
@@ -129,7 +129,7 @@ export default function VerUsuarios(){
             const data = await res.json()
             if(!res.ok){
                 console.error(await res.json().catch(()=>null))
-                alert(data.mensaje || 'Ocurrió un error al reiniciar la contraseña')
+                alert(data.message || 'Ocurrió un error al reiniciar la contraseña')
                 return
             }
                 alert('Contraseña reiniciada correctamente')
@@ -157,7 +157,7 @@ export default function VerUsuarios(){
             const data = await res.json()
             if(!res.ok){
                 console.error(await res.json().catch(()=>null))
-                alert(data.mensaje || 'Ocurrió un error al cambiar el estado del alumno')
+                alert(data.message || 'Ocurrió un error al cambiar el estado del alumno')
                 return
             }
                 setUsuarios(prev =>

@@ -3,7 +3,7 @@ function verificarRol(permisosPermitidos) {
     return (req, res, next) => {
         const rol = req.usuario.rol
         if (!permisosPermitidos.includes(rol)) { // Verifica que el rol tenga permisos
-            return res.status(403).json({ mensaje: 'No tienes permiso para acceder a esta ruta.' })
+            return res.status(403).json({ message: 'No tienes permiso para acceder a esta ruta.' })
         }
         next()
     }

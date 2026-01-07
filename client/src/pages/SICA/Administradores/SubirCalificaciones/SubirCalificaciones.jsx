@@ -31,7 +31,7 @@ export default function SubirCalificaciones(){
         .then(async res => {
             const data = await res.json()
             if (!res.ok) {
-                alert(data.mensaje || 'Error al obtener grupos')
+                alert(data.message || 'Error al obtener grupos')
                 setGrupos([])
                 return
             }
@@ -65,7 +65,7 @@ export default function SubirCalificaciones(){
                 const data = await res.json()
                 if (!res.ok) {
                     console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                    alert(data.mensaje || 'Ocurrió un error al obtener los alumnos')
+                    alert(data.message || 'Ocurrió un error al obtener los alumnos')
                     return
                 }
                 
@@ -96,7 +96,7 @@ export default function SubirCalificaciones(){
 
             if(!res.ok){
                 console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                alert(data.mensaje || 'Ocurrió un error al obtener las calificaciones parciales.')
+                alert(data.message || 'Ocurrió un error al obtener las calificaciones parciales.')
                 return
             }
             
@@ -177,7 +177,7 @@ export default function SubirCalificaciones(){
                     })
                     if(!response.ok){
                         const errorData = await response.json()
-                        alert(errorData.mensaje || 'Error al capturar las calificaciones')
+                        alert(errorData.message || 'Error al capturar las calificaciones')
                         return
                     }
 

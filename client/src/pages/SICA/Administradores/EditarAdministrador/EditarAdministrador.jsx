@@ -27,7 +27,7 @@ export default function EditarAdministrador() {
             const data = await res.json()
 
             if (!res.ok) {
-                alert(data.mensaje || 'Error al obtener administrador')
+                alert(data.message || 'Error al obtener administrador')
                 return
             }
 
@@ -67,7 +67,7 @@ export default function EditarAdministrador() {
             } else {
                 const errorData = await res.json().catch(() => null)
                 console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.mensaje || 'Ocurrió un error al actualizar el administrador')
+                alert(errorData?.message || 'Ocurrió un error al actualizar el administrador')
                 return
             }
         })

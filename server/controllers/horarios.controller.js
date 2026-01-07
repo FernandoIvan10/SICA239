@@ -7,8 +7,8 @@ const subirHorario = async (req, res) => {
   try {
     const { grupoId } = req.body
     const id = grupoId
-    if (!id) return res.status(400).json({ mensaje: 'El ID del grupo es obligatorio.' }) // Se valida que se proporcione un ID
-    if (!req.file) return res.status(400).json({ mensaje: 'No se subió ninguna imagen' }) // Se valida que se suba una imagen
+    if (!id) return res.status(400).json({ message: 'El ID del grupo es obligatorio.' }) // Se valida que se proporcione un ID
+    if (!req.file) return res.status(400).json({ message: 'No se subió ninguna imagen' }) // Se valida que se suba una imagen
 
     const resultado = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
@@ -30,12 +30,12 @@ const subirHorario = async (req, res) => {
 
     await nuevoHorario.save()
     return res.status(201).json({ 
-      mensaje: 'Horario subido exitosamente.',
+      message: 'Horario subido exitosamente.',
       horario: nuevoHorario
     })
   } catch (error) {
     console.error('Error al subir horario:', error)
-    return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+    return res.status(500).json({ message: 'Error interno del servidor.' })
   }
 }
 
@@ -46,7 +46,7 @@ const listarHorarios = async (req, res) => {
         return res.status(200).json({horarios})
     }catch (error) {
         console.error('Error al obtener los horarios: ', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -55,19 +55,18 @@ const eliminarHorario = async (req, res) => {
     try {
         const { id } = req.params
 
-        if (!id) return res.status(400).json({ mensaje: 'El ID del horario es obligatorio.' }) // Se valida que se proporcione un ID
+        if (!id) return res.status(400).json({ message: 'El ID del horario es obligatorio.' }) // Se valida que se proporcione un ID
 
         // Buscar el horario en la base de datos
         const horario = await Horario.findById(id);
-        if (!horario) return res.status(404).json({ mensaje: 'Horario no encontrado.' }) // Se valida que el horario exista
-
+        if (!horario) return res.status(404).json({ message: 'Horario no encontrado.' }) // Se valida que el horario exista
         await cloudinary.uploader.destroy(horario.publicId)
         await Horario.findByIdAndDelete(id)
 
-        return res.status(200).json({ mensaje: 'Horario eliminado correctamente.' })
+        return res.status(200).json({ message: 'Horario eliminado correctamente.' })
     } catch (error) {
         console.error('Error al eliminar el horario:', error)
-        return res.status(500).json({ mensaje: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor.' })
     }
 }
 
@@ -81,11 +80,11 @@ const obtenerHorariosPorID = async (req, res) => {
     .populate('materiasRecursadas.grupo')
 
     if(!alumno){ // Valida que el alumno exista
-      return res.status(404).json({mensaje: "Alumno no encontrado"})
+      return res.status(404).json({message: "Alumno no encontrado"})
     }
     
     if (!alumno.activo) { // Verifica que el alumno esté activo
-      return res.status(403).json({ mensaje: "No existe un horario asignado" })
+      return res.status(403).json({ message: "No existe un horario asignado" })
     }
 
     const grupos = new Map()
@@ -110,7 +109,7 @@ const obtenerHorariosPorID = async (req, res) => {
     return res.status(200).json(respuesta)
   }catch(error){
     console.error("Error al obtener los horarios:", error)
-    return res.status(500).json({ mensaje: 'Error interno del servidor' })
+    return res.status(500).json({ message: 'Error interno del servidor' })
   }
 }
 

@@ -38,7 +38,7 @@ export default function AgregarGrupo() {
             }else{
                 const errorData = await res.json().catch(() => null)
                 console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.mensaje || 'Ocurrió un error al guardar el grupo.')
+                alert(errorData?.message || 'Ocurrió un error al guardar el grupo.')
                 return
             }
         })

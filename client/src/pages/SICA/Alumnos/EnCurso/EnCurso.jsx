@@ -27,7 +27,7 @@ export default function EnCurso(){
         }).then(async res => {
             const data = await res.json()
             if(!res.ok){
-                alert(data.mensaje || 'Error al obtener calificaciones.')
+                alert(data.message || 'Error al obtener calificaciones.')
                 return
             }
             

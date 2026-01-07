@@ -64,7 +64,7 @@ export default function Login(){
             // Valida que no ocurra ningún error
             if(!response.ok){
                 const errorData = await response.json()
-                setError(errorData.mensaje || 'Error al iniciar sesion')
+                setError(errorData.message || 'Error al iniciar sesion')
                 return
             }
 

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 function verificarToken(req, res, next) {
     const token = req.headers['authorization']?.split(' ')[1] // Se busca el token en el encabezado
     if (!token) { // Se valida que el token exista
-        return res.status(401).json({ mensaje: 'Acceso denegado. Token no proporcionado.' })
+        return res.status(401).json({ message: 'Acceso denegado. Token no proporcionado.' })
     }
 
     try {
@@ -14,7 +14,7 @@ function verificarToken(req, res, next) {
         req.usuarioId = decoded.id
         next()
     } catch (error) {
-        return res.status(403).json({ mensaje: 'Token inválido o expirado.' })
+        return res.status(403).json({ message: 'Token inválido o expirado.' })
     }
 }
 

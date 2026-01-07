@@ -3,7 +3,15 @@ const { crearAdministrador } = require('../services/admins.service')
 // Función para agregar un nuevo administrador
 const agregarAdmin = async(req, res) => {
     try{
-        await crearAdministrador(req.body)
+        const payload = {
+            rfc: req.body.rfc,
+            nombre: req.body.nombre,
+            apellido: req.body.apellido,
+            contrasena: req.body.contrasena,
+            rol: req.body.rol
+        }
+        
+        await crearAdministrador(payload)
         return res.status(201).json({message:"Administrador creado"})
     }catch(error){
         switch(error.code){

@@ -1,4 +1,3 @@
-// imports
 const mongoose = require('mongoose')
 
 // Esquema de la colección de Administradores
@@ -15,5 +14,4 @@ const administradorSchema = new mongoose.Schema({
     timestamps:true
 })
 
-// Se exporta el esquema
 module.exports = mongoose.model('Administrador',administradorSchema)

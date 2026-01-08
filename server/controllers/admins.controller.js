@@ -76,16 +76,18 @@ const obtenerAdminPorID = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const admin = await Administrador.findById(id)
-            .select('-contrasena') // No enviar contraseña
+        const admin = await consultarAdmin(id)
 
-        if (!admin) { // Valida que el administrador exista
-            return res.status(404).json({ message: 'Administrador no encontrado.' })
-        }
         return res.status(200).json(admin)
     } catch (error) {
-        console.error('Error al obtener el administrador:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch (error.code) {
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({ message: error.message })
+            case 'ADMINISTRADOR_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+            default:
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 

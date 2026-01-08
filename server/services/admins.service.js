@@ -83,8 +83,27 @@ async function listarAdmins(data) {
     return Administrador.find(query)
 }
 
+async function consultarAdmin(id) {
+    if(!id){ // El ID es obligatorio
+        const error = new Error('ID del administrador es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const admin = await Administrador.findById(id)
+
+    if(!admin){
+        const error = new Error('Administrador no encontrado')
+        error.code = 'ADMINISTRADOR_NO_ENCONTRADO'
+        throw error
+    }
+
+    return admin
+}
+
 module.exports = {
     agregarAdministrador,
     modificarAdministrador,
-    listarAdmins
+    listarAdmins,
+    consultarAdmin
 }

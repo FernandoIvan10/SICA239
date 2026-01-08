@@ -57,32 +57,18 @@ const modificarAdmin = async (req, res) => {
 }
 
 // Función para listar todos los admins con opciones de filtros
-const listarAdmins = async (req, res) => {
+const obtenerAdmins = async (req, res) => {
     try {
-        const { buscador, rol } = req.query // Filtro por búsqueda y por rol
-
-        let query = {} // Consulta
-
-        // Búsqueda por texto
-        if (buscador) {
-            query.$or = [
-                { nombre: { $regex: buscador, $options: 'i' } }, // Búsqueda por nombre
-                { apellido: { $regex: buscador, $options: 'i' } }, // Búsqueda por apellido
-                { rfc: { $regex: buscador, $options: 'i' } } // Búsqueda por RFC
-            ]
-        }
-
-        // Filtro por rol
-        if (rol) {
-            query.rol = rol
+        const payload = {
+            rol: req.query.rol,
+            buscador: req.query.buscador
         }
 
         // Se ejecuta la consulta
-        const admins = await Administrador.find(query).select('-contrasena'); // Se excluye la contraseña en la consulta
+        const admins = await listarAdmins(payload)
         return res.status(200).json(admins)
     } catch (error) {
-        console.error('Error al listar administradores:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor' })
     }
 }
 
@@ -183,7 +169,7 @@ const reiniciarContrasena = async (req, res) => {
 module.exports = {
     agregarAdmin,
     modificarAdmin,
-    listarAdmins,
+    obtenerAdmins,
     obtenerAdminPorID,
     primerCambioContrasenaAdministrador,
     cambiarContrasena,

@@ -63,7 +63,28 @@ async function modificarAdministrador(id, data) {
     return admin.save()
 }
 
+async function listarAdmins(data) {
+    const { rol, buscador } = data
+
+    let query = {} // Consulta
+
+    if (buscador) { // Búsqueda por texto
+        query.$or = [
+            { nombre: { $regex: buscador, $options: 'i' } }, // Búsqueda por nombre
+            { apellido: { $regex: buscador, $options: 'i' } }, // Búsqueda por apellido
+            { rfc: { $regex: buscador, $options: 'i' } } // Búsqueda por RFC
+        ]
+    }
+
+    if (rol) { // Filtro por rol
+        query.rol = rol
+    }
+
+    return Administrador.find(query)
+}
+
 module.exports = {
     crearAdministrador,
-    modificarAdministrador
+    modificarAdministrador,
+    listarAdmins
 }

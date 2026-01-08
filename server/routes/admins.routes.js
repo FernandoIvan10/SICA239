@@ -4,7 +4,7 @@ const verificarRol = require('../middleware/verificarRol')
 const {
     agregarAdmin,
     modificarAdmin,
-    listarAdmins,
+    obtenerAdmins,
     obtenerAdminPorID,
     primerCambioContrasenaAdministrador,
     cambiarContrasena,
@@ -24,7 +24,7 @@ router
         )
         .get( // Listar administradores
             verificarRol(['superadmin']),
-            listarAdmins
+            obtenerAdmins
         )
 
 router

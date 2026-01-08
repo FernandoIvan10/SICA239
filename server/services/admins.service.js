@@ -2,7 +2,7 @@ const Administrador = require('../models/administrador.model')
 const bcrypt = require('bcrypt')
 
 // Función para agregar un nuevo usuario administrador
-async function crearAdministrador(data) {
+async function agregarAdministrador(data) {
     const { 
         rfc,
         nombre,
@@ -84,7 +84,7 @@ async function listarAdmins(data) {
 }
 
 module.exports = {
-    crearAdministrador,
+    agregarAdministrador,
     modificarAdministrador,
     listarAdmins
 }

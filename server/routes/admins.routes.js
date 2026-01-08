@@ -2,8 +2,8 @@ const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const {
-    agregarAdmin,
-    modificarAdmin,
+    crearAdmin,
+    actualizarAdmin,
     obtenerAdmins,
     obtenerAdminPorID,
     primerCambioContrasenaAdministrador,
@@ -20,7 +20,7 @@ router
     .route('/')
         .post( // Agregar nuevo administrador
             verificarRol(['superadmin']),
-            agregarAdmin
+            crearAdmin
         )
         .get( // Listar administradores
             verificarRol(['superadmin']),
@@ -31,7 +31,7 @@ router
     .route('/:id')
         .put( // Modificar administrador
             verificarRol(['superadmin']),
-            modificarAdmin
+            actualizarAdmin
         )
         .get( // Obtener administrador
             verificarRol(['superadmin', 'editor', 'lector']),

@@ -1,7 +1,7 @@
-const { crearAdministrador } = require('../services/admins.service')
+const { agregarAdministrador, modificarAdministrador, listarAdmins } = require('../services/admins.service')
 
 // Función para agregar un nuevo administrador
-const agregarAdmin = async(req, res) => {
+const crearAdmin = async(req, res) => {
     try{
         const payload = {
             rfc: req.body.rfc,
@@ -11,7 +11,7 @@ const agregarAdmin = async(req, res) => {
             rol: req.body.rol
         }
         
-        await crearAdministrador(payload)
+        await agregarAdministrador(payload)
         return res.status(201).json({message:"Administrador creado"})
     }catch(error){
         switch(error.code){
@@ -29,7 +29,7 @@ const agregarAdmin = async(req, res) => {
 }
 
 // Función para modificar un administrador
-const modificarAdmin = async (req, res) => {
+const actualizarAdmin = async (req, res) => {
     try {
         const { id } = req.params // ID del administrador a modificar
         const payload = { // Datos a modificar
@@ -64,7 +64,6 @@ const obtenerAdmins = async (req, res) => {
             buscador: req.query.buscador
         }
 
-        // Se ejecuta la consulta
         const admins = await listarAdmins(payload)
         return res.status(200).json(admins)
     } catch (error) {
@@ -167,8 +166,8 @@ const reiniciarContrasena = async (req, res) => {
 }
 
 module.exports = {
-    agregarAdmin,
-    modificarAdmin,
+    crearAdmin,
+    actualizarAdmin,
     obtenerAdmins,
     obtenerAdminPorID,
     primerCambioContrasenaAdministrador,

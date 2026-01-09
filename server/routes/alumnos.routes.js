@@ -2,7 +2,7 @@ const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const {
-    agregarAlumno,
+    crearAlumno,
     modificarAlumno,
     listarAlumnos,
     obtenerAlumnoPorID,
@@ -23,7 +23,7 @@ router.
     route('/')
         .post( // Agregar nuevo alumno
             verificarRol(['superadmin', 'editor']),
-            agregarAlumno
+            crearAlumno
         )
         .get( // Listar alumnos
             verificarRol(['superadmin', 'editor', 'lector']),

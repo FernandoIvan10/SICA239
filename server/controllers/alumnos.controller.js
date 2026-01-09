@@ -1,67 +1,36 @@
-// imports
-const Alumno = require('../models/alumno.model')
+const {agregarAlumno} = require('../services/alumnos.service')
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
 const Calificacion = require('../models/calificacion.model')
 const bcrypt = require('bcrypt')
 
 // Función para agregar un nuevo alumno
-const agregarAlumno = async (req, res) => {
+const crearAlumno = async (req, res) => {
     try {
-        const { matricula, nombre, apellido, contrasena, grupoNombre, materiasRecursadas } = req.body
-
-        // Valida que los campos obligatorios estén rellenados
-        if (!matricula || !nombre || !apellido || !contrasena || !grupoNombre) {
-            return res.status(400).json({ message: 'Faltan campos obligatorios.' })
+        const payload = {
+            matricula: req.body.matricula,
+            nombre: req.body.nombre,
+            apellido: req.body.apellido,
+            contrasena: req.body.contrasena,
+            grupoNombre: req.body.grupoNombre,
+            materiasRecursadas: req.body.materiasRecursadas
         }
 
-        // Valida que el grupo exista
-        const grupoExistente = await Grupo.findOne({ nombre: grupoNombre })
-        if (!grupoExistente) {
-            return res.status(400).json({ message: 'El grupo especificado no existe.' })
-        }
-
-        // Valida que el alumno no exista
-        const existeAlumno = await Alumno.findOne({ matricula })
-        if (existeAlumno) {
-            return res.status(400).json({ message: 'La matrícula ingresada ya se encuentra registrada en el sistema.' })
-        }
-
-        // Valida que las materias recursadas tengan la estructura correcta
-        if (materiasRecursadas && !Array.isArray(materiasRecursadas)) {
-            console.error('materiasRecursadas debe ser un arreglo.')
-            return res.status(500).json({ message: 'Error interno del servidor.'})
-        }
-        if (materiasRecursadas && materiasRecursadas.some(m => !m.materia || !m.grupo)) {
-            console.error('Cada materia recursada debe tener materia y grupo.')
-            return res.status(500).json({ message: 'Error interno del servidor.' })
-        }
-        if(materiasRecursadas){ // Se valida que las materias y los grupos existan
-            for (const item of materiasRecursadas) {
-                const materiaValida = await Materia.findById(item.materia)
-                const grupoValido = await Grupo.findById(item.grupo)
-                if (!materiaValida || !grupoValido) {
-                    return res.status(404).json({ message: 'No se encontró la materia o grupo a recursar.'})
-                }
-            }
-        }
-
-        // Se crea el nuevo alumno
-        const contrasenaEncriptada = await bcrypt.hash(contrasena, 10)
-        const nuevoAlumno = new Alumno({
-            matricula,
-            nombre,
-            apellido,
-            contrasena: contrasenaEncriptada,
-            grupoId: grupoExistente._id,
-            materiasRecursadas: materiasRecursadas
-        })
-
-        await nuevoAlumno.save(); // Guarda el nuevo alumno
-        return res.status(201).json({ message: 'Alumno creado exitosamente.' })
+        await agregarAlumno(payload)
+        return res.status(201).json({ message: 'Alumno creado' })
     } catch (error) {
-        console.error('Error al agregar el alumno:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch (error.code) {
+            case 'CAMPOS_FALTANTES':
+            case 'FORMATO_INVALIDO_MATERIAS_RECURSADAS':
+                return res.status(400).json({ message: error.message })
+            case 'GRUPO_NO_ENCONTRADO':
+            case 'MATERIA_GRUPO_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+            case 'MATRICULA_DUPLICADA':
+                return res.status(409).json({ message: error.message })
+            default:
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 
@@ -324,7 +293,7 @@ const cambiarEstado = async (req, res) => {
 }
 
 module.exports = {
-    agregarAlumno, 
+    crearAlumno, 
     modificarAlumno, 
     listarAlumnos, 
     obtenerAlumnoPorID, 
@@ -333,4 +302,4 @@ module.exports = {
     cambiarContrasena,
     reiniciarContrasena,
     cambiarEstado
-} // Se exporta el controlador
+} // Se exporta el controlador 

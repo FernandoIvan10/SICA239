@@ -111,15 +111,12 @@ const actualizarContrasenaDefaultAdmin = async (req, res) => {
     } catch (error) {
         switch (error.code) {
             case 'ID_OBLIGATORIO':
-                return res.status(400).json({ message: error.message })
             case 'CONTRASENA_OBLIGATORIA':
-                return res.status(400).json({ message: error.message })
             case 'CONTRASENA_INVALIDA':
+            case 'CAMBIO_NO_PERMITIDO':
                 return res.status(400).json({ message: error.message })
             case 'ADMINISTRADOR_NO_ENCONTRADO':
                 return res.status(404).json({ message: error.message })
-            case 'CAMBIO_NO_PERMITIDO':
-                return res.status(400).json({ message: error.message })
             default:
                 return res.status(500).json({ message: 'Error interno del servidor' })
         }

@@ -3,7 +3,8 @@ const {
     modificarAdministrador, 
     listarAdmins,
     consultarAdmin,
-    cambiarPrimerContrasenaAdmin
+    cambiarPrimerContrasenaAdmin,
+    cambiarContrasena
 } = require('../services/admins.service')
 
 // Función para agregar un nuevo administrador
@@ -106,7 +107,7 @@ const actualizarContrasenaDefaultAdmin = async (req, res) => {
         const { id } = req.params
 
         await cambiarPrimerContrasenaAdmin(id, payload)
-        return res.status(200).json({ message: 'Contraseña actualizada correctamente' })
+        return res.status(200).json({ message: 'Contraseña actualizada' })
     } catch (error) {
         switch (error.code) {
             case 'ID_OBLIGATORIO':
@@ -126,31 +127,29 @@ const actualizarContrasenaDefaultAdmin = async (req, res) => {
 }
 
 // Función para cambiar la contraseña
-const cambiarContrasena = async (req, res) => {
-    try{const {contrasenaAntigua, contrasenaNueva} = req.body
+const actualizarContrasena = async (req, res) => {
+    try{
+        const payload = {
+            contrasenaAntigua: req.body.contrasenaAntigua,
+            contrasenaNueva: req.body.contrasenaNueva   
+        }
         const {id} = req.params
 
-        if(!contrasenaAntigua || !contrasenaNueva){ // Valida que las contraseñas sean ingresadas
-            return res.status(400).json({message: 'Se requiere la antigua y la nueva contraseña.'})
-        }
-
-        const administrador = await Administrador.findById(id)
-        if (!administrador) { // Valida que el administrador exista
-            return res.status(404).json({ message: 'Administrador no encontrado.' })
-        }
-
-        const esValido = await bcrypt.compare(contrasenaAntigua, administrador.contrasena)
-        if(!esValido){ // Se valida que la contraseña antigua coincida
-            return res.status(401).json({message: 'Contraseña incorrrecta.'})
-        }
-
-        administrador.contrasena = await bcrypt.hash(contrasenaNueva, 10)
-        await administrador.save()
-
-        return res.status(200).json({ message: 'Contraseña cambiada correctamente.' })
+        await cambiarContrasena(id, payload)
+        return res.status(200).json({ message: 'Contraseña cambiada' })
     }catch(error){
-        console.error('Error al cambiar la contraseña: ', error)
-        res.status(500).json({message: 'Error interno del servidor.'})
+        switch (error.code) {
+            case 'ID_OBLIGATORIO':
+            case 'CONTRASENA_OBLIGATORIA':
+            case 'CONTRASENA_INVALIDA':
+            case 'CAMBIO_NO_PERMITIDO':
+            case 'CONTRASENA_INCORRECTA':
+                return res.status(400).json({ message: error.message })
+            case 'ADMINISTRADOR_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+            default:
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 
@@ -181,6 +180,6 @@ module.exports = {
     obtenerAdmins,
     obtenerAdminPorID,
     actualizarContrasenaDefaultAdmin,
-    cambiarContrasena,
+    actualizarContrasena,
     reiniciarContrasena
 }

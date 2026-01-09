@@ -141,8 +141,59 @@ async function cambiarPrimerContrasenaAdmin(id, data) {
     admin.contrasena = await bcrypt.hash(contrasenaNueva, 10)
     admin.requiereCambioContrasena = false
     await admin.save()
+}
 
-    return admin
+// Función para cambiar la contraseña
+async function cambiarContrasena(id, data) {
+    const { contrasenaAntigua, contrasenaNueva } = data
+
+    if(!id){ // El ID es obligatorio
+        const error = new Error('ID del administrador es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    if(!contrasenaAntigua || !contrasenaNueva){ // Ambas contraseñas son obligatorias
+        const error = new Error('Se requieren ambas contraseñas')
+        error.code = 'CONTRASENA_OBLIGATORIA'
+        throw error
+    }
+
+    if(contrasenaNueva.length < 6){ // La nueva contraseña debe tener al menos 6 caracteres
+        const error = new Error('La nueva contraseña debe tener al menos 6 caracteres')
+        error.code = 'CONTRASENA_INVALIDA'
+        throw error
+    }
+
+    const admin = await Administrador.findById(id)
+    if(!admin){ // El administrador debe existir
+        const error = new Error('Administrador no encontrado')
+        error.code = 'ADMINISTRADOR_NO_ENCONTRADO'
+        throw error
+    }
+
+    if(admin.requiereCambioContrasena){ // No se permite cambiar la contraseña si es el primer cambio
+        const error = new Error('El administrador debe realizar el primer cambio de contraseña')
+        error.code = 'CAMBIO_NO_PERMITIDO'
+        throw error
+    }
+
+    const coincide = await bcrypt.compare(contrasenaAntigua, admin.contrasena)
+    if(!coincide){ // La contraseña antigua debe coincidir
+        const error = new Error('La contraseña antigua es incorrecta')
+        error.code = 'CONTRASENA_INCORRECTA'
+        throw error
+    }
+
+    if (contrasenaAntigua === contrasenaNueva) {
+        const error = new Error('La nueva contraseña debe ser diferente a la anterior')
+        error.code = 'CONTRASENA_INVALIDA'
+        throw error
+    }
+
+
+    admin.contrasena = await bcrypt.hash(contrasenaNueva, 10)
+    await admin.save()
 }
 
 module.exports = {
@@ -150,5 +201,6 @@ module.exports = {
     modificarAdministrador,
     listarAdmins,
     consultarAdmin,
-    cambiarPrimerContrasenaAdmin
+    cambiarPrimerContrasenaAdmin,
+    cambiarContrasena
 }

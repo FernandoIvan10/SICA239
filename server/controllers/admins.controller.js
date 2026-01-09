@@ -1,4 +1,10 @@
-const { agregarAdministrador, modificarAdministrador, listarAdmins } = require('../services/admins.service')
+const { 
+    agregarAdministrador, 
+    modificarAdministrador, 
+    listarAdmins,
+    consultarAdmin,
+    cambiarPrimerContrasenaAdmin
+} = require('../services/admins.service')
 
 // Función para agregar un nuevo administrador
 const crearAdmin = async(req, res) => {
@@ -92,28 +98,30 @@ const obtenerAdminPorID = async (req, res) => {
 }
 
 // Función para cambiar la contraseña por primera vez
-const primerCambioContrasenaAdministrador = async (req, res) => {
+const actualizarContrasenaDefaultAdmin = async (req, res) => {
     try {
-        const { nuevaContrasena } = req.body
+        const payload = {
+            contrasenaNueva: req.body.contrasenaNueva
+        }
         const { id } = req.params
 
-        if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
-            return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres.' })
-        }
-
-        const admin = await Administrador.findById(id)
-        if (!admin) { // Valida que el administrador exista
-            return res.status(404).json({ message: 'Administrador no encontrado.' })
-        }
-
-        admin.contrasena = await bcrypt.hash(nuevaContrasena, 10)
-        admin.requiereCambioContrasena = false
-        await admin.save()
-
-        return res.status(200).json({ message: 'Contraseña actualizada correctamente.' })
+        await cambiarPrimerContrasenaAdmin(id, payload)
+        return res.status(200).json({ message: 'Contraseña actualizada correctamente' })
     } catch (error) {
-        console.error('Error al cambiar contraseña del administrador:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch (error.code) {
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({ message: error.message })
+            case 'CONTRASENA_OBLIGATORIA':
+                return res.status(400).json({ message: error.message })
+            case 'CONTRASENA_INVALIDA':
+                return res.status(400).json({ message: error.message })
+            case 'ADMINISTRADOR_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+            case 'CAMBIO_NO_PERMITIDO':
+                return res.status(400).json({ message: error.message })
+            default:
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 
@@ -172,7 +180,7 @@ module.exports = {
     actualizarAdmin,
     obtenerAdmins,
     obtenerAdminPorID,
-    primerCambioContrasenaAdministrador,
+    actualizarContrasenaDefaultAdmin,
     cambiarContrasena,
     reiniciarContrasena
 }

@@ -6,7 +6,7 @@ const {
     actualizarAdmin,
     obtenerAdmins,
     obtenerAdminPorID,
-    primerCambioContrasenaAdministrador,
+    actualizarContrasenaDefaultAdmin,
     cambiarContrasena,
     reiniciarContrasena
 } = require('../controllers/admins.controller')
@@ -45,7 +45,7 @@ router.put( // Cambiar contraseña
 
 router.put( // Primer cambio de contraseña
     '/:id/contrasena/primer-cambio',
-    primerCambioContrasenaAdministrador
+    actualizarContrasenaDefaultAdmin
 )
 
 router.put( // Reiniciar contraseña

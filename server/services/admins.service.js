@@ -144,7 +144,7 @@ async function cambiarPrimerContrasenaAdmin(id, data) {
 }
 
 // Función para cambiar la contraseña
-async function cambiarContrasena(id, data) {
+async function cambiarContrasenaAdmin(id, data) {
     const { contrasenaAntigua, contrasenaNueva } = data
 
     if(!id){ // El ID es obligatorio
@@ -196,11 +196,32 @@ async function cambiarContrasena(id, data) {
     await admin.save()
 }
 
+// Función para restablecer la contraseña (Que la contraseña sea su RFC)
+async function forzarRestablecerContrasenaAdmin(id) {
+    if(!id){ // El ID es obligatorio
+        const error = new Error('ID del administrador es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const admin = await Administrador.findById(id)
+    if(!admin){ // El administrador debe existir
+        const error = new Error('Administrador no encontrado')
+        error.code = 'ADMINISTRADOR_NO_ENCONTRADO'
+        throw error
+    }
+
+    admin.contrasena = await bcrypt.hash(admin.rfc, 10)
+    admin.requiereCambioContrasena = true
+    await admin.save()
+}
+
 module.exports = {
     agregarAdministrador,
     modificarAdministrador,
     listarAdmins,
     consultarAdmin,
     cambiarPrimerContrasenaAdmin,
-    cambiarContrasena
+    cambiarContrasenaAdmin,
+    forzarRestablecerContrasenaAdmin
 }

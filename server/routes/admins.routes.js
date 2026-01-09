@@ -8,7 +8,7 @@ const {
     obtenerAdminPorID,
     actualizarContrasenaDefaultAdmin,
     actualizarContrasena,
-    reiniciarContrasena
+    restablecerContrasena
 } = require('../controllers/admins.controller')
 
 const router = express.Router()
@@ -51,7 +51,7 @@ router.put( // Primer cambio de contraseña
 router.put( // Reiniciar contraseña
     '/:id/contrasena/reinicio',
     verificarRol(['superadmin']),
-    reiniciarContrasena
+    restablecerContrasena
 )
 
 module.exports = router

@@ -4,7 +4,8 @@ const {
     listarAdmins,
     consultarAdmin,
     cambiarPrimerContrasenaAdmin,
-    cambiarContrasena
+    cambiarContrasenaAdmin,
+    forzarRestablecerContrasenaAdmin
 } = require('../services/admins.service')
 
 // Función para agregar un nuevo administrador
@@ -132,7 +133,7 @@ const actualizarContrasena = async (req, res) => {
         }
         const {id} = req.params
 
-        await cambiarContrasena(id, payload)
+        await cambiarContrasenaAdmin(id, payload)
         return res.status(200).json({ message: 'Contraseña cambiada' })
     }catch(error){
         switch (error.code) {
@@ -150,24 +151,22 @@ const actualizarContrasena = async (req, res) => {
     }
 }
 
-// Función para reiniciar la contraseña (Que la contraseña sea su RFC)
-const reiniciarContrasena = async (req, res) => {
+// Función para restablecer la contraseña (Que la contraseña sea su RFC)
+const restablecerContrasena = async (req, res) => {
     try{
         const {id} = req.params
         
-        const admin = await Administrador.findById(id)
-        if(!admin){ // Valida que el administrador exista
-            return res.status(404).json({ message: 'Administrador no encontrado.' })
-        }
-
-        admin.contrasena = await bcrypt.hash(admin.rfc, 10)
-        admin.requiereCambioContrasena = true
-        admin.save()
-        
-        return res.status(200).json({message: 'La contraseña ahora es el RFC del usuario.'})
+        await forzarRestablecerContrasenaAdmin(id)        
+        return res.status(200).json({message: 'La contraseña ahora es el RFC del usuario'})
     }catch(error){
-        console.error('Error al reiniciar la contraseña: ', error)
-        return res.status(500).json({message:"Error interno del servidor."})
+        switch (error.code) {
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({ message: error.message })
+            case 'ADMINISTRADOR_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+            default:
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 
@@ -178,5 +177,5 @@ module.exports = {
     obtenerAdminPorID,
     actualizarContrasenaDefaultAdmin,
     actualizarContrasena,
-    reiniciarContrasena
+    restablecerContrasena
 }

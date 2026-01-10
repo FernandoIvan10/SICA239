@@ -8,7 +8,6 @@ const {
     eliminarGrupo,
     migrarAlumnos
 } = require('../controllers/grupos.controller')
-const {obtenerAlumnosPorGrupo} = require('../controllers/alumnos.controller')
 
 const router = express.Router()
 
@@ -40,12 +39,6 @@ router.post( // Migrar alumnos entre grupos
     '/:id/migraciones',
     verificarRol(['superadmin', 'editor']),
     migrarAlumnos
-)
-
-router.get( // Obtener alumnos por grupo
-    '/:id/alumnos',
-    verificarRol(['superadmin', 'editor', 'lector']),
-    obtenerAlumnosPorGrupo
 )
 
 module.exports = router

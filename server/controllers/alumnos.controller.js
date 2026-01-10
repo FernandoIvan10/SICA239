@@ -107,29 +107,6 @@ const obtenerAlumnoPorID = async (req, res) => {
     }
 }
 
-const obtenerAlumnosPorGrupo = async (req, res) => {
-    try {
-        const { grupoId } = req.params
-        if (!grupoId) return res.status(400).json({ message: 'Se requiere el ID del grupo.' })
-
-        // Alumnos con el grupo como grupo principal
-        const alumnosGrupo = await Alumno.find({ grupoId, activo: true }, '-contrasena')
-
-        // Alumnos que recursan materias en ese grupo, pero que no pertenecen al grupo
-        const alumnosRecursando = await Alumno.find({ 
-            'materiasRecursadas.grupo': grupoId,
-            grupoId: { $ne: grupoId },
-            activo: true
-        }, '-contrasena')
-
-        const alumnos = [...alumnosGrupo, ...alumnosRecursando]
-        return res.status(200).json(alumnos)
-    } catch (error) {
-        console.error('Error al obtener alumnos por grupo:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
-    }
-}
-
 // Función para cambiar la contraseña por primera vez
 const primerCambioContrasenaAlumno = async (req, res) => {
     try {
@@ -232,7 +209,6 @@ module.exports = {
     actualizarAlumno, 
     obtenerAlumnos, 
     obtenerAlumnoPorID, 
-    obtenerAlumnosPorGrupo, 
     primerCambioContrasenaAlumno, 
     cambiarContrasena,
     reiniciarContrasena,

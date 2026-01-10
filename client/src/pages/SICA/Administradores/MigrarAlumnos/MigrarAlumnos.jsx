@@ -52,7 +52,7 @@ export default function MigrarAlumnos() {
 
     useEffect(() => { // Se obtienen los alumnos del grupo seleccionado
         if(grupoOrigen){
-            fetch(`http://localhost:3000/api/grupos/${grupoOrigen}/alumnos`, {
+            fetch(`http://localhost:3000/api/alumnos?grupo=${grupoOrigen}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

@@ -54,7 +54,7 @@ export default function SubirCalificaciones(){
      
     useEffect(()=>{ // Se obtienen los alumnos y materias del grupo seleccionado
         if(grupoSeleccionado){
-            fetch(`http://localhost:3000/api/grupos/${grupoSeleccionado}/alumnos`, { // Obtener los alumnos del backend
+            fetch(`http://localhost:3000/api/alumnos?grupo=${grupoSeleccionado}`, { // Obtener los alumnos del backend
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

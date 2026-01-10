@@ -1,4 +1,7 @@
-const {agregarAlumno} = require('../services/alumnos.service')
+const {
+    agregarAlumno,
+    modificarAlumno
+} = require('../services/alumnos.service')
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
 const Calificacion = require('../models/calificacion.model')
@@ -35,84 +38,37 @@ const crearAlumno = async (req, res) => {
 }
 
 // Función para modificar un alumno
-const modificarAlumno = async (req, res) => {
+const actualizarAlumno = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        const { nombre, apellido, grupoNombre, materiasRecursadas } = req.body;
-
-        // Valida que el ID sea proporcionado
-        if (!id) {
-            return res.status(400).json({ message: 'El ID del alumno es obligatorio.' })
+        const { id } = req.params
+        const payload = {
+            nombre: req.body.nombre,
+            apellido: req.body.apellido,
+            grupoNombre: req.body.grupoNombre,
+            materiasRecursadas: req.body.materiasRecursadas
         }
 
-        // Valida que el alumno exista
-        const alumnoExistente = await Alumno.findById(id)
-        if (!alumnoExistente) {
-            return res.status(404).json({ message: 'Alumno no encontrado.' })
-        }
-
-        // Actualiza los campos proporcionados
-        const actualizaciones = {}
-        if (nombre) actualizaciones.nombre = nombre
-        if (apellido) actualizaciones.apellido = apellido
-        if (grupoNombre) {
-            // Se valida que el nuevo grupo exista
-            const grupoExistente = await Grupo.findOne({ nombre: grupoNombre })
-            if (!grupoExistente) {
-                return res.status(404).json({ message: 'El grupo especificado no existe.' })
-            }
-            // Valida que el alumno no tenga calificaciones en el grupo anterior
-            if (alumnoExistente.grupoId.toString() !== grupoExistente._id.toString()) {
-                const tieneCalificaciones = await Calificacion.exists({
-                    alumnoId: alumnoExistente._id,
-                    grupoId: alumnoExistente.grupoId
-                })
-                if (tieneCalificaciones) {
-                    return res.status(400).json({
-                        message: 'No se puede cambiar el grupo del alumno porque tiene calificaciones registradas en su grupo actual.'
-                    })
-                }
-            }
-            if (materiasRecursadas) {
-                // Se detectan cuáles materias recursadas han cambiado
-                const actuales = alumnoExistente.materiasRecursadas.map(mr =>
-                    `${mr.materia.toString()}-${mr.grupo.toString()}`
-                )
-                const nuevas = materiasRecursadas.map(mr =>
-                    `${mr.materia}-${mr.grupo}`
-                )
-                const eliminadas = actuales.filter(mr => !nuevas.includes(mr))
-                // Se valida que las materias eliminadas no tengan calificaciones
-                for (const mr of eliminadas) {
-                    const [materiaId, grupoId] = mr.split('-')
-                    const tieneCalificaciones = await Calificacion.exists({
-                        alumnoId: alumnoExistente._id,
-                        grupoId,
-                        materiaId
-                    })
-                    if (tieneCalificaciones) {
-                        return res.status(400).json({
-                            message: 'No se puede quitar o modificar una materia recursada con calificaciones registradas.'
-                        })
-                    }
-                }
-                actualizaciones.materiasRecursadas = materiasRecursadas
-            }
-
-            actualizaciones.grupoId = grupoExistente._id
-        }
-
-        // Se actualiza el alumno
-        const alumnoActualizado = await Alumno.findByIdAndUpdate(id, actualizaciones, { new: true })
+        const alumnoActualizado = await modificarAlumno(id, payload)
 
         return res.status(200).json({
-            message: 'Alumno actualizado exitosamente.',
+            message: 'Alumno modificado',
             alumno: alumnoActualizado,
         })
     } catch (error) {
-        console.error('Error al modificar el alumno:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch(error){
+            case 'ID_OBLIGATORIO':
+            case 'SIN_CAMBIOS':
+                return res.status(400).json({message: error.message})
+            case 'ALUMNO_NO_ENCONTRADO':
+            case 'GRUPO_NO_ENCONTRADO':
+                return res.status(404).json({message: error.message})
+            case 'CAMBIO_GRUPO_NO_PERMITIDO':
+            case 'ELIMINACION_MATERIA_NO_PERMITIDA':
+                return res.status(409).json({message: error.message})
+            default:
+                return res.status(500).json({message: 'Error interno del servidor'})
+
+        }
     }
 }
 
@@ -294,7 +250,7 @@ const cambiarEstado = async (req, res) => {
 
 module.exports = {
     crearAlumno, 
-    modificarAlumno, 
+    actualizarAlumno, 
     listarAlumnos, 
     obtenerAlumnoPorID, 
     obtenerAlumnosPorGrupo, 

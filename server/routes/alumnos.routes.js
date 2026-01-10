@@ -3,7 +3,7 @@ const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const {
     crearAlumno,
-    modificarAlumno,
+    actualizarAlumno,
     listarAlumnos,
     obtenerAlumnoPorID,
     primerCambioContrasenaAlumno,
@@ -34,7 +34,7 @@ router.
         route('/:id')
             .put( // Modificar alumno
                 verificarRol(['superadmin', 'editor']),
-                modificarAlumno
+                actualizarAlumno
             )
             .get( // Obtener alumno
                 verificarRol(['superadmin', 'editor', 'lector']),

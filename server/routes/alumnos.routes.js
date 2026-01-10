@@ -6,7 +6,7 @@ const {
     actualizarAlumno,
     obtenerAlumnos,
     obtenerAlumnoPorID,
-    primerCambioContrasenaAlumno,
+    actualizarContrasenaDefaultAlumno,
     cambiarContrasena,
     reiniciarContrasena,
     cambiarEstado
@@ -48,7 +48,7 @@ router.put( // Cambiar contraseña
 
 router.put( // Primer cambio de contraseña
     '/:id/contrasena/primer-cambio',
-    primerCambioContrasenaAlumno
+    actualizarContrasenaDefaultAlumno
 )
 
 router.put( // Reiniciar contraseña

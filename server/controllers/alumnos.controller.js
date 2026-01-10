@@ -2,7 +2,8 @@ const {
     agregarAlumno,
     modificarAlumno,
     listarAlumnos,
-    consultarAlumno
+    consultarAlumno,
+    cambiarPrimerContrasena
 } = require('../services/alumnos.service')
 const bcrypt = require('bcrypt')
 
@@ -108,28 +109,27 @@ const obtenerAlumnoPorID = async (req, res) => {
 }
 
 // Función para cambiar la contraseña por primera vez
-const primerCambioContrasenaAlumno = async (req, res) => {
+const actualizarContrasenaDefaultAlumno = async (req, res) => {
     try {
-        const { nuevaContrasena } = req.body
         const { id } = req.params
-
-        if (!nuevaContrasena || nuevaContrasena.length < 6) { // Validaciones de la contraseña
-            return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres.' })
+        const payload = {
+            nuevaContrasena: req.body.nuevaContrasena
         }
 
-        const alumno = await Alumno.findById(id)
-        if (!alumno) { // Valida que el alumno exista
-            return res.status(404).json({ message: 'Alumno no encontrado.' })
-        }
-
-        alumno.contrasena = await bcrypt.hash(nuevaContrasena, 10)
-        alumno.requiereCambioContrasena = false
-        await alumno.save()
-
-        return res.status(200).json({ message: 'Contraseña actualizada correctamente.' })
+        await cambiarPrimerContrasena(id, payload)
+        return res.status(200).json({ message: 'Contraseña actualizada' })
     } catch (error) {
-        console.error('Error al cambiar contraseña del alumno:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch(error){
+            case 'ID_OBLIGATORIO':
+            case 'CONTRASENA_OBLIGATORIA':
+            case 'CONTRASENA_INVALIDA':
+            case 'CAMBIO_NO_PERMITIDO':
+                return res.status(400).json({message: error.message})
+            case 'ALUMNO_NO_ENCONTRADO':
+                return res.status(404).json({message: error.message})
+            default:
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
     }
 }
 
@@ -209,7 +209,7 @@ module.exports = {
     actualizarAlumno, 
     obtenerAlumnos, 
     obtenerAlumnoPorID, 
-    primerCambioContrasenaAlumno, 
+    actualizarContrasenaDefaultAlumno, 
     cambiarContrasena,
     reiniciarContrasena,
     cambiarEstado

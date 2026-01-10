@@ -191,9 +191,49 @@ async function consultarAlumno(id){
     return alumno
 }
 
+async function cambiarPrimerContrasena(id, data){
+    if(!id){ // El ID es obligatorio
+        const error = new Error('ID del alumno es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+    
+    const {nuevaContrasena} = data
+
+    if(!nuevaContrasena){ // La nueva contraseña es obligatoria
+        const error = new Error('La nueva contraseña es obligatoria')
+        error.code = 'CONTRASENA_OBLIGATORIA'
+        throw error
+    }
+
+    if(nuevaContrasena.length < 6){ // La contraseña debe tener al menos 6 caracteres
+        const error = new Error('La nueva contraseña debe tener al menos 6 caracteres')
+        error.code = 'CONTRASENA_INVALIDA'
+        throw error
+    }
+
+    const alumno = await Alumno.findById(id)
+    if(!alumno){ // El alumno debe existir
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+    
+    if (!alumno.requiereCambioContrasena) {
+        const error = new Error('El alumno ya realizó el primer cambio de contraseña')
+        error.code = 'CAMBIO_NO_PERMITIDO'
+        throw error
+    }
+    
+        alumno.contrasena = await bcrypt.hash(nuevaContrasena, 10)
+        alumno.requiereCambioContrasena = false
+        await alumno.save()
+}
+
 module.exports = {
     agregarAlumno,
     modificarAlumno,
     listarAlumnos,
-    consultarAlumno
+    consultarAlumno,
+    cambiarPrimerContrasena
 }

@@ -1,11 +1,9 @@
 const {
     agregarAlumno,
     modificarAlumno,
-    listarAlumnos
+    listarAlumnos,
+    consultarAlumno
 } = require('../services/alumnos.service')
-const Grupo = require('../models/grupo.model')
-const Materia = require('../models/materia.model')
-const Calificacion = require('../models/calificacion.model')
 const bcrypt = require('bcrypt')
 
 // Función para agregar un nuevo alumno
@@ -94,17 +92,18 @@ const obtenerAlumnoPorID = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const alumno = await Alumno.findById(id)
-            .select('-contrasena') // No enviar contraseña
-
-        if (!alumno) { // Se valida que el alumno exista
-            return res.status(404).json({ message: 'Alumno no encontrado.' })
-        }
+        const alumno = await consultarAlumno(id)
 
         return res.status(200).json(alumno)
     } catch (error) {
-        console.error('Error al obtener el alumno:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch(error){
+            case 'ID_OBLIGATORIO':
+                res.status(400).json({message: error.message})
+            case 'ALUMNO_NO_ENCONTRADO':
+                res.status(404).json({message: error.message})
+            default:
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
     }
 }
 

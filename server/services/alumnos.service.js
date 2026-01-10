@@ -1,4 +1,7 @@
 const Alumno = require('../models/alumno.model')
+const Grupo = require('../models/grupo.model')
+const Materia = require('../models/materia.model')
+const Calificacion = require('../models/calificacion.model')
 
 // Función para agregar un nuevo alumno
 async function agregarAlumno(data) {
@@ -143,6 +146,7 @@ async function modificarAlumno(id, data) {
     return await Alumno.findByIdAndUpdate(id, actualizaciones, { new: true })
 }
 
+// Función para listar todos los alumnos, con opciones de filtro
 async function listarAlumnos(data) {
     const {buscador, grupo, semestre} = data
     
@@ -168,8 +172,28 @@ async function listarAlumnos(data) {
 
 }
 
+// Función para consultar un alumno por ID
+async function consultarAlumno(id){
+    if(!id) { // El ID es obligatorio
+        const error = new Error('ID de alumno es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const alumno = await Alumno.findById(id)
+
+    if(!alumno) { // El alumno debe existir
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+
+    return alumno
+}
+
 module.exports = {
     agregarAlumno,
     modificarAlumno,
-    listarAlumnos
+    listarAlumnos,
+    consultarAlumno
 }

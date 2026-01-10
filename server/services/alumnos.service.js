@@ -191,6 +191,7 @@ async function consultarAlumno(id){
     return alumno
 }
 
+// Función para cambiar la contraseña por primera vez
 async function cambiarPrimerContrasena(id, data){
     if(!id){ // El ID es obligatorio
         const error = new Error('ID del alumno es obligatorio')
@@ -230,10 +231,64 @@ async function cambiarPrimerContrasena(id, data){
         await alumno.save()
 }
 
+// Función para cambiar la contraseña
+async function cambiarContrasenaAlumno(id, data){
+    if(!id){ // El ID es obligatorio
+        const error = new Error('ID del alumno es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const {contrasenaAntigua, contrasenaNueva} = data
+
+    if(!contrasenaAntigua || !contrasenaNueva){ // Ambas contraseñas son obligatorias
+        const error = new Error('Se requieren ambas contraseñas')
+        error.code = 'CONTRASENA_OBLIGATORIA'
+        throw error
+    }
+
+    if(contrasenaNueva.length < 6){ // La nueva contraseña debe tener al menos 6 caracteres
+            const error = new Error('La nueva contraseña debe tener al menos 6 caracteres')
+            error.code = 'CONTRASENA_INVALIDA'
+            throw error
+        }
+    
+        const alumno = await Alumno.findById(id)
+        if(!alumno){ // El alumno debe existir
+            const error = new Error('Alumno no encontrado')
+            error.code = 'ALUMNO_NO_ENCONTRADO'
+            throw error
+        }
+    
+        if(alumno.requiereCambioContrasena){ // No se permite cambiar la contraseña si es el primer cambio
+            const error = new Error('El alumno debe realizar el primer cambio de contraseña')
+            error.code = 'CAMBIO_NO_PERMITIDO'
+            throw error
+        }
+    
+        const coincide = await bcrypt.compare(contrasenaAntigua, alumno.contrasena)
+        if(!coincide){ // La contraseña antigua debe coincidir
+            const error = new Error('La contraseña antigua es incorrecta')
+            error.code = 'CONTRASENA_INCORRECTA'
+            throw error
+        }
+    
+        if (contrasenaAntigua === contrasenaNueva) {
+            const error = new Error('La nueva contraseña debe ser diferente a la anterior')
+            error.code = 'CONTRASENA_INVALIDA'
+            throw error
+        }
+    
+    
+        alumno.contrasena = await bcrypt.hash(contrasenaNueva, 10)
+        await alumno.save()
+}
+
 module.exports = {
     agregarAlumno,
     modificarAlumno,
     listarAlumnos,
     consultarAlumno,
-    cambiarPrimerContrasena
+    cambiarPrimerContrasena,
+    cambiarContrasenaAlumno
 }

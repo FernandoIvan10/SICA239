@@ -7,7 +7,7 @@ const {
     obtenerAlumnos,
     obtenerAlumnoPorID,
     actualizarContrasenaDefaultAlumno,
-    cambiarContrasena,
+    actualizarContrasena,
     reiniciarContrasena,
     cambiarEstado
 } = require('../controllers/alumnos.controller')
@@ -43,7 +43,7 @@ router.
 
 router.put( // Cambiar contraseña
     '/:id/contrasena',
-    cambiarContrasena
+    actualizarContrasena
 )
 
 router.put( // Primer cambio de contraseña

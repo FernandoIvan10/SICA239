@@ -3,7 +3,8 @@ const {
     modificarAlumno,
     listarAlumnos,
     consultarAlumno,
-    cambiarPrimerContrasena
+    cambiarPrimerContrasena,
+    cambiarContrasenaAlumno
 } = require('../services/alumnos.service')
 const bcrypt = require('bcrypt')
 
@@ -134,32 +135,29 @@ const actualizarContrasenaDefaultAlumno = async (req, res) => {
 }
 
 // Función para cambiar la contraseña
-const cambiarContrasena = async (req, res) =>{
+const actualizarContrasena = async (req, res) =>{
     try{
-        const {contrasenaAntigua, contrasenaNueva} = req.body
         const {id} = req.params
-
-        if(!contrasenaAntigua || !contrasenaNueva){ // Valida que se hayan ingresado las contraseñas
-            return res.status(400).json({message: 'Se requiere la antigua y la nueva contraseña.'})
+        const payload = {
+            contrasenaAntigua: req.body.contrasenaAntigua,
+            contrasenaNueva: req.body.contrasenaNueva
         }
 
-        const alumno = await Alumno.findById(id)
-        if (!alumno) { // Valida que el alumno exista
-            return res.status(404).json({ message: 'Alumno no encontrado.' })
-        }
-
-        const esValido = await bcrypt.compare(contrasenaAntigua, alumno.contrasena)
-        if(!esValido){ // Valida que la contraseña antigua coincida
-            return res.status(401).json({message: 'Contraseña incorrecta.'})
-        }
-
-        alumno.contrasena = await bcrypt.hash(contrasenaNueva, 10)
-        await alumno.save()
-
-        return res.status(200).json({ message: 'Contraseña cambiada correctamente.' })
+        await cambiarContrasenaAlumno(id, payload)
+        return res.status(200).json({ message: 'Contraseña cambiada' })
     }catch(error){
-        console.error('Error al cambiar la contraseña: ', error)
-        res.status(500).json({message: 'Error interno del servidor.'})
+        switch (error.code) {
+            case 'ID_OBLIGATORIO':
+            case 'CONTRASENA_OBLIGATORIA':
+            case 'CONTRASENA_INVALIDA':
+            case 'CAMBIO_NO_PERMITIDO':
+            case 'CONTRASENA_INCORRECTA':
+                return res.status(400).json({ message: error.message })
+            case 'ALUMNO_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+            default:
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 
@@ -210,7 +208,7 @@ module.exports = {
     obtenerAlumnos, 
     obtenerAlumnoPorID, 
     actualizarContrasenaDefaultAlumno, 
-    cambiarContrasena,
+    actualizarContrasena,
     reiniciarContrasena,
     cambiarEstado
 } // Se exporta el controlador 

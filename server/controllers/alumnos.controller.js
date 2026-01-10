@@ -1,6 +1,7 @@
 const {
     agregarAlumno,
-    modificarAlumno
+    modificarAlumno,
+    listarAlumnos
 } = require('../services/alumnos.service')
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
@@ -73,39 +74,18 @@ const actualizarAlumno = async (req, res) => {
 }
 
 // Función para listar todos los alumnos, con opciones de filtros
-const listarAlumnos = async (req, res) => {
+const obtenerAlumnos = async (req, res) => {
     try {
-        const { buscador, grupo, semestre } = req.query // Filtro por búsqueda
-
-        let query = {} // Consulta
-
-        // Búsqueda por texto
-        if (buscador) {
-            query.$or = [
-                { matricula: { $regex: buscador, $options: 'i' } }, // Búsqueda por matrícula
-                { nombre: { $regex: buscador, $options: 'i' } }, // Búsqueda por nombre
-                { apellido: { $regex: buscador, $options: 'i' } }, // Búsqueda por apellido                
-            ]
+        const payload = { // Filtros de búsqueda
+            buscador: req.query.buscador,
+            grupo: req.query.grupo,
+            semestre: req.query.semestre
         }
 
-        // Filtro por grupo
-        if (grupo) {
-            query.grupo = grupo
-        }
-
-        // Filtro por semestre
-        if (semestre){
-            query.semestre = semestre
-        }
-
-        // Se ejecuta la consulta
-        const alumnos = await Alumno.find(query)
-            .select('-contrasena') // Se excluye la contraseña en la consulta
-            .populate('grupoId', 'nombre') // Obtiene el nombre del grupo al que pertenece el alumno
+        const alumnos = await listarAlumnos(payload)    
         return res.status(200).json(alumnos)
     } catch (error) {
-        console.error('Error al listar alumnos:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        return res.status(500).json({ message: 'Error interno del servidor' })
     }
 }
 
@@ -251,7 +231,7 @@ const cambiarEstado = async (req, res) => {
 module.exports = {
     crearAlumno, 
     actualizarAlumno, 
-    listarAlumnos, 
+    obtenerAlumnos, 
     obtenerAlumnoPorID, 
     obtenerAlumnosPorGrupo, 
     primerCambioContrasenaAlumno, 

@@ -143,7 +143,33 @@ async function modificarAlumno(id, data) {
     return await Alumno.findByIdAndUpdate(id, actualizaciones, { new: true })
 }
 
+async function listarAlumnos(data) {
+    const {buscador, grupo, semestre} = data
+    
+    let query = {}
+    if (buscador) { // Búsqueda por texto
+        query.$or = [
+            { matricula: { $regex: buscador, $options: 'i' } },
+            { nombre: { $regex: buscador, $options: 'i' } },
+            { apellido: { $regex: buscador, $options: 'i' } },
+        ]
+    }
+    
+    if (grupo) { // Filtro por grupo
+        query.grupo = grupo
+    }
+    
+    if (semestre){ // Filtro por semestre
+        query.semestre = semestre
+    }
+
+    return await Alumno.find(query)
+        .populate('grupoId', 'nombre') // Obtiene el nombre del grupo al que pertenece el alumno
+
+}
+
 module.exports = {
     agregarAlumno,
-    modificarAlumno
+    modificarAlumno,
+    listarAlumnos
 }

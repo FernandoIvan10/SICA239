@@ -4,7 +4,7 @@ const verificarRol = require('../middleware/verificarRol')
 const {
     crearAlumno,
     actualizarAlumno,
-    listarAlumnos,
+    obtenerAlumnos,
     obtenerAlumnoPorID,
     primerCambioContrasenaAlumno,
     cambiarContrasena,
@@ -27,7 +27,7 @@ router.
         )
         .get( // Listar alumnos
             verificarRol(['superadmin', 'editor', 'lector']),
-            listarAlumnos
+            obtenerAlumnos
         )
 
 router.

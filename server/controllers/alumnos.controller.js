@@ -4,7 +4,8 @@ const {
     listarAlumnos,
     consultarAlumno,
     cambiarPrimerContrasena,
-    cambiarContrasenaAlumno
+    cambiarContrasenaAlumno,
+    forzarRestablecerContrasenaAlumno
 } = require('../services/alumnos.service')
 const bcrypt = require('bcrypt')
 
@@ -162,23 +163,21 @@ const actualizarContrasena = async (req, res) =>{
 }
 
 // Función para reiniciar la contraseña (Que la contraseña sea su Matrícula)
-const reiniciarContrasena = async (req, res) => {
+const restablecerContrasena = async (req, res) => {
     try{
         const {id} = req.params
         
-        const alumno = await Alumno.findById(id)
-        if(!alumno){ // Valida que el alumno exista
-            return res.status(404).json({ message: 'Alumno no encontrado.' })
-        }
-
-        alumno.contrasena = await bcrypt.hash(alumno.matricula, 10)
-        alumno.requiereCambioContrasena = true
-        alumno.save()
-        
-        return res.status(200).json({message: 'La contraseña ahora es la matrícula del usuario.'})
+        await forzarRestablecerContrasenaAlumno(id)    
+        return res.status(200).json({message: 'La contraseña ahora es la matrícula del usuario'})
     }catch(error){
-        console.error('Error al reiniciar la contraseña: ', error)
-        res.status(500).json({message: 'Error interno del servidor.'})
+        switch(error){
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({message: error.message})
+            case 'ALUMNO_NO_ENCONTRADO':
+                return res.status(404).json({message: error.message})
+            default:
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
     }
 }
 
@@ -209,6 +208,6 @@ module.exports = {
     obtenerAlumnoPorID, 
     actualizarContrasenaDefaultAlumno, 
     actualizarContrasena,
-    reiniciarContrasena,
+    restablecerContrasena,
     cambiarEstado
 } // Se exporta el controlador 

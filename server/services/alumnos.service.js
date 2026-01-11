@@ -284,11 +284,33 @@ async function cambiarContrasenaAlumno(id, data){
         await alumno.save()
 }
 
+// Función para restablecer la contraseña (Que la contraseña sea su Matrícula)
+async function forzarRestablecerContrasenaAlumno(id){
+    if(!id){ // El ID es obligatorio
+        const error = new Error('ID del alumno es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const alumno = await Alumno.findById(id)
+
+    if(!alumno){
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+
+    alumno.contrasena = await bcrypt.hash(alumno.matricula, 10)
+    alumno.requiereCambioContrasena = true
+    await alumno.save()
+}
+
 module.exports = {
     agregarAlumno,
     modificarAlumno,
     listarAlumnos,
     consultarAlumno,
     cambiarPrimerContrasena,
-    cambiarContrasenaAlumno
+    cambiarContrasenaAlumno,
+    forzarRestablecerContrasenaAlumno
 }

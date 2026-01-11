@@ -8,7 +8,7 @@ const {
     obtenerAlumnoPorID,
     actualizarContrasenaDefaultAlumno,
     actualizarContrasena,
-    reiniciarContrasena,
+    restablecerContrasena,
     cambiarEstado
 } = require('../controllers/alumnos.controller')
 const { obtenerCalificacionesPorID } = require('../controllers/calificaciones.controller')
@@ -54,7 +54,7 @@ router.put( // Primer cambio de contraseña
 router.put( // Reiniciar contraseña
     '/:id/contrasena/reinicio',
     verificarRol(['superadmin','editor']),
-    reiniciarContrasena
+    restablecerContrasena
 )
 
 router.put( // Cambiar estado (activo/inactivo)

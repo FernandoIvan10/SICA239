@@ -3,7 +3,7 @@ const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const {
     registrarCalificacion,
-    listarCalificaciones,
+    obtenerCalificaciones,
 } = require('../controllers/calificaciones.controller')
 
 const router = express.Router()
@@ -18,7 +18,7 @@ router
         )
         .get( // Listar calificaciones
             verificarRol(['superadmin','editor','lector']),
-            listarCalificaciones
+            obtenerCalificaciones
         )
 
 module.exports = router

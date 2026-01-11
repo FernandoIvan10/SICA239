@@ -65,6 +65,25 @@ async function capturarCalificacion(data){
     await calificacion.save()
 }
 
+// Función para listar todas las calificaciones, con opciones de filtros
+async function listarCalificaciones(data){
+    const {alumnoId, materiaId, grupoId} = data
+
+    // Se aplican los filtros en caso de que existan
+    const query = {}
+    if (grupoId) query.grupoId = grupoId
+    if (alumnoId) query.alumnoId = alumnoId
+    if (materiaId) query.materiaId = materiaId
+
+    // Realiza la consulta con los filtros aplicados
+    return await Calificacion.find(query)
+        .populate('alumnoId', 'nombre apellido') // Incluye información del alumno
+        .populate('materiaId', 'nombre') // Incluye información de la materia
+        .populate('grupoId', 'nombre') // Incluye información del grupo
+        .exec()
+}
+
 module.exports = {
-    capturarCalificacion
+    capturarCalificacion,
+    listarCalificaciones
 }

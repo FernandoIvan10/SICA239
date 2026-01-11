@@ -1,4 +1,7 @@
-const { capturarCalificacion } = require("../services/calificaciones.service")
+const { 
+    capturarCalificacion,
+    listarCalificaciones
+ } = require("../services/calificaciones.service")
 
 // Función para capturar una nueva calificación
 const registrarCalificacion = async (req, res) => {
@@ -27,30 +30,19 @@ const registrarCalificacion = async (req, res) => {
 }
 
 // Función para listar todas las calificaciones, con opciones de filtros
-const listarCalificaciones = async (req, res) => {
+const obtenerCalificaciones = async (req, res) => {
     try {
-        const {alumnoId, materiaId, grupoId} = req.query
+        const payload = {
+            alumnoId: req.query.alumnoId,
+            materiaId: req.query.materiaId,
+            grupoId: req.query.grupoId
+        }
 
-        // Se aplican los filtros en caso de que existan
-        const query = {}
-        if (grupoId) query.grupoId = grupoId
-        if (alumnoId) query.alumnoId = alumnoId
-        if (materiaId) query.materiaId = materiaId
-
-        // Realiza la consulta con los filtros aplicados
-        const calificaciones = await Calificacion.find(query)
-            .populate('alumnoId', 'nombre apellido') // Incluye información del alumno
-            .populate('materiaId', 'nombre') // Incluye información de la materia
-            .populate('grupoId', 'nombre') // Incluye información del grupo
-            .exec()
-            
-        return res.status(200).json({
-            message: 'Calificaciones obtenidas exitosamente.',
-            calificaciones,
-        })
+        const calificaciones = await listarCalificaciones(payload)
+        return res.status(200).json({calificaciones})
     } catch (error) {
-        console.error('Error al listar las calificaciones:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        console.error(error)
+        return res.status(500).json({ message: 'Error interno del servidor' })
     }
 }
 
@@ -94,6 +86,6 @@ const obtenerCalificacionesPorID = async (req, res) => {
 
 module.exports = {
     registrarCalificacion,
-    listarCalificaciones,
+    obtenerCalificaciones,
     obtenerCalificacionesPorID
 }

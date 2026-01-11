@@ -9,7 +9,7 @@ const {
     actualizarContrasenaDefaultAlumno,
     actualizarContrasena,
     restablecerContrasena,
-    cambiarEstado
+    actualizarEstado
 } = require('../controllers/alumnos.controller')
 const { obtenerCalificacionesPorID } = require('../controllers/calificaciones.controller')
 const { obtenerHistorialAcademicoPorID } = require('../controllers/historialAcademico.controller')
@@ -60,7 +60,7 @@ router.put( // Reiniciar contraseña
 router.put( // Cambiar estado (activo/inactivo)
     '/:id/estado',
     verificarRol(['superadmin','editor']),
-    cambiarEstado
+    actualizarEstado
 )
 
 router.get( // Obtener calificaciones de un alumno

@@ -305,6 +305,25 @@ async function forzarRestablecerContrasenaAlumno(id){
     await alumno.save()
 }
 
+// Función para cambiar el estado (activo) de un alumno
+async function cambiarEstadoAlumno(id){
+    if(!id){ // El ID es obligatorio
+        const error = new Error('ID del alumno es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const alumno = await Alumno.findById(id)
+    if(!alumno){ // El alumno debe existir
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+
+    alumno.activo = !alumno.activo
+    await alumno.save()
+}
+
 module.exports = {
     agregarAlumno,
     modificarAlumno,
@@ -312,5 +331,6 @@ module.exports = {
     consultarAlumno,
     cambiarPrimerContrasena,
     cambiarContrasenaAlumno,
-    forzarRestablecerContrasenaAlumno
+    forzarRestablecerContrasenaAlumno,
+    cambiarEstadoAlumno
 }

@@ -5,7 +5,8 @@ const {
     consultarAlumno,
     cambiarPrimerContrasena,
     cambiarContrasenaAlumno,
-    forzarRestablecerContrasenaAlumno
+    forzarRestablecerContrasenaAlumno,
+    cambiarEstadoAlumno
 } = require('../services/alumnos.service')
 const bcrypt = require('bcrypt')
 
@@ -182,22 +183,21 @@ const restablecerContrasena = async (req, res) => {
 }
 
 // Función para cambiar el estado (activo) de un alumno
-const cambiarEstado = async (req, res) => {
+const actualizarEstado = async (req, res) => {
     try{
         const {id} = req.params
 
-        const alumno = await Alumno.findById(id)
-        if (!alumno) { // Valida que el alumno exista
-            return res.status(404).json({ message: 'Alumno no encontrado.' })
-        }
-
-        alumno.activo = !alumno.activo
-        await alumno.save()
-
-        return res.status(200).json({ message: 'Estado cambiado correctamente.' })
+        await cambiarEstadoAlumno(id)
+        return res.status(200).json({ message: 'Estado modificado' })
     }catch(error){
-        console.error('Error al cambiar el estado del alumno: ', error)
-        res.status(500).json({message: 'Error interno del servidor.'})
+        switch(error){
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({message: error.message})
+            case 'ALUMNO_NO_ENCONTRADO':
+                return res.status(404).json({message: error.message})
+            default:
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
     }
 }
 
@@ -209,5 +209,5 @@ module.exports = {
     actualizarContrasenaDefaultAlumno, 
     actualizarContrasena,
     restablecerContrasena,
-    cambiarEstado
+    actualizarEstado
 } // Se exporta el controlador 

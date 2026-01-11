@@ -1,6 +1,3 @@
-require('dotenv').config()
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
 const {autenticarUsuario} = require('../services/auth.service')
 
 // Función que valida el inicio de sesión

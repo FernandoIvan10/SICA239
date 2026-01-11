@@ -1,5 +1,8 @@
+require('dotenv').config()
 const Alumno = require('../models/alumno.model')
 const Administrador = require('../models/administrador.model')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 async function autenticarUsuario(data){
     const {tipoUsuario, usuario, contrasena} = data

@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const {loginController} = require('../controllers/auth.controller')
+const {iniciarSesion} = require('../controllers/auth.controller')
 
-router.post('/login', loginController) // Inicio de sesión
+router.post('/login', iniciarSesion)
 
 module.exports = router

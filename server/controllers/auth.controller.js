@@ -1,61 +1,32 @@
-// imports
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
-const Alumno = require('../models/alumno.model')
-const Administrador = require('../models/administrador.model')
 const bcrypt = require('bcrypt')
+const {autenticarUsuario} = require('../services/auth.service')
 
 // Función que valida el inicio de sesión
-const loginController = async(req,res)=>{
+const iniciarSesion = async(req,res)=>{
     try{
-        const {tipoUsuario, usuario, contrasena} = req.body // Datos del formulario de login
-
-        let user = null
-        let rol = null
-
-        // Se valida y asigna el usuario que intenta ingresar
-        if(tipoUsuario==='alumno'){
-            user = await Alumno.findOne({matricula:usuario})
-            if(!user){ // Se valida que el usuario exista
-                return res.status(404).json({message: 'Usuario no encontrado'})
-            }
-            rol = 'alumno'
-        }else if(tipoUsuario==='administrador'){
-            user = await Administrador.findOne({rfc:usuario})
-            if(!user){ // Se valida que el usuario exista
-                return res.status(404).json({message: 'Usuario no encontrado'})
-            }
-            rol = user.rol
-        }else{
-            return res.status(400).json({message:'Tipo de usuario invalido'})
+        const payload = {
+            tipoUsuario: req.body.tipoUsuario,
+            usuario: req.body.usuario,
+            contrasena: req.body.contrasena
         }
 
-        // Se valida que la contraseña sea correcta
-        const esValido = await bcrypt.compare(contrasena, user.contrasena)
-        if(!esValido){
-            return res.status(401).json({message: 'Contraseña incorrecta'})
-        }
-
-        // Se genera un token de sesión
-        const token = jwt.sign(
-            {id:user._id, rol, nombre: user.nombre, apellido: user.apellido, requiereCambioContrasena: user.requiereCambioContrasena},
-            process.env.CLAVE_SECRETA,
-            {expiresIn:'3h'} // Tiempo de expiración
-        )
-        
-        // Respuesta exitosa
-        res.status(200).json({
-            message: 'Inicio de sesión exitoso',
-            token,
-            rol,
-            nombre: user.nombre,
-            apellido: user.apellido,
-            requiereCambioContrasena: user.requiereCambioContrasena
-        }) 
+        const resultado = await autenticarUsuario(payload)
+        res.status(200).json({resultado}) 
     }catch(error){
-        console.error('Error al iniciar sesión', error)
-        res.status(500).json({message: 'Error interno del servidor.'})
+        switch (error.code) {
+            case 'TIPO_USUARIO_INVALIDO':
+                return res.status(400).json({ message: error.message })
+            case 'CREDENCIALES_INVALIDAS':
+                return res.status(401).json({ message: error.message })
+            case 'USUARIO_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+            default:
+                console.error(error)
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 
-module.exports = {loginController} // Se exporta el controlador
+module.exports = {iniciarSesion}

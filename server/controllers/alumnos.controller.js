@@ -8,7 +8,6 @@ const {
     forzarRestablecerContrasenaAlumno,
     cambiarEstadoAlumno
 } = require('../services/alumnos.service')
-const bcrypt = require('bcrypt')
 
 // Función para agregar un nuevo alumno
 const crearAlumno = async (req, res) => {
@@ -29,12 +28,16 @@ const crearAlumno = async (req, res) => {
             case 'CAMPOS_FALTANTES':
             case 'FORMATO_INVALIDO_MATERIAS_RECURSADAS':
                 return res.status(400).json({ message: error.message })
+
             case 'GRUPO_NO_ENCONTRADO':
             case 'MATERIA_GRUPO_NO_ENCONTRADO':
                 return res.status(404).json({ message: error.message })
+
             case 'MATRICULA_DUPLICADA':
                 return res.status(409).json({ message: error.message })
+
             default:
+                console.error(error)
                 return res.status(500).json({ message: 'Error interno del servidor' })
         }
     }
@@ -58,17 +61,21 @@ const actualizarAlumno = async (req, res) => {
             alumno: alumnoActualizado,
         })
     } catch (error) {
-        switch(error){
+        switch(error.code){
             case 'ID_OBLIGATORIO':
             case 'SIN_CAMBIOS':
                 return res.status(400).json({message: error.message})
+
             case 'ALUMNO_NO_ENCONTRADO':
             case 'GRUPO_NO_ENCONTRADO':
                 return res.status(404).json({message: error.message})
+
             case 'CAMBIO_GRUPO_NO_PERMITIDO':
             case 'ELIMINACION_MATERIA_NO_PERMITIDA':
                 return res.status(409).json({message: error.message})
+
             default:
+                console.error(error)
                 return res.status(500).json({message: 'Error interno del servidor'})
 
         }
@@ -87,6 +94,7 @@ const obtenerAlumnos = async (req, res) => {
         const alumnos = await listarAlumnos(payload)    
         return res.status(200).json(alumnos)
     } catch (error) {
+        console.error(error)
         return res.status(500).json({ message: 'Error interno del servidor' })
     }
 }
@@ -100,12 +108,15 @@ const obtenerAlumnoPorID = async (req, res) => {
 
         return res.status(200).json(alumno)
     } catch (error) {
-        switch(error){
+        switch(error.code){
             case 'ID_OBLIGATORIO':
                 res.status(400).json({message: error.message})
+
             case 'ALUMNO_NO_ENCONTRADO':
                 res.status(404).json({message: error.message})
+
             default:
+                console.error(error)
                 return res.status(500).json({message: 'Error interno del servidor'})
         }
     }
@@ -122,15 +133,18 @@ const actualizarContrasenaDefaultAlumno = async (req, res) => {
         await cambiarPrimerContrasena(id, payload)
         return res.status(200).json({ message: 'Contraseña actualizada' })
     } catch (error) {
-        switch(error){
+        switch(error.code){
             case 'ID_OBLIGATORIO':
             case 'CONTRASENA_OBLIGATORIA':
             case 'CONTRASENA_INVALIDA':
             case 'CAMBIO_NO_PERMITIDO':
                 return res.status(400).json({message: error.message})
+
             case 'ALUMNO_NO_ENCONTRADO':
                 return res.status(404).json({message: error.message})
+
             default:
+                console.error(error)
                 return res.status(500).json({message: 'Error interno del servidor'})
         }
     }
@@ -155,9 +169,12 @@ const actualizarContrasena = async (req, res) =>{
             case 'CAMBIO_NO_PERMITIDO':
             case 'CONTRASENA_INCORRECTA':
                 return res.status(400).json({ message: error.message })
+
             case 'ALUMNO_NO_ENCONTRADO':
                 return res.status(404).json({ message: error.message })
+
             default:
+                console.error(error)
                 return res.status(500).json({ message: 'Error interno del servidor' })
         }
     }
@@ -171,12 +188,15 @@ const restablecerContrasena = async (req, res) => {
         await forzarRestablecerContrasenaAlumno(id)    
         return res.status(200).json({message: 'La contraseña ahora es la matrícula del usuario'})
     }catch(error){
-        switch(error){
+        switch(error.code){
             case 'ID_OBLIGATORIO':
                 return res.status(400).json({message: error.message})
+
             case 'ALUMNO_NO_ENCONTRADO':
                 return res.status(404).json({message: error.message})
+
             default:
+                console.error(error)
                 return res.status(500).json({message: 'Error interno del servidor'})
         }
     }
@@ -190,12 +210,15 @@ const actualizarEstado = async (req, res) => {
         await cambiarEstadoAlumno(id)
         return res.status(200).json({ message: 'Estado modificado' })
     }catch(error){
-        switch(error){
+        switch(error.code){
             case 'ID_OBLIGATORIO':
                 return res.status(400).json({message: error.message})
+
             case 'ALUMNO_NO_ENCONTRADO':
                 return res.status(404).json({message: error.message})
+
             default:
+                console.error(error)
                 return res.status(500).json({message: 'Error interno del servidor'})
         }
     }

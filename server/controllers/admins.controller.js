@@ -28,7 +28,7 @@ const crearAdmin = async(req, res) => {
             
             case 'RFC_DUPLICADO':
                 return res.status(409).json({message: error.message})
-            
+
             default:
                 console.error(error)
                 return res.status(500).json({message: 'Error interno del servidor'})
@@ -51,11 +51,11 @@ const actualizarAdmin = async (req, res) => {
         return res.status(200).json({ message: 'Administrador modificado' })
     } catch (error) {
         switch (error.code) {
-            case 'ADMINISTRADOR_NO_ENCONTRADO':
-                return res.status(404).json({ message: error.message })
-            
             case 'SIN_CAMBIOS':
                 return res.status(400).json({ message: error.message })
+            
+            case 'ADMINISTRADOR_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
             
             default:
                 console.error(error)
@@ -75,6 +75,7 @@ const obtenerAdmins = async (req, res) => {
         const admins = await listarAdmins(payload)
         return res.status(200).json(admins)
     } catch (error) {
+        console.error(error)
         return res.status(500).json({ message: 'Error interno del servidor' })
     }
 }
@@ -91,9 +92,12 @@ const obtenerAdminPorID = async (req, res) => {
         switch (error.code) {
             case 'ID_OBLIGATORIO':
                 return res.status(400).json({ message: error.message })
+
             case 'ADMINISTRADOR_NO_ENCONTRADO':
                 return res.status(404).json({ message: error.message })
+
             default:
+                console.error(error)
                 return res.status(500).json({ message: 'Error interno del servidor' })
         }
     }
@@ -116,9 +120,12 @@ const actualizarContrasenaDefaultAdmin = async (req, res) => {
             case 'CONTRASENA_INVALIDA':
             case 'CAMBIO_NO_PERMITIDO':
                 return res.status(400).json({ message: error.message })
+
             case 'ADMINISTRADOR_NO_ENCONTRADO':
                 return res.status(404).json({ message: error.message })
+
             default:
+                console.error(error)
                 return res.status(500).json({ message: 'Error interno del servidor' })
         }
     }
@@ -143,9 +150,12 @@ const actualizarContrasena = async (req, res) => {
             case 'CAMBIO_NO_PERMITIDO':
             case 'CONTRASENA_INCORRECTA':
                 return res.status(400).json({ message: error.message })
+
             case 'ADMINISTRADOR_NO_ENCONTRADO':
                 return res.status(404).json({ message: error.message })
+
             default:
+                console.error(error)
                 return res.status(500).json({ message: 'Error interno del servidor' })
         }
     }
@@ -162,9 +172,12 @@ const restablecerContrasena = async (req, res) => {
         switch (error.code) {
             case 'ID_OBLIGATORIO':
                 return res.status(400).json({ message: error.message })
+
             case 'ADMINISTRADOR_NO_ENCONTRADO':
                 return res.status(404).json({ message: error.message })
+
             default:
+                console.error(error)
                 return res.status(500).json({ message: 'Error interno del servidor' })
         }
     }

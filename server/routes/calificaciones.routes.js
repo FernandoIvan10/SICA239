@@ -2,7 +2,7 @@ const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const {
-    agregarCalificacion,
+    registrarCalificacion,
     listarCalificaciones,
 } = require('../controllers/calificaciones.controller')
 
@@ -14,7 +14,7 @@ router
     .route('/')
         .post( // Agregar calificaciones
             verificarRol(['superadmin', 'editor']),
-            agregarCalificacion
+            registrarCalificacion
         )
         .get( // Listar calificaciones
             verificarRol(['superadmin','editor','lector']),

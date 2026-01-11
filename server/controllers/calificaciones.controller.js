@@ -1,52 +1,28 @@
-// imports
-const Alumno = require('../models/alumno.model')
-const Grupo = require('../models/grupo.model')
-const Materia = require('../models/materia.model')
-const Calificacion = require('../models/calificacion.model')
+const { capturarCalificacion } = require("../services/calificaciones.service")
 
-// Función para agregar una nueva calificación
-const agregarCalificacion = async (req, res) => {
+// Función para capturar una nueva calificación
+const registrarCalificacion = async (req, res) => {
     try {
-        const { alumnoId, materiaId, grupoId, parcial: parcialInput, nota } = req.body
-
-        // Validar que todos los campos obligatorios estén presentes
-        if (!alumnoId || !materiaId || !grupoId || !parcialInput || nota === undefined) {
-            return res.status(400).json({ message: 'Faltan campos obligatorios.' })
+        const payload = {
+            alumnoId: req.body.alumnoId,
+            materiaId: req.body.materiaId,
+            grupoId: req.body.grupoId,
+            parcial: req.body.parcialInput,
+            nota: req.body.nota
         }
 
-        let calificacion = await Calificacion.findOne({
-            alumnoId,
-            materiaId,
-            grupoId
-        })
-
-        if(!calificacion){
-            calificacion = new Calificacion({
-                alumnoId,
-                materiaId,
-                grupoId,
-                parciales: [{parcial: parcialInput, nota: Number(nota)}],
-                promedio: Number(nota)
-            })
-        }else{
-            const parcialExistente = calificacion.parciales.find(p => p.parcial === parcialInput)
-
-            if(parcialExistente){
-                parcialExistente.nota = Number(nota)
-            }else{
-                calificacion.parciales.push({parcial: parcialInput, nota: Number(nota)})
-            }
-
-            const suma = calificacion.parciales.reduce((total, p) => total + p.nota, 0)
-            calificacion.promedio = parseFloat((suma/calificacion.parciales.length)).toFixed((2))
-        }
-
-        await calificacion.save() // Guardar en la base de datos
-
-        return res.status(200).json({calificacion})
+        await capturarCalificacion(payload)
+        return res.status(200).json({message: 'Calificaciones registradas'})
     } catch (error) {
-        console.error('Error al agregar la calificación:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch(error.code){
+            case 'CAMPOS_FALTANTES':
+            case 'NOTA_INVALIDA':
+                return res.status(400).json({message: error.message})
+
+            default:
+                console.error(error)
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
     }
 }
 
@@ -116,4 +92,8 @@ const obtenerCalificacionesPorID = async (req, res) => {
     }
 }
 
-module.exports = {agregarCalificacion, listarCalificaciones, obtenerCalificacionesPorID} // Se exporta el controlador
+module.exports = {
+    registrarCalificacion,
+    listarCalificaciones,
+    obtenerCalificacionesPorID
+}

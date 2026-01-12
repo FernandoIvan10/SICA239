@@ -2,6 +2,7 @@ const Alumno = require('../models/alumno.model')
 const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
 const Calificacion = require('../models/calificacion.model')
+const Historial = require('../models/historialAcademico.model')
 const bcrypt = require('bcrypt')
 
 // Función para agregar un nuevo alumno
@@ -371,6 +372,33 @@ async function consultarCalificacionesAlumno(id){
     return {parciales, calificaciones: resultado}
 }
 
+// Función para obtener el historial académico de un alumno específico
+async function consultarHistorialAcademicoAlumno(id){
+    if(!id) { // El ID es obligatorio
+        const error = new Error('ID de alumno es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const existe = await Alumno.findById(id)
+    if(existe) { // El alumno debe existir
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+
+    const historial = await Historial.find({alumnoId: id})
+        .populate("calificaciones.materiaId") // También se obtienen las materias
+
+    if(!historial || historial.length===0){ // El alumno debe tener un historial académico
+        const error = new Error('Historial académico no encontrado')
+        error.code = 'HISTORIAL_ACADEMICO_NO_ENCONTRADO'
+        throw error
+    }
+
+    return historial
+}
+
 module.exports = {
     agregarAlumno,
     modificarAlumno,
@@ -380,5 +408,6 @@ module.exports = {
     cambiarContrasenaAlumno,
     forzarRestablecerContrasenaAlumno,
     cambiarEstadoAlumno,
-    consultarCalificacionesAlumno
+    consultarCalificacionesAlumno,
+    consultarHistorialAcademicoAlumno
 }

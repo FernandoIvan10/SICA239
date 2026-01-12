@@ -11,25 +11,6 @@ const cerrarSemestre = async (req, res) => {
     }
 }
 
-// Función para obtener el historial académico de un alumno específico
-const obtenerHistorialAcademicoPorID = async (req, res) => {
-    try{
-        const {id} = req.params
-
-        const historial = await Historial.find({alumnoId: id}).populate("calificaciones.materiaId")
-
-        if(!historial || historial.length===0){ // Valida que existan calificaciones en el historial
-            return res.status(404).json({message: "Calificaciones no encontradas"})
-        }
-
-        return res.status(200).json(historial)
-    }catch(error){
-        console.error("Error al obtener las calificaciones: ", error)
-        return res.status(500).json({message: "Error interno del servidor."})
-    }
-}
-
 module.exports = { 
-    cerrarSemestre,
-    obtenerHistorialAcademicoPorID
+    cerrarSemestre
 }

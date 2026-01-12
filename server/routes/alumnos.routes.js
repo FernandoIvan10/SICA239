@@ -10,9 +10,9 @@ const {
     actualizarContrasena,
     restablecerContrasena,
     actualizarEstado,
-    obtenerCalificacionesPorID
+    obtenerCalificacionesPorID,
+    obtenerHistorialAcademicoPorID
 } = require('../controllers/alumnos.controller')
-const { obtenerHistorialAcademicoPorID } = require('../controllers/historialAcademico.controller')
 const { obtenerHorariosPorID } = require('../controllers/horarios.controller')
 
 const router = express.Router()

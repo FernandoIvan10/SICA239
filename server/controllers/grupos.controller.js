@@ -1,7 +1,8 @@
 const {
     agregarGrupo,
     modificarGrupo,
-    listarGrupos
+    listarGrupos,
+    quitarGrupo
 } = require("../services/grupos.service")
 
 // Función para agregar un nuevo grupo
@@ -78,42 +79,23 @@ const eliminarGrupo = async (req, res) => {
     try {
         const { id } = req.params
 
-        if (!id) { // Valida que hayan enviado el id del grupo
-            return res.status(400).json({ message: 'El ID del grupo es obligatorio.' })
-        }
-
-        // Verifica que el grupo exista
-        const grupoExistente = await Grupo.findById(id);
-        if (!grupoExistente) {
-            return res.status(404).json({ message: 'Grupo no encontrado.' })
-        }
-
-        // No se puede eliminar el grupo si hay calificaciones capturadas
-        const calificacionesExistentes = await Calificacion.findOne({ grupoId: id })
-        if (calificacionesExistentes) {
-            return res.status(400).json({ message: 'No se puede eliminar el grupo porque tiene calificaciones registradas.' })
-        }
-
-        // No se puede eliminar el grupo si hay alumnos registrados en él
-        const alumnosExistentes = await Alumno.findOne({ grupoId: id })
-        const alumnosRecursando = await Alumno.findOne({'materiasRecursadas.grupo': id})
-        if (alumnosExistentes || alumnosRecursando) {
-            return res.status(400).json({ message: 'No se puede eliminar el grupo porque tiene alumnos registrados.' })
-        }
-
-        const horario = await Horario.findOne({ grupo: id })
-        if (horario) { // Si el grupo tiene un horario asignado este se elimina
-            await cloudinary.uploader.destroy(horario.publicId) // Elimina la imagen de Cloudinary
-            await Horario.findByIdAndDelete(horario._id) // Elimina el documento de la base de datos
-        }
-
-        // Elimina el grupo
-        await Grupo.findByIdAndDelete(id)
-
-        return res.status(200).json({ message: 'Grupo eliminado exitosamente.' })
+        await quitarGrupo(id)
+        return res.status(200).json({ message: 'Grupo eliminado' })
     } catch (error) {
-        console.error('Error al eliminar el grupo:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch(error.code){
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({message: error.message})
+
+            case 'GRUPO_NO_ENCONTRADO':
+                return res.status(404).json({message: error.message})
+
+            case 'ELIMINACION_NO_PERMITIDA':
+                return res.status(409).json({message: error.message})
+
+            default:
+                console.error(error)
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
     }
 }
 

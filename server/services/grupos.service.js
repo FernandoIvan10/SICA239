@@ -127,8 +127,48 @@ async function listarGrupos(){
         .exec()
 }
 
+// Función para eliminar un grupo
+async function quitarGrupo(id){
+    if(!id) { // El ID es obligatorio
+        const error = new Error('ID de grupo es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const grupo = await Grupo.findById(id)
+    if(!grupo){ // El grupo debe existir
+        const error = new Error('Grupo no encontrado')
+        error.code = 'GRUPO_NO_ENCONTRADO'
+        throw error
+    }
+
+    const calificaciones = await Calificacion.findOne({ grupoId: id })
+    if (calificaciones) { // No se puede eliminar el grupo si hay calificaciones capturadas
+        const error = new Error('No se puede eliminar el grupo porque tiene calificaciones registradas')
+        error.code = 'ELIMINACION_NO_PERMITIDA'
+        throw error
+    }
+
+    const alumno = await Alumno.findOne({ grupoId: id })
+    const alumnoRecursando = await Alumno.findOne({'materiasRecursadas.grupo': id})
+    if (alumno || alumnoRecursando) { // No se puede eliminar el grupo si hay alumnos registrados en él
+        const error = new Error('No se puede eliminar el grupo porque tiene alumnos registrados')
+        error.code = 'ELIMINACION_NO_PERMITIDA'
+        throw error
+    }
+    
+    const horario = await Horario.findOne({ grupo: id })
+    if (horario) { // Si el grupo tiene un horario asignado este se elimina
+        await cloudinary.uploader.destroy(horario.publicId) // Elimina la imagen de Cloudinary
+        await Horario.findByIdAndDelete(horario._id) // Elimina el documento de la base de datos
+    }
+    
+    await Grupo.findByIdAndDelete(id)
+}
+
 module.exports = {
     agregarGrupo,
     modificarGrupo,
-    listarGrupos
+    listarGrupos,
+    quitarGrupo
 }

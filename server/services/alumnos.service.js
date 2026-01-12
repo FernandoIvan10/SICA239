@@ -30,8 +30,8 @@ async function agregarAlumno(data) {
         throw error
     }
 
-    const grupoExiste = await Grupo.findOne({ nombre: grupoNombre })
-    if(!grupoExiste) {
+    const grupo = await Grupo.findOne({ nombre: grupoNombre })
+    if(!grupo) {
         const error = new Error('Grupo no encontrado')
         error.code = 'GRUPO_NO_ENCONTRADO'
         throw error
@@ -64,6 +64,7 @@ async function agregarAlumno(data) {
 
     return await Alumno.create({
         ...data,
+        grupoId: grupo._id,
         contrasena: hash
     })
 }

@@ -1,73 +1,29 @@
-// imports
-const Grupo = require('../models/grupo.model')
-const Materia = require('../models/materia.model')
-const Calificacion = require('../models/calificacion.model')
-const Horario = require('../models/horario.model')
-const Alumno = require('../models/alumno.model')
-const cloudinary = require('../config/cloudinary')
+const { agregarGrupo } = require("../services/grupos.service")
 
 // Función para agregar un nuevo grupo
-const agregarGrupo = async (req, res) => {
+const crearGrupo = async (req, res) => {
     try {
-        const { nombre, semestre, materias } = req.body
-
-        // Valida que el campo nombre no esté vacío
-        if (!nombre) {
-            return res.status(400).json({ message: 'El nombre del grupo es obligatorio.' })
+        const payload = {
+            nombre: req.body.nombre,
+            semestre: req.body.semestre,
+            materias: req.body.materias
         }
-
-        // Valida que el campo semestre no esté vacío
-        if (!semestre) {
-            return res.status(400).json({ message: 'El semestre del grupo es obligatorio.' })
-        }
-
-        // Valida que el grupo no exista
-        const existeGrupo = await Grupo.findOne({nombre})
-        if(existeGrupo){
-            return res.status(400).json({message:"El nombre de grupo ingresado ya se encuentra registrado en el sistema."})
-        }
-
-        // Verifica que las materias estén definidas en un arreglo
-        if (!materias || !Array.isArray(materias) || materias.length === 0) {
-            return res.status(400).json({ message: 'Debe proporcionar al menos una materia.' })
-        }
-
-        let materiasIds = []
-
-        for (const materia of materias) {
-            const materiaNombre = materia.nombre
-            if (!materiaNombre) { // Valida que el nombre de la materia no esté vacío
-                return res.status(400).json({ message: 'El nombre de cada materia es obligatorio.' })
-            }
-
-            // Valida que la materia no exista
-            let materiaExistente = await Materia.findOne({ nombre: materiaNombre })
-
-            if (!materiaExistente) {
-                // Si no existe, crea una nueva materia
-                const nuevaMateria = new Materia({
-                    nombre: materiaNombre,
-                    semestre: semestre,
-                })
-                await nuevaMateria.save()
-                materiaExistente = nuevaMateria
-            }
-            // Se agrega el ID de la materia a la lista
-            materiasIds.push(materiaExistente._id)
-        }
-
-        // Crear el grupo
-        const nuevoGrupo = new Grupo({
-            nombre,
-            semestre,
-            materias: materiasIds,
-        })
-
-        await nuevoGrupo.save() // Guarda el grupo
-        return res.status(201).json({ message: 'Grupo creado exitosamente.'})
+        
+        await agregarGrupo(payload)
+        return res.status(201).json({ message: 'Grupo creado'})
     } catch (error) {
-        console.error('Error al agregar el grupo:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch (error.code) {
+            case 'CAMPOS_FALTANTES':
+            case 'FORMATO_INVALIDO_MATERIAS':
+                return res.status(400).json({ message: error.message })
+
+            case 'NOMBRE_DUPLICADO':
+                return res.status(409).json({ message: error.message })
+
+            default:
+                console.error(error)
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 
@@ -224,4 +180,10 @@ const migrarAlumnos = async (req, res) => {
     }
 }
 
-module.exports = {agregarGrupo, modificarGrupo, listarGrupos, eliminarGrupo, migrarAlumnos} // Se exporta el controlador
+module.exports = {
+    crearGrupo,
+    modificarGrupo,
+    listarGrupos,
+    eliminarGrupo,
+    migrarAlumnos
+}

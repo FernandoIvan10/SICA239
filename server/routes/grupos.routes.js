@@ -2,7 +2,7 @@ const express = require('express')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const {
-    agregarGrupo,
+    crearGrupo,
     modificarGrupo,
     listarGrupos,
     eliminarGrupo,
@@ -17,7 +17,7 @@ router
     .route('/')
         .post( // Agregar grupo
             verificarRol(['superadmin', 'editor']),
-            agregarGrupo
+            crearGrupo
         )
         .get( // Listar grupos
             verificarRol(['superadmin','editor','lector']),

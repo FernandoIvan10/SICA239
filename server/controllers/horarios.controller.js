@@ -1,6 +1,7 @@
 const {
   subirHorario,
-  listarHorarios
+  listarHorarios,
+  quitarHorario
 } = require("../services/horarios.service")
 
 // Función para subir el horario de un grupo
@@ -39,24 +40,25 @@ const obtenerHorarios = async (req, res) => {
   }
 }
 
-// Función para eliminar un horario (imagen de Cloudinary)
+// Función para eliminar un horario
 const eliminarHorario = async (req, res) => {
-    try {
-        const { id } = req.params
+  try {
+    const { id } = req.params
 
-        if (!id) return res.status(400).json({ message: 'El ID del horario es obligatorio.' }) // Se valida que se proporcione un ID
+    await quitarHorario(id)
+    return res.status(200).json({ message: 'Horario eliminado' })
+  } catch (error) {
+    switch(error.code){
+      case 'ID_OBLIGATORIO':
+        return res.status(400).json({message: error.message})
 
-        // Buscar el horario en la base de datos
-        const horario = await Horario.findById(id);
-        if (!horario) return res.status(404).json({ message: 'Horario no encontrado.' }) // Se valida que el horario exista
-        await cloudinary.uploader.destroy(horario.publicId)
-        await Horario.findByIdAndDelete(id)
+      case 'HORARIO_NO_ENCONTRADO':
+        return res.status(404).json({message: error.message})
 
-        return res.status(200).json({ message: 'Horario eliminado correctamente.' })
-    } catch (error) {
-        console.error('Error al eliminar el horario:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+      default:
+        return res.status(500).json({message: 'Error interno del servidor'})
     }
+  }
 }
 
 // Función para obtener los horarios de un alumno
@@ -102,4 +104,9 @@ const obtenerHorariosPorID = async (req, res) => {
   }
 }
 
-module.exports = { crearHorario, eliminarHorario, obtenerHorarios, obtenerHorariosPorID }
+module.exports = { 
+  crearHorario,
+  eliminarHorario,
+  obtenerHorarios,
+  obtenerHorariosPorID
+}

@@ -53,7 +53,26 @@ async function listarHorarios(){
         .populate('grupo', 'nombre') // Se obtiene también el nombre del grupo
 }
 
+async function quitarHorario(id){
+    if(!id) { // El ID es obligatorio
+        const error = new Error('ID de grupo es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+    
+    const horario = await Horario.findById(id);
+    if(!horario){ // El horario debe existir
+        const error = new Error('Horario no encontrado')
+        error.code = 'HORARIO_NO_ENCONTRADO'
+        throw error
+    }
+    
+    await cloudinary.uploader.destroy(horario.publicId)
+    await Horario.findByIdAndDelete(id)
+}
+
 module.exports = {
     subirHorario,
-    listarHorarios
+    listarHorarios,
+    quitarHorario
 }

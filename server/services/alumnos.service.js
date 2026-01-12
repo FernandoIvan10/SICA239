@@ -325,6 +325,52 @@ async function cambiarEstadoAlumno(id){
     await alumno.save()
 }
 
+// Función para obtener las calificaciones de un alumno con su ID
+async function consultarCalificacionesAlumno(id){
+    if(!id){ // El ID es obligatorio
+        const error = new Error('ID del alumno es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const alumno = await Alumno.findById(id)
+    if(!alumno){ // El alumno debe existir
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+
+    const calificaciones = await Calificacion.find({alumnoId: id}).populate('materiaId')
+
+    if(!calificaciones || calificaciones.length === 0){
+        const error = new Error('Calificaciones no encontradas')
+        error.code = 'CALIFICACIONES_NO_ENCONTRADAS'
+        throw error
+    }
+
+    // Se les da un mejor formato a los datos
+    const parcialesSet = new Set()
+    calificaciones.forEach(cal => {
+        cal.parciales.forEach(p => parcialesSet.add(p.parcial))
+    })
+    const parciales = Array.from(parcialesSet)
+    const resultado = calificaciones.map(cal => {
+        const fila = {
+            materia: cal.materiaId?.nombre
+        }
+        parciales.forEach(nombre => {
+            fila[nombre] = ''
+        })
+        cal.parciales.forEach(p => {
+            fila[p.parcial] = p.nota
+        })
+        fila.promedio = cal.promedio
+        return fila
+    })
+
+    return {parciales, calificaciones: resultado}
+}
+
 module.exports = {
     agregarAlumno,
     modificarAlumno,
@@ -333,5 +379,6 @@ module.exports = {
     cambiarPrimerContrasena,
     cambiarContrasenaAlumno,
     forzarRestablecerContrasenaAlumno,
-    cambiarEstadoAlumno
+    cambiarEstadoAlumno,
+    consultarCalificacionesAlumno
 }

@@ -9,9 +9,9 @@ const {
     actualizarContrasenaDefaultAlumno,
     actualizarContrasena,
     restablecerContrasena,
-    actualizarEstado
+    actualizarEstado,
+    obtenerCalificacionesPorID
 } = require('../controllers/alumnos.controller')
-const { obtenerCalificacionesPorID } = require('../controllers/calificaciones.controller')
 const { obtenerHistorialAcademicoPorID } = require('../controllers/historialAcademico.controller')
 const { obtenerHorariosPorID } = require('../controllers/horarios.controller')
 

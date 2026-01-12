@@ -6,7 +6,8 @@ const {
     cambiarPrimerContrasena,
     cambiarContrasenaAlumno,
     forzarRestablecerContrasenaAlumno,
-    cambiarEstadoAlumno
+    cambiarEstadoAlumno,
+    consultarCalificacionesAlumno
 } = require('../services/alumnos.service')
 
 // Función para agregar un nuevo alumno
@@ -224,6 +225,29 @@ const actualizarEstado = async (req, res) => {
     }
 }
 
+// Función para obtener las calificaciones de un alumno con su ID
+const obtenerCalificacionesPorID = async (req, res) => {
+    try{
+        const {id} = req.params
+
+        const calificaciones = await consultarCalificacionesAlumno(id)
+        return res.status(200).json({calificaciones})
+    }catch(error){
+        switch(error.code){
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({message: error.message})
+
+            case 'ALUMNO_NO_ENCONTRADO':
+            case 'CALIFICACIONES_NO_ENCONTRADAS':
+                return res.status(404).json({message: error.message})
+
+            default:
+                console.error(error)
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
+    }
+}
+
 module.exports = {
     crearAlumno, 
     actualizarAlumno, 
@@ -232,5 +256,6 @@ module.exports = {
     actualizarContrasenaDefaultAlumno, 
     actualizarContrasena,
     restablecerContrasena,
-    actualizarEstado
-} // Se exporta el controlador 
+    actualizarEstado,
+    obtenerCalificacionesPorID
+} 

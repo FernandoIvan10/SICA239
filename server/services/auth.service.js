@@ -19,9 +19,23 @@ async function autenticarUsuario(data){
     // Se valida y asigna el usuario que intenta ingresar
     if(tipoUsuario==='alumno'){
         user = await Alumno.findOne({matricula:usuario})
+            .select('+contrasena') // Se necesita la contraseña
+
+        if(!user){ // El usuario debe existir
+            const error = new Error('Usuario no encontrado')
+            error.code = 'USUARIO_NO_ENCONTRADO'
+            throw error
+        }
         rol = 'alumno'
     }else if(tipoUsuario==='administrador'){
         user = await Administrador.findOne({rfc:usuario})
+            .select('+contrasena') // Se necesita la contraseña
+
+        if(!user){ // El usuario debe existir
+            const error = new Error('Usuario no encontrado')
+            error.code = 'USUARIO_NO_ENCONTRADO'
+            throw error
+        }
         rol = user.rol
     }else{ // El tipo de usuario debe ser válido
         const error = new Error('Tipo de usuario invalido')
@@ -29,17 +43,11 @@ async function autenticarUsuario(data){
         throw error
     }
 
-    if(!user){ // El usuario debe existir
-        const error = new Error('Usuario no encontrado')
-        error.code = 'USUARIO_NO_ENCONTRADO'
-        throw error
-    }
-
     // Se valida que la contraseña sea correcta
     const esValido = await bcrypt.compare(contrasena, user.contrasena)
     if(!esValido){
         const error = new Error('Contraseña incorrecta')
-        error.code('CREDENCIALES_INVALIDAS')
+        error.code = 'CREDENCIALES_INVALIDAS'
         throw error
     }
 
@@ -56,6 +64,7 @@ async function autenticarUsuario(data){
         rol,
         nombre: user.nombre,
         apellido: user.apellido,
+        tipoUsuario,
         requiereCambioContrasena: user.requiereCambioContrasena
     }
 }

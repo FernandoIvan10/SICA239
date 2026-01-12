@@ -10,7 +10,7 @@ const iniciarSesion = async(req,res)=>{
         }
 
         const resultado = await autenticarUsuario(payload)
-        res.status(200).json({resultado}) 
+        res.status(200).json(resultado) 
     }catch(error){
         switch (error.code) {
             case 'TIPO_USUARIO_INVALIDO':

@@ -2,7 +2,8 @@ const {
     agregarGrupo,
     modificarGrupo,
     listarGrupos,
-    quitarGrupo
+    quitarGrupo,
+    cambiarGrupoAlumnos
 } = require("../services/grupos.service")
 
 // Función para agregar un nuevo grupo
@@ -101,36 +102,28 @@ const eliminarGrupo = async (req, res) => {
 
 // Función para migrar alumnos de un grupo a otro
 const migrarAlumnos = async (req, res) => {
-    const grupoOrigen = req.params.id
-    const { grupoDestino, alumnos } = req.body
-
-    // Valida que se hayan enviado todos los parámetros
-    if (!grupoOrigen || !grupoDestino || !Array.isArray(alumnos) || alumnos.length === 0) { 
-        return res.status(400).json({ message: 'Faltan datos obligatorios.' })
-    }
-
     try {
-        // Verificar que los grupos existan
-        const origenExiste = await Grupo.findById(grupoOrigen)
-        const destinoExiste = await Grupo.findById(grupoDestino)
-
-        if (!origenExiste || !destinoExiste) {
-            return res.status(404).json({ message: 'Uno o ambos grupos especificados no existen.' })
+        const payload = {
+            grupoOrigen: req.params.id,
+            grupoDestino: req.body.grupoDestino,
+            alumnos: req.body.alumnos
         }
 
-        // Actualizar grupo de cada alumno
-        const resultados = await Alumno.updateMany(
-            { _id: { $in: alumnos } },
-            { $set: { grupoId: grupoDestino, materiasRecursadas: [] } },
-        )
-
-        return res.status(200).json({
-            message: `Migración completada. ${resultados.modifiedCount} alumno(s) actualizados.`,
-        })
-
+        const resultados = await cambiarGrupoAlumnos(payload)
+        return res.status(200).json({message: `Migración completada. ${resultados.modifiedCount} alumno(s) actualizados`,})
     } catch (error) {
-        console.error('Error al migrar alumnos:', error)
-        return res.status(500).json({ message: 'Error interno al migrar alumnos.' })
+        switch (error.code) {
+            case 'CAMPOS_FALTANTES':
+            case 'FORMATO_INVALIDO_ALUMNOS':
+                return res.status(400).json({ message: error.message })
+
+            case 'GRUPO_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+
+            default:
+                console.error(error)
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
     }
 }
 

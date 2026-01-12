@@ -166,9 +166,41 @@ async function quitarGrupo(id){
     await Grupo.findByIdAndDelete(id)
 }
 
+// Función para migrar alumnos de un grupo a otro
+async function cambiarGrupoAlumnos(data){
+    const {grupoOrigen, grupoDestino, alumnos} = data
+
+    if(!grupoOrigen || !grupoDestino || alumnos){
+        const error = new Error('Faltan campos obligatorios')
+        error.code = 'CAMPOS_FALTANTES'
+        throw error
+    }
+
+    if(!Array.isArray(alumnos)){
+        const error = new Error('Formato de alumnos inválido')
+        error.code = 'FORMATO_INVALIDO_ALUMNOS'
+        throw error
+    }
+
+    const origenExiste = await Grupo.findById(grupoOrigen)
+    const destinoExiste = await Grupo.findById(grupoDestino)
+
+    if (!origenExiste || !destinoExiste) {
+        const error = new Error('Grupo no encontrado')
+        error.code = 'GRUPO_NO_ENCONTRADO'
+        throw error
+    }
+
+    return await Alumno.updateMany(
+            { _id: { $in: alumnos } },
+            { $set: { grupoId: grupoDestino, materiasRecursadas: [] } },
+        )
+}
+
 module.exports = {
     agregarGrupo,
     modificarGrupo,
     listarGrupos,
-    quitarGrupo
+    quitarGrupo,
+    cambiarGrupoAlumnos
 }

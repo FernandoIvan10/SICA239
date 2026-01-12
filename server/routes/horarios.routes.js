@@ -3,7 +3,7 @@ const upload = require('../middleware/upload')
 const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const { 
-    subirHorario,
+    crearHorario,
     eliminarHorario,
     listarHorarios,
 } = require('../controllers/horarios.controller')
@@ -17,7 +17,7 @@ router
         .post( // Agregar horario
             verificarRol(['superadmin', 'editor']),
             upload.single('imagen'),
-            subirHorario
+            crearHorario
         )
         .get( // Listar horarios
             verificarRol(['superadmin','editor','lector']),

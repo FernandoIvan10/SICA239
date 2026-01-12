@@ -1,41 +1,27 @@
-const Horario = require('../models/horario.model')
-const Alumno = require('../models/alumno.model')
-const cloudinary = require('../config/cloudinary')
+const { subirHorario } = require("../services/horarios.service")
 
 // Función para subir el horario de un grupo
-const subirHorario = async (req, res) => {
+const crearHorario = async (req, res) => {
   try {
-    const { grupoId } = req.body
-    const id = grupoId
-    if (!id) return res.status(400).json({ message: 'El ID del grupo es obligatorio.' }) // Se valida que se proporcione un ID
-    if (!req.file) return res.status(400).json({ message: 'No se subió ninguna imagen' }) // Se valida que se suba una imagen
+    const payload = {
+      id : req.body.grupoId,
+      file : req.file
+    }
 
-    const resultado = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: 'horarios' },
-        (error, result) => {
-          if (error) return reject(error);
-          resolve(result)
-        }
-      )
-      uploadStream.end(req.file.buffer);
-    })
-
-    // Guardar en la base de datos
-    const nuevoHorario = new Horario({
-      grupo: id,
-      imagenUrl: resultado.secure_url,
-      publicId: resultado.public_id,
-    })
-
-    await nuevoHorario.save()
-    return res.status(201).json({ 
-      message: 'Horario subido exitosamente.',
-      horario: nuevoHorario
-    })
+    await subirHorario(payload)
+    return res.status(201).json({ message: 'Horario guardado' })
   } catch (error) {
-    console.error('Error al subir horario:', error)
-    return res.status(500).json({ message: 'Error interno del servidor.' })
+    switch(error.code){
+      case 'ID_OBLIGATORIO':
+      case 'IMAGEN_OBLIGATORIA':
+        return res.status(400).json({message: error.message})
+
+      case 'GRUPO_NO_ENCONTRADO':
+        return res.status(404).json({message: error.message})
+
+      default:
+        return res.status(500).json({message: 'Error interno del servidor'})
+    }
   }
 }
 
@@ -113,4 +99,4 @@ const obtenerHorariosPorID = async (req, res) => {
   }
 }
 
-module.exports = { subirHorario, eliminarHorario, listarHorarios, obtenerHorariosPorID }
+module.exports = { crearHorario, eliminarHorario, listarHorarios, obtenerHorariosPorID }

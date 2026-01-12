@@ -4,7 +4,7 @@ const verificarRol = require('../middleware/verificarRol')
 const {
     crearGrupo,
     actualizarGrupo,
-    listarGrupos,
+    obtenerGrupos,
     eliminarGrupo,
     migrarAlumnos
 } = require('../controllers/grupos.controller')
@@ -21,7 +21,7 @@ router
         )
         .get( // Listar grupos
             verificarRol(['superadmin','editor','lector']),
-            listarGrupos
+            obtenerGrupos
         )
 
 router

@@ -64,6 +64,7 @@ async function agregarGrupo(data){
     await nuevoGrupo.save()
 }
 
+// Función para modificar un grupo
 async function modificarGrupo(id, data){
     if(!id) { // El ID es obligatorio
         const error = new Error('ID de grupo es obligatorio')
@@ -119,7 +120,15 @@ async function modificarGrupo(id, data){
     await Grupo.findByIdAndUpdate(id, actualizaciones, { new: true })
 }
 
+// Función para listar todos los grupos
+async function listarGrupos(){
+    return await Grupo.find()
+        .populate('materias', 'nombre') //Se obtienen los nombres de las materias
+        .exec()
+}
+
 module.exports = {
     agregarGrupo,
-    modificarGrupo
+    modificarGrupo,
+    listarGrupos
 }

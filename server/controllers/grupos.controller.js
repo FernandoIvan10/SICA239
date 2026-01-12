@@ -1,6 +1,7 @@
 const {
     agregarGrupo,
-    modificarGrupo
+    modificarGrupo,
+    listarGrupos
 } = require("../services/grupos.service")
 
 // Función para agregar un nuevo grupo
@@ -62,19 +63,13 @@ const actualizarGrupo = async (req, res) => {
 }
 
 // Función para listar todos los grupos
-const listarGrupos = async (req, res) => {
+const obtenerGrupos = async (req, res) => {
     try {
-        // Consulta los grupos con sus datos
-        const grupos = await Grupo.find().populate('materias', 'nombre').exec()
-
-        // Retorna la lista de grupos
-        return res.status(200).json({
-            message: 'Grupos obtenidos exitosamente.',
-            grupos,
-        })
+        const grupos = await listarGrupos()
+        return res.status(200).json({grupos})
     } catch (error) {
-        console.error('Error al listar los grupos:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        console.error(error)
+        return res.status(500).json({ message: 'Error interno del servidor' })
     }
 }
 
@@ -160,7 +155,7 @@ const migrarAlumnos = async (req, res) => {
 module.exports = {
     crearGrupo,
     actualizarGrupo,
-    listarGrupos,
+    obtenerGrupos,
     eliminarGrupo,
     migrarAlumnos
 }

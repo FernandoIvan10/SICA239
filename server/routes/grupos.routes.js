@@ -3,7 +3,7 @@ const verificarToken = require('../middleware/verificarToken')
 const verificarRol = require('../middleware/verificarRol')
 const {
     crearGrupo,
-    modificarGrupo,
+    actualizarGrupo,
     listarGrupos,
     eliminarGrupo,
     migrarAlumnos
@@ -28,7 +28,7 @@ router
     .route('/:id')
         .put( // Modificar grupo
             verificarRol(['superadmin', 'editor']),
-            modificarGrupo
+            actualizarGrupo
         )
         .delete( // Eliminar grupo
             verificarRol(['superadmin', 'editor']),

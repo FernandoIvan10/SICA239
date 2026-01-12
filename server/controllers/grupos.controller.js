@@ -1,4 +1,7 @@
-const { agregarGrupo } = require("../services/grupos.service")
+const {
+    agregarGrupo,
+    modificarGrupo
+} = require("../services/grupos.service")
 
 // Función para agregar un nuevo grupo
 const crearGrupo = async (req, res) => {
@@ -28,59 +31,33 @@ const crearGrupo = async (req, res) => {
 }
 
 // Función para modificar un grupo
-const modificarGrupo = async (req, res) => {
+const actualizarGrupo = async (req, res) => {
     try {
         const { id } = req.params
-        const { nombre, semestre, materias } = req.body
-
-        // Valida que el ID sea proporcionado
-        if (!id) {
-            return res.status(400).json({ message: 'El ID del grupo es obligatorio.' })
-        }        
-
-        // Valida que el grupo exista
-        const grupoExistente = await Grupo.findById(id)
-        if (!grupoExistente) {
-            return res.status(404).json({ message: 'Grupo no encontrado.' })
+        payload = {
+            nombre: req.body.nombre,
+            semestre: req.body.semestre,
+            materias: req.body.materias
         }
 
-        const actualizaciones = {}
-
-        // Actualiza los campos proporcionados
-        if (nombre) actualizaciones.nombre = nombre
-        if (semestre) actualizaciones.semestre = semestre
-        if (materias && materias.length > 0) {
-            const calificacionesExistentes = await Calificacion.findOne({grupoId: id})
-            if(calificacionesExistentes){ // No se pueden modificar materias si hay calificaciones capturadas
-                return res.status(400).json({ message: 'No se pueden modificar las materias porque el grupo tiene calificaciones registradas.' })
-            }
-
-            let materiasIds = []
-
-            for (const materiaNombre of materias) {
-                // Se busca si la materia existe
-                let materiaExistente = await Materia.findOne({ nombre: materiaNombre })
-                // Si la materia no existe, entonces se crea
-                if (!materiaExistente) {
-                    const nuevaMateria = new Materia({ nombre: materiaNombre })
-                    await nuevaMateria.save()
-                    materiaExistente = nuevaMateria
-                }
-                materiasIds.push(materiaExistente._id)
-            }
-            actualizaciones.materias = materiasIds
-        }
-
-        // Actualizar el grupo en la base de datos
-        const grupoActualizado = await Grupo.findByIdAndUpdate(id, actualizaciones, { new: true })
-
-        return res.status(200).json({
-            message: 'Grupo actualizado exitosamente.',
-            grupo: grupoActualizado,
-        })
+        await modificarGrupo(id, payload)
+        return res.status(200).json({message: 'Grupo actualizado',})
     } catch (error) {
-        console.error('Error al modificar el grupo:', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
+        switch(error.code){
+            case 'ID_OBLIGATORIO':
+            case 'SIN_CAMBIOS':
+                return res.status(400).json({message: error.message})
+
+            case 'GRUPO_NO_ENCONTRADO':
+                return res.status(404).json({message: error.message})
+
+            case 'CAMBIO_MATERIAS_NO_PERMITIDO':
+                return res.status(409).json({message: error.message})
+
+            default:
+                console.error(error)
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
     }
 }
 
@@ -182,7 +159,7 @@ const migrarAlumnos = async (req, res) => {
 
 module.exports = {
     crearGrupo,
-    modificarGrupo,
+    actualizarGrupo,
     listarGrupos,
     eliminarGrupo,
     migrarAlumnos

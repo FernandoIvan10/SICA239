@@ -48,6 +48,12 @@ async function subirHorario(data){
     await nuevoHorario.save()
 }
 
+async function listarHorarios(){
+    await Horario.find()
+        .populate('grupo', 'nombre') // Se obtiene también el nombre del grupo
+}
+
 module.exports = {
-    subirHorario
+    subirHorario,
+    listarHorarios
 }

@@ -1,4 +1,7 @@
-const { subirHorario } = require("../services/horarios.service")
+const {
+  subirHorario,
+  listarHorarios
+} = require("../services/horarios.service")
 
 // Función para subir el horario de un grupo
 const crearHorario = async (req, res) => {
@@ -26,14 +29,14 @@ const crearHorario = async (req, res) => {
 }
 
 // Función para listar todos los horarios
-const listarHorarios = async (req, res) => {
-    try{
-        const horarios = await Horario.find().populate('grupo', 'nombre')
-        return res.status(200).json({horarios})
-    }catch (error) {
-        console.error('Error al obtener los horarios: ', error)
-        return res.status(500).json({ message: 'Error interno del servidor.' })
-    }
+const obtenerHorarios = async (req, res) => {
+  try{
+    const horarios = await listarHorarios()
+    return res.status(200).json({horarios})
+  }catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Error interno del servidor' })
+  }
 }
 
 // Función para eliminar un horario (imagen de Cloudinary)
@@ -99,4 +102,4 @@ const obtenerHorariosPorID = async (req, res) => {
   }
 }
 
-module.exports = { crearHorario, eliminarHorario, listarHorarios, obtenerHorariosPorID }
+module.exports = { crearHorario, eliminarHorario, obtenerHorarios, obtenerHorariosPorID }

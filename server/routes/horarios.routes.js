@@ -5,7 +5,7 @@ const verificarRol = require('../middleware/verificarRol')
 const { 
     crearHorario,
     eliminarHorario,
-    listarHorarios,
+    obtenerHorarios,
 } = require('../controllers/horarios.controller')
 
 const router = express.Router()
@@ -21,7 +21,7 @@ router
         )
         .get( // Listar horarios
             verificarRol(['superadmin','editor','lector']),
-            listarHorarios
+            obtenerHorarios
         )
 
 router.delete( // Eliminar horario

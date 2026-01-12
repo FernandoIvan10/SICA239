@@ -11,7 +11,7 @@ export default function PrimerCambioContrasena() {
   const token = localStorage.getItem('token') // Token de inicio de sesión
   const navigate = useNavigate() // Para redirigir al usuario
   const [rol, setRol] = useState(null) // Tipo de usuario
-  const [nuevaContrasena, setNuevaContrasena] = useState('')
+  const [contrasenaNueva, setContrasenaNueva] = useState('')
   const [mensaje, setMensaje] = useState('') // Mensaje de éxito o error
   const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga
 
@@ -31,7 +31,7 @@ export default function PrimerCambioContrasena() {
   const cambiarContrasena = async (e) => {
     e.preventDefault()
     setMensaje('')
-    if (nuevaContrasena.length < 6) {
+    if (contrasenaNueva.length < 6) {
       setMensaje('La contraseña debe tener al menos 6 caracteres.')
       return
     }
@@ -49,7 +49,7 @@ export default function PrimerCambioContrasena() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({ nuevaContrasena }),
+        body: JSON.stringify({ contrasenaNueva }),
       })
 
       const data = await res.json()
@@ -81,8 +81,8 @@ export default function PrimerCambioContrasena() {
               id="nuevaContrasena"
               className="formulario-cambiar-contrasena-input"
               type="password"
-              value={nuevaContrasena}
-              onChange={(e) => setNuevaContrasena(e.target.value)}
+              value={contrasenaNueva}
+              onChange={(e) => setContrasenaNueva(e.target.value)}
               minLength={6}
               required
               disabled={cargando}

@@ -130,7 +130,7 @@ const actualizarContrasenaDefaultAlumno = async (req, res) => {
     try {
         const { id } = req.params
         const payload = {
-            nuevaContrasena: req.body.nuevaContrasena
+            contrasenaNueva: req.body.contrasenaNueva
         }
 
         await cambiarPrimerContrasena(id, payload)

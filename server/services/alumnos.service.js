@@ -203,15 +203,15 @@ async function cambiarPrimerContrasena(id, data){
         throw error
     }
     
-    const {nuevaContrasena} = data
+    const {contrasenaNueva} = data
 
-    if(!nuevaContrasena){ // La nueva contraseña es obligatoria
+    if(!contrasenaNueva){ // La nueva contraseña es obligatoria
         const error = new Error('La nueva contraseña es obligatoria')
         error.code = 'CONTRASENA_OBLIGATORIA'
         throw error
     }
 
-    if(nuevaContrasena.length < 6){ // La contraseña debe tener al menos 6 caracteres
+    if(contrasenaNueva.length < 6){ // La contraseña debe tener al menos 6 caracteres
         const error = new Error('La nueva contraseña debe tener al menos 6 caracteres')
         error.code = 'CONTRASENA_INVALIDA'
         throw error
@@ -230,7 +230,7 @@ async function cambiarPrimerContrasena(id, data){
         throw error
     }
     
-        alumno.contrasena = await bcrypt.hash(nuevaContrasena, 10)
+        alumno.contrasena = await bcrypt.hash(contrasenaNueva, 10)
         alumno.requiereCambioContrasena = false
         await alumno.save()
 }

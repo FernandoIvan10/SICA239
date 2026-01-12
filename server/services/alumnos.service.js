@@ -3,6 +3,7 @@ const Grupo = require('../models/grupo.model')
 const Materia = require('../models/materia.model')
 const Calificacion = require('../models/calificacion.model')
 const Historial = require('../models/historialAcademico.model')
+const Horario = require('../models/horario.model')
 const bcrypt = require('bcrypt')
 
 // Función para agregar un nuevo alumno
@@ -399,6 +400,51 @@ async function consultarHistorialAcademicoAlumno(id){
     return historial
 }
 
+async function consultarHorariosAlumno(id){
+    if(!id) { // El ID es obligatorio
+        const error = new Error('ID de alumno es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const alumno = await Alumno.findById(id)
+        .populate('grupoId')
+        .populate('materiasRecursadas.grupo')
+
+    if(alumno) { // El alumno debe existir
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+
+    if (!alumno.activo) { // El alumno debe estar activo
+        const error = new Error('Alumno inactivo')
+        error.code = 'ALUMNO_INACTIVO'
+        throw error
+    }
+
+    const grupos = new Map()
+    
+    grupos.set(alumno.grupoId._id.toString(), alumno.grupoId.nombre)
+    
+    alumno.materiasRecursadas.forEach(({grupo}) => {
+        if(grupo){
+            grupos.set(grupo._id.toString(), grupo.nombre)
+        }
+    })
+    
+    const gruposIds = [...grupos.keys()]
+    
+    const horarios = await Horario.find({grupo: { $in: gruposIds}})
+    
+    const respuesta = horarios.map(horario => ({
+        grupo: grupos.get(horario.grupo.toString()) || 'Grupo desconocido',
+        imagenUrl: horario.imagenUrl
+    }))
+
+    return respuesta
+}
+
 module.exports = {
     agregarAlumno,
     modificarAlumno,
@@ -409,5 +455,6 @@ module.exports = {
     forzarRestablecerContrasenaAlumno,
     cambiarEstadoAlumno,
     consultarCalificacionesAlumno,
-    consultarHistorialAcademicoAlumno
+    consultarHistorialAcademicoAlumno,
+    consultarHorariosAlumno
 }

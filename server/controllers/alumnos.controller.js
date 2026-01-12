@@ -8,7 +8,8 @@ const {
     forzarRestablecerContrasenaAlumno,
     cambiarEstadoAlumno,
     consultarCalificacionesAlumno,
-    consultarHistorialAcademicoAlumno
+    consultarHistorialAcademicoAlumno,
+    consultarHorariosAlumno
 } = require('../services/alumnos.service')
 
 // Función para agregar un nuevo alumno
@@ -271,6 +272,30 @@ const obtenerHistorialAcademicoPorID = async (req, res) => {
     }
 }
 
+// Función para obtener los horarios de un alumno
+const obtenerHorariosPorID = async (req, res) => {
+    try{
+        const {id} = req.params
+        
+        const horarios = await consultarHorariosAlumno(id)
+        return res.status(200).json(horarios)
+    }catch(error){
+        switch(error.code){
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({message: error.message})
+
+            case 'ALUMNO_NO_ENCONTRADO':
+                return res.status(404).json({message: error.message})
+
+            case 'ALUMNO_INACTIVO':
+                return res.status(409).json({message: error.message})
+
+            default:
+                return res.status(500).json({message: 'Error interno del servidor'})
+        }
+    }
+}
+
 module.exports = {
     crearAlumno, 
     actualizarAlumno, 
@@ -281,5 +306,6 @@ module.exports = {
     restablecerContrasena,
     actualizarEstado,
     obtenerCalificacionesPorID,
-    obtenerHistorialAcademicoPorID
+    obtenerHistorialAcademicoPorID,
+    obtenerHorariosPorID
 } 

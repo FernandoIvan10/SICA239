@@ -1,5 +1,4 @@
 const Horario = require('../models/horario.model')
-const Alumno = require('../models/alumno.model')
 const Grupo = require('../models/grupo.model')
 const cloudinary = require('../config/cloudinary')
 
@@ -48,11 +47,13 @@ async function subirHorario(data){
     await nuevoHorario.save()
 }
 
+// Función para listar todos los horarios
 async function listarHorarios(){
     await Horario.find()
         .populate('grupo', 'nombre') // Se obtiene también el nombre del grupo
 }
 
+// Función para eliminar un horario
 async function quitarHorario(id){
     if(!id) { // El ID es obligatorio
         const error = new Error('ID de grupo es obligatorio')

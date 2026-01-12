@@ -11,9 +11,9 @@ const {
     restablecerContrasena,
     actualizarEstado,
     obtenerCalificacionesPorID,
-    obtenerHistorialAcademicoPorID
+    obtenerHistorialAcademicoPorID,
+    obtenerHorariosPorID
 } = require('../controllers/alumnos.controller')
-const { obtenerHorariosPorID } = require('../controllers/horarios.controller')
 
 const router = express.Router()
 

@@ -20,7 +20,7 @@ async function agregarGrupo(data){
         throw error
     }
 
-    const existe = Grupo.findOne({nombre})
+    const existe = await Grupo.findOne({nombre})
     if(existe){ // El nombre debe ser único
         const error = new Error('Nombre de grupo duplicado')
         error.code = 'NOMBRE_DUPLICADO'
@@ -34,8 +34,8 @@ async function agregarGrupo(data){
 
     let materiasIds = []
     
-    for (const materia of materias) {
-        const materiaNombre = materia.nombre
+    for (const m of materias) {
+        const materiaNombre = m.nombre
         if (!materiaNombre) { // El nombre de la materia debe existir
             const error = new Error('Falta el nombre de la materia')
             error.code = 'CAMPOS_FALTANTES'

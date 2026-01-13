@@ -33,7 +33,7 @@ const crearHorario = async (req, res) => {
 const obtenerHorarios = async (req, res) => {
   try{
     const horarios = await listarHorarios()
-    return res.status(200).json({horarios})
+    return res.status(200).json(horarios)
   }catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Error interno del servidor' })

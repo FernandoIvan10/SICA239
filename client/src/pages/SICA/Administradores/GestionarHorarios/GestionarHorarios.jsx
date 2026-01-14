@@ -58,7 +58,7 @@ export default function GestionarHorarios(){
         }).then(async res => {
             if (res.ok) {
                 const data = await res.json()
-                setHorarios(data.horarios)
+                setHorarios(data)
                 return
             }else{
                 const errorData = await res.json().catch(() => null)

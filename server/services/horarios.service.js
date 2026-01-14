@@ -49,7 +49,7 @@ async function subirHorario(data){
 
 // Función para listar todos los horarios
 async function listarHorarios(){
-    await Horario.find()
+    return await Horario.find()
         .populate('grupo', 'nombre') // Se obtiene también el nombre del grupo
 }
 

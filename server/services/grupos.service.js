@@ -170,7 +170,7 @@ async function quitarGrupo(id){
 async function cambiarGrupoAlumnos(data){
     const {grupoOrigen, grupoDestino, alumnos} = data
 
-    if(!grupoOrigen || !grupoDestino || alumnos){
+    if(!grupoOrigen || !grupoDestino || !alumnos){
         const error = new Error('Faltan campos obligatorios')
         error.code = 'CAMPOS_FALTANTES'
         throw error

@@ -4,6 +4,7 @@ const Administrador = require('../models/administrador.model')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
+// Función para iniciar sesión
 async function autenticarUsuario(data){
     const {tipoUsuario, usuario, contrasena} = data
 

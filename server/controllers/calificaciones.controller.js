@@ -22,6 +22,11 @@ const registrarCalificacion = async (req, res) => {
             case 'NOTA_INVALIDA':
                 return res.status(400).json({message: error.message})
 
+            case 'ALUMNO_NO_ENCONTRADO':
+            case 'MATERIA_NO_ENCONTRADA':
+            case 'GRUPO_NO_ENCONTRADO':
+                return res.status(404).json({message: error.message})
+
             default:
                 console.error(error)
                 return res.status(500).json({message: 'Error interno del servidor'})

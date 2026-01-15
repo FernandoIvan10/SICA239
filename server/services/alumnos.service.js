@@ -17,21 +17,27 @@ async function agregarAlumno(data) {
         materiasRecursadas
     } = data
 
-    if(!matricula || !nombre || !apellido || !contrasena || !grupoNombre) {
+    if(
+        !matricula
+        || !nombre
+        || !apellido
+        || !contrasena
+        || !grupoNombre
+    ) { // Todos los campos obligatorios deben ser proporcionados
         const error = new Error('Faltan campos obligatorios')
         error.code = 'CAMPOS_FALTANTES'
         throw error
     }
 
     const existe = await Alumno.findOne({ matricula })
-    if(existe) {
+    if(existe) { // La matrícula debe ser única
         const error = new Error('Matrícula duplicada')
         error.code = 'MATRICULA_DUPLICADA'
         throw error
     }
 
     const grupo = await Grupo.findOne({ nombre: grupoNombre })
-    if(!grupo) {
+    if(!grupo) { // El grupo debe existir
         const error = new Error('Grupo no encontrado')
         error.code = 'GRUPO_NO_ENCONTRADO'
         throw error
@@ -48,7 +54,7 @@ async function agregarAlumno(data) {
         error.code = 'FORMATO_INVALIDO_MATERIAS_RECURSADAS'
         throw error
     }
-    if(materiasRecursadas){ // Las materias y grupos deben existir
+    if(materiasRecursadas){ // Las materias recursadas y grupos deben existir
         for (const item of materiasRecursadas) {
             const materiaValida = await Materia.findById(item.materia)
             const grupoValido = await Grupo.findById(item.grupo)
@@ -97,7 +103,7 @@ async function modificarAlumno(id, data) {
         throw error
     }
 
-    // Actualiza los campos proporcionados
+    // Se actualizan sólo los campos proporcionados
     const actualizaciones = {}
     if (nombre) actualizaciones.nombre = nombre
     if (apellido) actualizaciones.apellido = apellido
@@ -146,7 +152,6 @@ async function modificarAlumno(id, data) {
             actualizaciones.materiasRecursadas = materiasRecursadas
         }
     
-    // Se actualiza el alumno
     return await Alumno.findByIdAndUpdate(id, actualizaciones, { new: true })
 }
 
@@ -202,20 +207,6 @@ async function cambiarPrimerContrasena(id, data){
         error.code = 'ID_OBLIGATORIO'
         throw error
     }
-    
-    const {contrasenaNueva} = data
-
-    if(!contrasenaNueva){ // La nueva contraseña es obligatoria
-        const error = new Error('La nueva contraseña es obligatoria')
-        error.code = 'CONTRASENA_OBLIGATORIA'
-        throw error
-    }
-
-    if(contrasenaNueva.length < 6){ // La contraseña debe tener al menos 6 caracteres
-        const error = new Error('La nueva contraseña debe tener al menos 6 caracteres')
-        error.code = 'CONTRASENA_INVALIDA'
-        throw error
-    }
 
     const alumno = await Alumno.findById(id).select('+contrasena')
     if(!alumno){ // El alumno debe existir
@@ -230,9 +221,23 @@ async function cambiarPrimerContrasena(id, data){
         throw error
     }
     
-        alumno.contrasena = await bcrypt.hash(contrasenaNueva, 10)
-        alumno.requiereCambioContrasena = false
-        await alumno.save()
+    const {contrasenaNueva} = data
+
+    if(!contrasenaNueva){ // La nueva contraseña es obligatoria
+        const error = new Error('La nueva contraseña es obligatoria')
+        error.code = 'CONTRASENA_OBLIGATORIA'
+        throw error
+    }
+
+    if(contrasenaNueva.length < 6){ // La contraseña debe tener al menos 6 caracteres
+        const error = new Error('La nueva contraseña debe tener al menos 6 caracteres')
+        error.code = 'CONTRASENA_INVALIDA'
+        throw error
+    }
+    
+    alumno.contrasena = await bcrypt.hash(contrasenaNueva, 10)
+    alumno.requiereCambioContrasena = false
+    await alumno.save()
 }
 
 // Función para cambiar la contraseña
@@ -240,6 +245,19 @@ async function cambiarContrasenaAlumno(id, data){
     if(!id){ // El ID es obligatorio
         const error = new Error('ID del alumno es obligatorio')
         error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const alumno = await Alumno.findById(id).select('+contrasena')
+    if(!alumno){ // El alumno debe existir
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+    
+    if(alumno.requiereCambioContrasena){ // No se permite cambiar la contraseña si es el primer cambio
+        const error = new Error('El alumno debe realizar el primer cambio de contraseña')
+        error.code = 'CAMBIO_NO_PERMITIDO'
         throw error
     }
 
@@ -252,40 +270,26 @@ async function cambiarContrasenaAlumno(id, data){
     }
 
     if(contrasenaNueva.length < 6){ // La nueva contraseña debe tener al menos 6 caracteres
-            const error = new Error('La nueva contraseña debe tener al menos 6 caracteres')
-            error.code = 'CONTRASENA_INVALIDA'
-            throw error
-        }
+        const error = new Error('La nueva contraseña debe tener al menos 6 caracteres')
+        error.code = 'CONTRASENA_INVALIDA'
+        throw error
+    }
     
-        const alumno = await Alumno.findById(id).select('+contrasena')
-        if(!alumno){ // El alumno debe existir
-            const error = new Error('Alumno no encontrado')
-            error.code = 'ALUMNO_NO_ENCONTRADO'
-            throw error
-        }
+    const coincide = await bcrypt.compare(contrasenaAntigua, alumno.contrasena)
+    if(!coincide){ // La contraseña antigua debe coincidir
+        const error = new Error('La contraseña antigua es incorrecta')
+        error.code = 'CONTRASENA_INCORRECTA'
+        throw error
+    }
     
-        if(alumno.requiereCambioContrasena){ // No se permite cambiar la contraseña si es el primer cambio
-            const error = new Error('El alumno debe realizar el primer cambio de contraseña')
-            error.code = 'CAMBIO_NO_PERMITIDO'
-            throw error
-        }
+    if (contrasenaAntigua === contrasenaNueva) { // La nueva contraseña debe ser diferente a la anterior
+        const error = new Error('La nueva contraseña debe ser diferente a la anterior')
+        error.code = 'CONTRASENA_INVALIDA'
+        throw error
+    }
     
-        const coincide = await bcrypt.compare(contrasenaAntigua, alumno.contrasena)
-        if(!coincide){ // La contraseña antigua debe coincidir
-            const error = new Error('La contraseña antigua es incorrecta')
-            error.code = 'CONTRASENA_INCORRECTA'
-            throw error
-        }
-    
-        if (contrasenaAntigua === contrasenaNueva) {
-            const error = new Error('La nueva contraseña debe ser diferente a la anterior')
-            error.code = 'CONTRASENA_INVALIDA'
-            throw error
-        }
-    
-    
-        alumno.contrasena = await bcrypt.hash(contrasenaNueva, 10)
-        await alumno.save()
+    alumno.contrasena = await bcrypt.hash(contrasenaNueva, 10)
+    return await alumno.save()
 }
 
 // Función para restablecer la contraseña (Que la contraseña sea su Matrícula)
@@ -306,7 +310,7 @@ async function forzarRestablecerContrasenaAlumno(id){
 
     alumno.contrasena = await bcrypt.hash(alumno.matricula, 10)
     alumno.requiereCambioContrasena = true
-    await alumno.save()
+    return await alumno.save()
 }
 
 // Función para cambiar el estado (activo) de un alumno
@@ -345,13 +349,13 @@ async function consultarCalificacionesAlumno(id){
 
     const calificaciones = await Calificacion.find({alumnoId: id}).populate('materiaId')
 
-    if(!calificaciones || calificaciones.length === 0){
+    if(!calificaciones || calificaciones.length === 0){ // Las calificaciones deben existir
         const error = new Error('Calificaciones no encontradas')
         error.code = 'CALIFICACIONES_NO_ENCONTRADAS'
         throw error
     }
 
-    // Se les da un mejor formato a los datos
+    // Se mejora el formato de las calificaciones
     const parcialesSet = new Set()
     calificaciones.forEach(cal => {
         cal.parciales.forEach(p => parcialesSet.add(p.parcial))
@@ -401,6 +405,7 @@ async function consultarHistorialAcademicoAlumno(id){
     return historial
 }
 
+// Función para obtener los horarios de un alumno
 async function consultarHorariosAlumno(id){
     if(!id) { // El ID es obligatorio
         const error = new Error('ID de alumno es obligatorio')

@@ -44,7 +44,7 @@ async function subirHorario(data){
       publicId: resultado.public_id,
     })
 
-    await nuevoHorario.save()
+    return await nuevoHorario.save()
 }
 
 // Función para listar todos los horarios

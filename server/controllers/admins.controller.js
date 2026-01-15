@@ -51,6 +51,7 @@ const actualizarAdmin = async (req, res) => {
         return res.status(200).json({ message: 'Administrador modificado' })
     } catch (error) {
         switch (error.code) {
+            case 'ID_OBLIGATORIO':
             case 'SIN_CAMBIOS':
                 return res.status(400).json({ message: error.message })
             

@@ -55,6 +55,7 @@ const actualizarGrupo = async (req, res) => {
                 return res.status(404).json({message: error.message})
 
             case 'CAMBIO_MATERIAS_NO_PERMITIDO':
+            case 'NOMBRE_DUPLICADO':
                 return res.status(409).json({message: error.message})
 
             default:

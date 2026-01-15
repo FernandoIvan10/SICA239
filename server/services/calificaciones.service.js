@@ -1,4 +1,7 @@
 const Calificacion = require('../models/calificacion.model')
+const Alumno = require('../models/alumno.model')
+const Materia = require('../models/materia.model')
+const Grupo = require('../models/grupo.model')
 
 // Función para capturar una nueva calificación
 async function capturarCalificacion(data){
@@ -19,6 +22,27 @@ async function capturarCalificacion(data){
     ) { // Todos los campos obligatorios deben ser proporcionados
         const error = new Error('Faltan campos obligatorios')
         error.code = 'CAMPOS_FALTANTES'
+        throw error
+    }
+
+    const alumnoExiste = await Alumno.findById(alumnoId)
+    if(!alumnoExiste) { // El alumno debe existir
+        const error = new Error('Alumno no encontrado')
+        error.code = 'ALUMNO_NO_ENCONTRADO'
+        throw error
+    }
+
+    const materiaExiste = await Materia.findById(materiaId)
+    if(!materiaExiste) { // La materia debe existir
+        const error = new Error('Materia no encontrada')
+        error.code = 'MATERIA_NO_ENCONTRADA'
+        throw error
+    }
+
+    const grupoExiste = await Grupo.findById(grupoId)
+    if(!grupoExiste) { // El grupo debe existir
+        const error = new Error('Grupo no encontrado')
+        error.code = 'GRUPO_NO_ENCONTRADO'
         throw error
     }
 
@@ -62,7 +86,7 @@ async function capturarCalificacion(data){
         )
     }
 
-    await calificacion.save()
+    return await calificacion.save()
 }
 
 // Función para listar todas las calificaciones, con opciones de filtros

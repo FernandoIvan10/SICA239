@@ -165,7 +165,7 @@ async function cambiarContrasenaAdmin(id, data) {
         throw error
     }
 
-    const admin = await Administrador.findById(id)
+    const admin = await Administrador.findById(id).select('+contrasena')
     if(!admin){ // El administrador debe existir
         const error = new Error('Administrador no encontrado')
         error.code = 'ADMINISTRADOR_NO_ENCONTRADO'

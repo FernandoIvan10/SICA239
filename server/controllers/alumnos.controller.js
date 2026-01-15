@@ -90,7 +90,7 @@ const obtenerAlumnos = async (req, res) => {
     try {
         const payload = { // Filtros de búsqueda
             buscador: req.query.buscador,
-            grupo: req.query.grupo,
+            grupoId: req.query.grupoId,
             semestre: req.query.semestre
         }
 

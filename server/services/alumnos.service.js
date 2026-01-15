@@ -152,7 +152,7 @@ async function modificarAlumno(id, data) {
 
 // Función para listar todos los alumnos, con opciones de filtro
 async function listarAlumnos(data) {
-    const {buscador, grupo, semestre} = data
+    const {buscador, grupoId, semestre} = data
     
     let query = {}
     if (buscador) { // Búsqueda por texto
@@ -163,8 +163,8 @@ async function listarAlumnos(data) {
         ]
     }
     
-    if (grupo) { // Filtro por grupo
-        query.grupo = grupo
+    if (grupoId) { // Filtro por grupo
+        query.grupoId = grupoId
     }
     
     if (semestre){ // Filtro por semestre

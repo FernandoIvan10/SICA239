@@ -54,7 +54,7 @@ export default function SubirCalificaciones(){
      
     useEffect(()=>{ // Se obtienen los alumnos y materias del grupo seleccionado
         if(grupoSeleccionado){
-            fetch(`http://localhost:3000/api/alumnos?grupo=${grupoSeleccionado}`, { // Obtener los alumnos del backend
+            fetch(`http://localhost:3000/api/alumnos?grupoId=${grupoSeleccionado}`, { // Obtener los alumnos del backend
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export default function SubirCalificaciones(){
             }
             
             const calificacionesMap = {}
-            for (const c of data.calificaciones) {
+            for (const c of data) {
                 const parcialData = c.parciales.find(p => p.parcial === parcialSeleccionado)
                 if (!parcialData) continue
 
@@ -245,7 +245,7 @@ export default function SubirCalificaciones(){
                                                 type="number"
                                                 min="0"
                                                 max="10"
-                                                value={calificaciones[alumno._id]?.[materia._id]?.nota || ''}
+                                                value={calificaciones[alumno._id]?.[materia._id]?.nota || 0}
                                                 onChange={e => manejarCambiosCalificaciones(
                                                     alumno._id,
                                                     materia._id,

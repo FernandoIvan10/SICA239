@@ -412,7 +412,7 @@ async function consultarHorariosAlumno(id){
         .populate('grupoId')
         .populate('materiasRecursadas.grupo')
 
-    if(alumno) { // El alumno debe existir
+    if(!alumno) { // El alumno debe existir
         const error = new Error('Alumno no encontrado')
         error.code = 'ALUMNO_NO_ENCONTRADO'
         throw error

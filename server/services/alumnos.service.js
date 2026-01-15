@@ -257,7 +257,7 @@ async function cambiarContrasenaAlumno(id, data){
             throw error
         }
     
-        const alumno = await Alumno.findById(id)
+        const alumno = await Alumno.findById(id).select('+contrasena')
         if(!alumno){ // El alumno debe existir
             const error = new Error('Alumno no encontrado')
             error.code = 'ALUMNO_NO_ENCONTRADO'

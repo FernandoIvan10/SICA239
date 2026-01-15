@@ -233,7 +233,7 @@ const obtenerCalificacionesPorID = async (req, res) => {
         const {id} = req.params
 
         const calificaciones = await consultarCalificacionesAlumno(id)
-        return res.status(200).json({calificaciones})
+        return res.status(200).json(calificaciones)
     }catch(error){
         switch(error.code){
             case 'ID_OBLIGATORIO':

@@ -383,7 +383,7 @@ async function consultarHistorialAcademicoAlumno(id){
     }
 
     const existe = await Alumno.findById(id)
-    if(existe) { // El alumno debe existir
+    if(!existe) { // El alumno debe existir
         const error = new Error('Alumno no encontrado')
         error.code = 'ALUMNO_NO_ENCONTRADO'
         throw error

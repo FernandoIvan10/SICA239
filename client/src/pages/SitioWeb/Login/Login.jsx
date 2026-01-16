@@ -1,10 +1,10 @@
 import { jwtDecode } from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 import BarraNavegacion from '../../../components/sitio_web/BarraNavegacion/BarraNavegacion'
-import Formulario from '../../../components/sica/Formulario/Formulario'
 import { FaUserCircle } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 import './Login.css'
+import FormularioInicioSesion from '../../../components/sica/Formulario/FormularioInicioSesion'
 
 // Página para iniciar sesión
 export default function Login(){
@@ -114,9 +114,9 @@ export default function Login(){
                 {activarPestaña==="alumno" ?(
                     // Formulario de alumnos
                     <>
-                    <Formulario
+                    <FormularioInicioSesion
                         onSubmit={iniciarSesion}
-                        icono={<FaUserCircle className="formulario-icono"/>}
+                        icono={<FaUserCircle className="formulario-iniciar-sesion_icono"/>}
                         campos={[{
                             texto:"Número de control:",
                             type:"text",
@@ -137,9 +137,9 @@ export default function Login(){
                 ):(
                     // Formulario de administradores
                     <>
-                    <Formulario
+                    <FormularioInicioSesion
                         onSubmit={iniciarSesion}
-                        icono={<FaUserCircle className="formulario-icono"/>}
+                        icono={<FaUserCircle className="formulario-iniciar-sesion_icono"/>}
                         campos={[{
                             texto:"Usuario:",
                             type:"text",

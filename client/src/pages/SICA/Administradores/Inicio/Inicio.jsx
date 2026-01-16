@@ -61,11 +61,11 @@ export default function InicioAdmin(){
             <MenuLateral/>
             <Bienvenida 
                 nombre={nombreUsuario} 
-                descripcion={mensaje}
-                textoBoton1={boton1.texto}
-                linkBoton1={boton1.link}
-                textoBoton2={boton2.texto}
-                linkBoton2={boton2.link}
+                mensaje={mensaje}
+                boton1={boton1.texto}
+                link1={boton1.link}
+                boton2={boton2.texto}
+                link2={boton2.link}
             />
         </div>
     )

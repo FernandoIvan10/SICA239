@@ -19,10 +19,10 @@ export default function InicioAlumno(){
             <Bienvenida 
                 nombre={tokenDecodificado.nombre} 
                 descripcion="Este es el sistema de calificaciones, aquí podrás consultar tus calificaciones y tu horario"
-                textoBoton1="Ver calificaciones"
-                linkBoton1="/SICA/alumnos/en-curso"
-                textoBoton2="Ver horario"
-                linkBoton2="/SICA/alumnos/horario"
+                boton1="Ver calificaciones"
+                link1="/SICA/alumnos/en-curso"
+                boton2="Ver horario"
+                link2="/SICA/alumnos/horario"
             />
         </div>
     )

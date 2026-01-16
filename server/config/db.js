@@ -1,15 +1,43 @@
 const mongoose = require('mongoose')
 
-const uri = process.env.MONGO_URI // Variable de conexión a MongoDB Atlas
+const { MONGO_URI, NODE_ENV } = process.env
 
-// Método para contectarnos a la BD
+if (!MONGO_URI) {
+    throw new Error('MONGO_URI no está definida')
+}
+
+mongoose.set('strictQuery', true)
+
+// Método para contectarse a la BD
 const conectarBD = async()=>{
     try{
-        await mongoose.connect(uri,{})
+        await mongoose.connect(MONGO_URI, {
+            autoIndex: NODE_ENV !== 'production',
+            serverSelectionTimeoutMS: 5000,
+        })
+        console.log('MongoDB conectado')
     }catch(error){
-        console.error('Error al conectar a MongoDB', error)
+        console.error('Error al conectar a MongoDB', error.message)
         process.exit(1)
     }
 }
 
-module.exports=conectarBD // Se exporta el método conectarBD
+mongoose.connection.on('connected', () => {
+    console.warn('Mongoose: conexión establecida')
+})
+
+mongoose.connection.on('error', () => {
+    console.error('Mongoose error: ', err)
+})
+
+mongoose.connection.on('disconnected', () => {
+    console.warn('Mongoose desconectado')
+})
+
+mongoose.connection.on('SIGINT', async () => {
+    await mongoose.connection.close()
+    console.log('MongoDB desconectado por cierre de app')
+    process.exit(0)
+})
+
+module.exports = conectarBD

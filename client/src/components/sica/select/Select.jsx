@@ -1,6 +1,6 @@
 import '../../../assets/styles/global.css'
 
-// Componente que renderiza una lista desplegableS
+// Componente que renderiza una lista desplegable
 export default function Select({
     className,
     texto,

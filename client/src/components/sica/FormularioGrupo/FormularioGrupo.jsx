@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import '../../../assets/styles/global.css'
 import './FormularioGrupo.css'
 import Input from '../../sica/Input/Input'
-import Select from '../../sitio_web/select/select'
+import Select from '../../sica/select/select'
 import AccionesFormulario from '../AccionesFormulario/AccionesFormulario'
 
 // Componente que renderiza el formulario para los grupos

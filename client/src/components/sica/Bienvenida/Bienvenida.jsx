@@ -14,17 +14,17 @@ export default function Bienvenida({
 }){
     return(
         <div className={`contenido-principal ${className ?? ""}`}>
-            <h2 className="bienvenida-titulo">¡Bienvenido, {nombre}!</h2>
-            <p className="bienvenida-mensaje">{mensaje}</p>
-            <div className="bienvenida-seccion_botones">
+            <h2 className="bienvenida__titulo">¡Bienvenido, {nombre}!</h2>
+            <p className="bienvenida__mensaje">{mensaje}</p>
+            <div className="bienvenida__seccion-botones">
                 <Link 
                     to={link1} 
-                    className="bienvenida-boton">
+                    className="bienvenida__boton">
                         {boton1}
                 </Link>
                 <Link 
                     to={link2} 
-                    className="bienvenida-boton">
+                    className="bienvenida__boton">
                         {boton2}
                 </Link>
             </div>

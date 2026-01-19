@@ -6,37 +6,37 @@
     align-items: center;
 }
 
-.formulario-iniciar-sesion_icono{
+.formulario-iniciar-sesion__icono{
     width: 100px;
     height: 100px;
     color: #28a745;
 }
 
-.formulario-iniciar-sesion_campo{
+.formulario-iniciar-sesion__campo{
     display: flex;
     flex-direction: column;
     gap: 0.5rem;   
 }
 
-.formulario-iniciar-sesion_seccion-campos{
+.formulario-iniciar-sesion__seccion-campos{
     width: 80%;
     margin-top: 10px;
 }
 
-.formulario-iniciar-sesion_campo{
+.formulario-iniciar-sesion__campo{
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
     width: 100%;
 }
 
-.formulario-iniciar-sesion_campo label{
+.formulario-iniciar-sesion__campo label{
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     margin-bottom: 5px;
 }
 
-.formulario-iniciar-sesion_campo input{
+.formulario-iniciar-sesion__campo input{
     font-family: 'Roboto';
     padding: 10px;
     border: 1px solid #ccc;
@@ -47,12 +47,12 @@
     width: 100%;
 }
 
-.formulario-iniciar-sesion_campo input:focus {
+.formulario-iniciar-sesion__campo input:focus {
     border-color: #4CAF50;
     box-shadow: 0 0 4px rgba(0, 255, 42, 0.5);
 }
 
-.formulario-iniciar-sesion_boton{
+.formulario-iniciar-sesion__boton{
     width: 100%;
     padding: 12px 20px;
     background-color: #4CAF50;
@@ -68,10 +68,10 @@
     margin-top: 20px;
 }
 
-.formulario-iniciar-sesion_boton:hover {
+.formulario-iniciar-sesion__boton:hover {
     background-color: #4CAF50;
 }
 
-.formulario-iniciar-sesion_boton:active {
+.formulario-iniciar-sesion__boton:active {
     transform: scale(0.98);
 }

@@ -164,12 +164,4 @@
   .formulario-grupo__agregar-materia button {
     width: 100%;
   }
-
-  .formulario-grupo__botones {
-    flex-direction: column;
-  }
-
-  .formulario-grupo__botones button {
-    width: 100%;
-  }
 }

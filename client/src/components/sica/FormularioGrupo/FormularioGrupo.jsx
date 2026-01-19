@@ -3,6 +3,7 @@ import '../../../assets/styles/global.css'
 import './FormularioGrupo.css'
 import Input from '../../sitio_web/Input/Input'
 import Select from '../../sitio_web/select/select'
+import AccionesFormulario from '../AccionesFormulario/AccionesFormulario'
 
 // Componente que renderiza el formulario para los grupos
 export default function FormularioGrupo({
@@ -110,10 +111,10 @@ export default function FormularioGrupo({
                             </ul>
                         )}
                     </div>
-                <div className="formulario-grupo__botones">
-                    <button className="boton-guardar" onClick={() => guardar(nombreGrupo, semestreGrupo, materiasGrupo)}>Guardar</button>
-                    <button className="boton-cancelar" onClick={cancelar}>Cancelar</button>
-                </div>
+                <AccionesFormulario
+                    guardar={() => guardar(nombreGrupo, semestreGrupo, materiasGrupo)}
+                    cancelar={cancelar}
+                />
             </div>
         </div>
     )

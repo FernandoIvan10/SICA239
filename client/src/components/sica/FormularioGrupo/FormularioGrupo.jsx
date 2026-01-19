@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import '../../../assets/styles/global.css'
 import './FormularioGrupo.css'
-import Input from '../../sitio_web/Input/Input'
+import Input from '../../sica/Input/Input'
 import Select from '../../sitio_web/select/select'
 import AccionesFormulario from '../AccionesFormulario/AccionesFormulario'
 

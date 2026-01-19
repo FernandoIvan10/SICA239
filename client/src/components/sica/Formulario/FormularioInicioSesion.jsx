@@ -1,4 +1,4 @@
-import Input from '../../sitio_web/Input/Input'
+import Input from '../../sica/Input/Input'
 import '../../../assets/styles/global.css'
 import './FormularioInicioSesion.css'
 

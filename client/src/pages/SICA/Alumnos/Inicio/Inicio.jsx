@@ -1,13 +1,11 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import Bienvenida from '../../../../components/sica/Bienvenida/Bienvenida'
-import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { jwtDecode } from 'jwt-decode'
 import '../../../../assets/styles/global.css'
 
 // Página de inicio del SICA para alumnos
 export default function InicioAlumno(){
-    useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['alumno']) // El usuario debe tener permiso para acceder a esta ruta
     
     const token = localStorage.getItem('token') // Token de inicio de sesión

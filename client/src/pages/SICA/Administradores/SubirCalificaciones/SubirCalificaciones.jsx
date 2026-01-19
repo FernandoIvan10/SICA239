@@ -1,6 +1,5 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useEffect, useState } from 'react'
-import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { jwtDecode } from 'jwt-decode'
 import '../../../../assets/styles/global.css'
@@ -9,7 +8,6 @@ import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para subir calificaciones
 export default function SubirCalificaciones(){
-    useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
 
     const token = localStorage.getItem('token') // Token de inicio de sesión

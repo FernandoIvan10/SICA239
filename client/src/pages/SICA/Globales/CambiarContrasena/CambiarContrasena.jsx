@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
 import {jwtDecode} from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
-import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import '../../../../assets/styles/global.css'
 
 // Página del SICA para cambiar la contraseña del usuario
 export default function CambiarContrasena() {
-  useValidarToken() // El usuario debe haber iniciado sesión
 
   const navigate = useNavigate() // Para redirigir al usuario
   const token = localStorage.getItem('token') // Token de inicio de sesión

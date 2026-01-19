@@ -1,12 +1,10 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useState } from 'react'
-import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './CerrarSemestre.css'
 
 // Página del SICA para cerrar un semestre pasando las calificaciones parciales al historial académico
 export default function CerrarSemestre(){
-    useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin']) // El usuario debe tener permiso para acceder a esta ruta
 
     const token = localStorage.getItem('token') // Token de inicio de sesión

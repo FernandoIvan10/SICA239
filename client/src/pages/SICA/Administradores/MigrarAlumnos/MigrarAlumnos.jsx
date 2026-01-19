@@ -1,6 +1,5 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useEffect, useState } from 'react'
-import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './MigrarAlumnos.css'
 import '../../../../assets/styles/global.css'
@@ -8,7 +7,6 @@ import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para migrar los alumnos de un grupo (sin calificaciones) a otro
 export default function MigrarAlumnos() {
-    useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
 
     const token = localStorage.getItem('token') // Token de inicio de sesión

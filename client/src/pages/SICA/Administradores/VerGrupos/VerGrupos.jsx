@@ -1,7 +1,6 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { jwtDecode } from 'jwt-decode'
@@ -10,7 +9,6 @@ import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del sica para ver la lista de grupos
 export default function VerGrupos(){
-    useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
 
     const navigate = useNavigate() // Para redireccionar a los usuarios

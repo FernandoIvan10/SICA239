@@ -1,7 +1,6 @@
 import {jwtDecode} from 'jwt-decode'
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useEffect, useState } from 'react'
-import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { useNavigate } from 'react-router-dom'
 import '../../../../assets/styles/global.css'
@@ -10,7 +9,6 @@ import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para agregar usuarios 
 export default function AgregarUsuario(){
-    useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin','editor']) // El usuario debe tener permiso para acceder a esta ruta
 
     const navigate = useNavigate() // Para redirigir al usuario

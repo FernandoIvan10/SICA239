@@ -1,6 +1,5 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useEffect, useState } from 'react'
-import { useValidarToken } from '../../../../hooks/useValidarToken/useValidarToken'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './EditarAlumno.css'
@@ -8,7 +7,6 @@ import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para editar alumnos
 export default function EditarAlumno() {
-    useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
 
     const navigate = useNavigate() // Para redireccionar a los usuarios

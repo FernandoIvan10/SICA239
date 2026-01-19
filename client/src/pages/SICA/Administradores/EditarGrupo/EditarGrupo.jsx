@@ -5,12 +5,14 @@ import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import FormularioGrupo from '../../../../components/sica/FormularioGrupo/FormularioGrupo'
 import '../../../../assets/styles/global.css'
 import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import { useEffect, useState } from 'react'
 
 // Página del SICA para editar grupos
 export default function EditarGrupo() {
     useValidarToken() // El usuario debe haber iniciado sesión
     useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
 
+    const [materias, setMaterias] = useState([])
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const location = useLocation() // Para obtener los datos del grupo a editar
@@ -20,6 +22,30 @@ export default function EditarGrupo() {
         navigate('/SICA/administradores/ver-grupos')
         return null
     }
+
+    useEffect(() => { // Se obtienen las materias
+        const fetchMaterias = async () => {
+            try {
+                const res = await fetch(`http://localhost:3000/api/materias`, {
+                headers: { Authorization: `Bearer ${token}` },
+                })
+                const data = await res.json()
+                if (res.ok){
+                    setMaterias(data.materias.map(m => m.nombre))
+                } else {
+                    const errorData = await res.json().catch(() => null)
+                    console.error(`Error ${res.status}`, errorData)
+                    alert(errorData?.message || 'Ocurrió un error al obtener las materias')
+                    return
+                }
+            } catch (error){
+                console.log('Error en fetch:', error)
+                alert('No se pudo conectar con el servidor.')
+                setMaterias([]);
+            }
+        }
+    fetchMaterias()
+    }, [])
 
     // Método para editar el grupo con los nuevos datos
     const guardarCambios = (nuevoNombre, nuevoSemestre, nuevasMaterias) => {
@@ -72,6 +98,7 @@ export default function EditarGrupo() {
                 nombre={grupo.nombre}
                 semestre={grupo.semestre}
                 materias={grupo.materias.map(m => m.nombre)}
+                materiasGlobales={materias}
             />
         </div>
     )

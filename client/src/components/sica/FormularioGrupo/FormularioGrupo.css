@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-.formulario-grupo-titulo {
+.formulario-grupo__titulo {
   margin-bottom: 1.5rem;
 }
 
@@ -17,7 +17,15 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.formulario-grupo-label{
+.formulario-grupo__campo {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.formulario-grupo__campo label,
+.formulario-grupo__label {
     font-family: 'Roboto';
     font-size: 18px;
     display: block;
@@ -27,8 +35,9 @@
     color: #333;
 }
 
-.formulario-grupo-input, 
-.formulario-grupo-select{
+.formulario-grupo__campo input, 
+.formulario-grupo__campo select,
+.formulario-grupo__agregar-materia input{
   font-family: 'Roboto';
   width: unset;
   margin-top: 0;
@@ -40,18 +49,18 @@
   border-radius: 4px;
 }
 
-.formulario-grupo-select {
+.formulario-grupo__campo select {
   background-color: #f9f9f9;
 }
 
-.formulario-grupo-materias-lista {
+.formulario-grupo__materias {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.1rem;
 }
 
-.formulario-grupo-materia-item {
+.formulario-grupo__materia {
   font-family: 'Roboto';
   display: flex;
   align-items: center;
@@ -61,7 +70,7 @@
   font-size: 0.9rem;
 }
 
-.formulario-grupo-materia-item button {
+.formulario-grupo__materia button {
   margin-left: 0.5rem;
   background-color: #ff4d4d;
   color: white;
@@ -71,11 +80,11 @@
   padding: 0.2rem 0.5rem;
 }
 
-.formulario-grupo-materia-item button:hover {
+.formulario-grupo__materia button:hover {
   background-color: #e60000;
 }
 
-.formulario-grupo-agregar-materia {
+.formulario-grupo__agregar-materia {
   margin-top: 0.5rem;
   display: flex;
   position: relative;
@@ -83,12 +92,12 @@
   align-items: baseline;
 }
 
-.formulario-grupo-agregar-materia input {
+.formulario-grupo__agregar-materia input {
   font-family: 'Roboto';
   flex: 1;
 }
 
-.formulario-grupo-agregar-materia-boton {
+.formulario-grupo__agregar-materia button {
   font-family: 'Roboto';
   padding: 0.6rem 1rem;
   background-color: #007bff;
@@ -100,18 +109,18 @@
   height: fit-content;
 }
 
-.formulario-grupo-agregar-materia-boton:hover {
+.formulario-grupo__agregar-materia button:hover {
   background-color: #0056b3;
 }
 
-.formulario-grupo-botones {
+.formulario-grupo__botones {
   margin-top: 2rem;
   display: flex;
   gap: 1rem;
   justify-content: inherit;
 }
 
-.formulario-grupo-sugerencias-materias {
+.formulario-grupo__sugerencias-materias {
   font-family: 'Roboto';
   position: absolute;
   top: 100%;
@@ -129,14 +138,14 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.formulario-grupo-sugerencia-item {
+.formulario-grupo__sugerencia {
   font-family: 'Roboto';
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 0.95rem;
 }
 
-.formulario-grupo-sugerencia-item:hover {
+.formulario-grupo__sugerencia:hover {
   background-color: #f0f0f0;
 }
 
@@ -148,19 +157,19 @@
     padding: 1rem;
   }
 
-  .formulario-grupo-agregar-materia {
+  .formulario-grupo__agregar-materia {
     flex-direction: column;
   }
 
-  .formulario-grupo-agregar-materia-boton {
+  .formulario-grupo__agregar-materia button {
     width: 100%;
   }
 
-  .formulario-grupo-botones {
+  .formulario-grupo__botones {
     flex-direction: column;
   }
 
-  .formulario-grupo-botones button {
+  .formulario-grupo__botones button {
     width: 100%;
   }
 }

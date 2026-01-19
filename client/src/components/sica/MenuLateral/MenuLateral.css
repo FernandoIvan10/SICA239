@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-.contenedor-menu{
+.menu{
     width: 20%;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
     z-index: 1000;
 }
 
-.encabezado-menu{
+.menu__encabezado{
     font-family: 'Roboto';
     height: 80px;
     display: flex;
@@ -26,25 +26,25 @@
     padding: 0 15px;
 }
 
-.encabezado-menu img{
+.menu__encabezado img{
     width: 50px;
     height: 50px;
     border-radius: 50%;
 }
 
-.encabezado-menu strong{
+.menu__encabezado strong{
     font-family: 'Roboto';
     font-size: 20px;
     font-weight: 700;
 }
 
-.elementos-menu ul{
+.menu__elementos ul{
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.elemento {
+.menu__elemento {
     font-family: 'Roboto';
     padding: 10px 20px;
     font-family: 'Roboto';
@@ -54,49 +54,49 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.elemento.active {
+.menu__elemento.active {
     font-family: 'Roboto';
     color: #28a745;
 }
 
-.elemento:hover {
+.menu__elemento:hover {
     background-color: #e9ecef;
     color: #4CAF50; 
 }
 
-.elementos-menu ul li ul {
+.menu__elementos ul li ul {
     list-style: none;
     padding-left: 20px; 
     margin: 0;
     display: block; 
 }
 
-.subelemento {
+.menu__subelemento {
     font-family: 'Roboto';
     font-size: 18px;
     padding: 5px 0;
 }
 
-.subelemento.active {
+.menu__subelemento.active {
     font-family: 'Roboto';
     color: #28a745;
 }
 
-.subelemento:hover {
+.menu__subelemento:hover {
     background-color: #f1f3f5;
     color: #4CAF60; 
 }
 
-.subelemento span svg {
+.menu__subelemento span svg {
     font-size: 20px; 
     color: inherit; 
 }
 
-.icono{
+.menu__elemento-icono {
     margin-right: 15px;
 }
 
-.menu-hamburguesa {
+.menu__icono {
     display: none;
     position: fixed;
     top: 15px;
@@ -108,7 +108,7 @@
     cursor: pointer;
 }
 
-.cerrar-menu {
+.menu__boton--cerrar {
     display: none;
     position: absolute;
     top: 10px;
@@ -121,7 +121,7 @@
 }
 
 @media (max-width: 768px) {
-    .contenedor-menu {
+    .menu {
         width: 250px;
         position: fixed;
         top: 0;
@@ -133,19 +133,19 @@
         z-index: 1000;
     }
 
-    .contenedor-menu.abierto {
+    .menu.abierto {
         transform: translateX(0);
     }
 
-    .menu-hamburguesa {
+    .menu__icono {
         display: block;
     }
 
-    .cerrar-menu {
+    .menu__boton--cerrar {
         display: block;
     }
 
-    .menu-hamburguesa.oculto {
+    .menu__icono.oculto {
         display: none !important;
     }
 }

@@ -16,8 +16,8 @@ import { HiLockClosed } from 'react-icons/hi'
 
 // Componente que renderiza el menú lateral del SICA
 export default function MenuLateral(){
-    const navigate = useNavigate() // Para redirigir al usuario
-    const location = useLocation() // Almacena la ruta actual
+    const navigate = useNavigate()
+    const location = useLocation() // Para obtener la ruta actual
     const [menuAbierto, setMenuAbierto] = useState(false) // Estado del menú lateral (abierto o cerrado)
     const [elementosMenu, setElementosMenu] = useState([]) // Elementos del menú lateral (dependen del rol)
 
@@ -25,7 +25,6 @@ export default function MenuLateral(){
         const token = localStorage.getItem('token')
         const tokenDecodificado = jwtDecode(token)
         if(tokenDecodificado.rol === 'alumno'){
-            // Si el usuario es un alumno se asigna el siguiente menú
             setElementosMenu([
                 {titulo:'Inicio', icono:FaHouseChimney, link:'/SICA/alumnos/inicio'},
                 {titulo:'Calificaciones', icono:MdGrade, 
@@ -41,7 +40,6 @@ export default function MenuLateral(){
                     ]}
             ])
         }else if(tokenDecodificado.rol === 'superadmin'){
-            // Si el usuario es superadmin se asigna el siguiente menú
             setElementosMenu([ 
                 {titulo: 'Inicio', icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
                 {titulo: 'Gestionar usuarios', icono:FaUsers, 
@@ -65,7 +63,6 @@ export default function MenuLateral(){
                     ]}
             ])
         }else if(tokenDecodificado.rol==='editor'){
-            // Si el usuario es editor se asigna el siguiente menú
             setElementosMenu([ 
                 {titulo: 'Inicio', icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
                 {titulo: 'Gestionar usuarios', icono:FaUsers, 
@@ -88,7 +85,6 @@ export default function MenuLateral(){
                     ]}
             ])
         } else if(tokenDecodificado.rol==='lector'){
-            // Si el usuario es lector se asigna el siguiente menú
             setElementosMenu([ 
                 {titulo: 'Inicio', icono:FaHouseChimney, link:'/SICA/administradores/inicio'},
                 {titulo:'Ver usuarios', icono:FaUserEdit, link:'/SICA/administradores/ver-usuarios'},
@@ -112,7 +108,7 @@ export default function MenuLateral(){
         setMenuAbierto(false)
     }
 
-    // Función para verificar si la ruta actual coincide con el link del ítem
+    // Método para determinar si un elemento del menú está activo
     const isActive = (link) => {
         return location.pathname === link ? 'active' : ''
     }
@@ -125,21 +121,21 @@ export default function MenuLateral(){
 
     return(
         <>
-            <button className={`menu-hamburguesa ${menuAbierto ? 'oculto' : ""}`} onClick={abrirMenu}>
+            <button className={`menu__icono ${menuAbierto ? 'oculto' : ""}`} onClick={abrirMenu}>
                 ☰
             </button>
-            <div className={`contenedor-menu ${menuAbierto ? 'abierto' : ""}`}>
-                <button className="cerrar-menu" onClick={cerrarMenu}>×</button>
-                <div className="encabezado-menu">
+            <div className={`menu ${menuAbierto ? 'abierto' : ""}`}>
+                <button className="menu__boton--cerrar" onClick={cerrarMenu}>×</button>
+                <div className="menu__encabezado">
                     <img src={LogoCBTA} alt="Logo"/>
                     <strong>SICA239</strong>
                 </div>
-                <div className="elementos-menu">
+                <div className="menu__elementos">
                     <ul>
                         {elementosMenu.map((elemento, index)=>(
                             <li 
                                 key={index} 
-                                className={`elemento ${isActive(elemento.link)}`} 
+                                className={`menu__elemento ${isActive(elemento.link)}`} 
                                 onClick={() => {
                                     if (elemento.onClick) {
                                         elemento.onClick()
@@ -150,7 +146,7 @@ export default function MenuLateral(){
                                 }
                             >
                                 <span>
-                                    {elemento.icono && <elemento.icono className="icono"/>}
+                                    {elemento.icono && <elemento.icono className="menu__elemento-icono"/>}
                                     {elemento.titulo}
                                 </span>
                                 {elemento.subelementos && (
@@ -158,7 +154,7 @@ export default function MenuLateral(){
                                         {elemento.subelementos.map((subelemento, subIndex)=>(
                                             <li 
                                                 key={subIndex} 
-                                                className={`subelemento ${isActive(subelemento.link)}`} 
+                                                className={`menu__subelemento ${isActive(subelemento.link)}`} 
                                                 onClick={(e) => {
                                                     e.stopPropagation()
                                                     if (subelemento.onClick) {
@@ -169,7 +165,7 @@ export default function MenuLateral(){
                                                 }}
                                             >
                                                 <span>
-                                                    {subelemento.icono && <subelemento.icono className="icono"/>}
+                                                    {subelemento.icono && <subelemento.icono className="menu__elemento-icono"/>}
                                                     {subelemento.titulo}
                                                 </span>
                                             </li>

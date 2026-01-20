@@ -1,5 +1,4 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
-import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { useEffect } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
@@ -8,8 +7,6 @@ import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página de inicio del SICA para consultar las calificaciones del semestre en curso
 export default function EnCurso(){
-    useValidarRol(['alumno']) // El usuario debe tener permiso para acceder a esta ruta
-
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const tokenDecodificado = jwtDecode(token) // Datos del token
     const [parciales, setParciales] = useState([]) // Parciales hasta el momento

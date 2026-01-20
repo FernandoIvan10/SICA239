@@ -1,14 +1,11 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import './EditarAdministrador.css'
 import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para editar usuarios administradores
 export default function EditarAdministrador() {
-    useValidarRol(['superadmin']) // El usuario debe tener permiso para acceder a esta ruta
-
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const { id } = useParams() // ID enviado por parámetro

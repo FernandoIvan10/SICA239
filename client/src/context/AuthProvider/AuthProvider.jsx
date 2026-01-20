@@ -34,7 +34,8 @@ export function AuthProvider({ children }) {
                 setUsuario({
                     id: tokenDecodificado.id,
                     nombre: tokenDecodificado.nombre,
-                    rol: tokenDecodificado.rol
+                    rol: tokenDecodificado.rol,
+                    requiereCambioContrasena: tokenDecodificado.requiereCambioContrasena
                 })
             }
         }catch(error){
@@ -52,7 +53,8 @@ export function AuthProvider({ children }) {
         setUsuario({
             id: tokenDecodificado.id,
             nombre: tokenDecodificado.nombre,
-            rol: tokenDecodificado.rol
+            rol: tokenDecodificado.rol,
+            requiereCambioContrasena: tokenDecodificado.requiereCambioContrasena
         })
     }
     const logout = () => { // Elimina el token y la información del usuario

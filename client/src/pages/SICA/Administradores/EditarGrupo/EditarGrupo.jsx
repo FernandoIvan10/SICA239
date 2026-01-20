@@ -1,6 +1,5 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import FormularioGrupo from '../../../../components/sica/FormularioGrupo/FormularioGrupo'
 import '../../../../assets/styles/global.css'
 import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
@@ -8,8 +7,6 @@ import { useEffect, useState } from 'react'
 
 // Página del SICA para editar grupos
 export default function EditarGrupo() {
-    useValidarRol(['superadmin', 'editor']) // El usuario debe tener permiso para acceder a esta ruta
-
     const [materias, setMaterias] = useState([])
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión

@@ -1,14 +1,11 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import FormularioGrupo from '../../../../components/sica/FormularioGrupo/FormularioGrupo'
 import { useEffect, useState } from 'react'
-import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { useNavigate } from 'react-router-dom'
 import '../../../../assets/styles/global.css'
 
 // Página del SICA para agregar grupos
 export default function AgregarGrupo() {
-    useValidarRol(['superadmin','editor']) // El usuario debe tener permiso para acceder a esta ruta
-
     const navigate = useNavigate() // Para redirigir al usuario
     const [materias, setMaterias] = useState([])
     const token = localStorage.getItem('token') // Token de inicio de sesión

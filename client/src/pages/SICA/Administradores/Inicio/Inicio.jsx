@@ -3,13 +3,10 @@ import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import Bienvenida from '../../../../components/sica/Bienvenida/Bienvenida'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import '../../../../assets/styles/global.css'
 
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
-    useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
-
     const navigate = useNavigate() // Para redireccionar a los usuarios
     const token = localStorage.getItem('token') // Token de inicio de sesión        
     const [nombreUsuario, setNombreUsuario] = useState('') // Nombre del usuario

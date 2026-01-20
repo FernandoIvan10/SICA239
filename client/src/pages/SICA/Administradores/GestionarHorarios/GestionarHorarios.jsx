@@ -1,6 +1,5 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import { useEffect, useState } from 'react'
-import { useValidarRol } from '../../../../hooks/useValidarRol/useValidarRol'
 import { jwtDecode } from 'jwt-decode'
 import '../../../../assets/styles/global.css'
 import './GestionarHorarios.css'
@@ -8,8 +7,6 @@ import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del sica para gestionar los horarios de los grupos
 export default function GestionarHorarios(){
-    useValidarRol(['superadmin', 'editor', 'lector']) // El usuario debe tener permiso para acceder a esta ruta
-
     const token = localStorage.getItem('token') // Token de inicio de sesión
     const tokenDecodificado = jwtDecode(token) // Datos del token
     const [grupos, setGrupos] = useState([]) // Grupos del sistema

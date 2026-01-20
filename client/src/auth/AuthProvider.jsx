@@ -1,13 +1,12 @@
-import { jwtDecode } from "jwt-decode"
+import { jwtDecode } from 'jwt-decode'
 import { 
     createContext,
-    useContext,
     useEffect,
     useMemo,
     useState
-} from "react"
+} from 'react'
 
-const AuthContext = createContext()
+export const AuthContext = createContext(null)
 
 // Proveedor de autenticación
 export function AuthProvider({ children }) {
@@ -76,12 +75,4 @@ export function AuthProvider({ children }) {
             {children}
         </AuthContext.Provider>
     )
-}
-
-export function useAuth() { // Hook para usar el contexto de autenticación
-    const context = useContext(AuthContext)
-    if (!context) {
-        throw new Error('useAuth debe usarse dentro de un AuthProvider')
-    }
-    return context
 }

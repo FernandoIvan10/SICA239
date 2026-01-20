@@ -1,6 +1,7 @@
 import {Navigate, Outlet} from "react-router-dom"
-import {useAuth} from "../context/AuthProvider/AuthProvider.jsx"
+import {useAuth} from "../auth/useAuth"
 
+// Componente para proteger rutas que requieren autenticación
 export function RequiereAuth() {
   const { user, loading } = useAuth()
 

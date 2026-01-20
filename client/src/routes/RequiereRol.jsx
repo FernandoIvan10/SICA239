@@ -1,5 +1,5 @@
 import {Navigate, Outlet} from "react-router-dom"
-import {useAuth} from "../context/AuthProvider/AuthProvider.jsx"
+import {useAuth} from "../auth/useAuth"
 
 // Componente que protege rutas basado en autenticación y roles
 export function RequiereRol({roles, children}) {

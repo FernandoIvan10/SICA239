@@ -10,11 +10,11 @@ export function RequiereRol({roles, children}) {
         return <Navigate to="/SICA/iniciar-sesion" replace />
     }
 
-    if(user.requiereCambioContrasena) { // Se necesita cambiar la contraseña por primera vez
+    if(usuario.requiereCambioContrasena) { // Se necesita cambiar la contraseña por primera vez
         return <Navigate to="/SICA/primer-cambio-contrasena" replace />
     }
 
-    if(roles && !roles.includes(user.rol)) { // Se necesita un rol con permisos
+    if(roles && !roles.includes(usuario.rol)) { // Se necesita un rol con permisos
         return <Navigate to="/SICA/iniciar-sesion" replace />
     }
 

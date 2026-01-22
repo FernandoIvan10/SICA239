@@ -3,11 +3,11 @@ import {useAuth} from "../auth/useAuth"
 
 // Componente para proteger rutas que requieren autenticación
 export function RequiereAuth() {
-  const { user, loading } = useAuth()
+  const { usuario, cargando } = useAuth()
 
-  if (loading) return null
+  if (cargando) return null
 
-  if (!user) {
+  if (!usuario) {
     return <Navigate to="/SICA/iniciar-sesion" replace />
   }
 

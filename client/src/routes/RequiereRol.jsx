@@ -3,10 +3,10 @@ import {useAuth} from "../auth/useAuth"
 
 // Componente que protege rutas basado en autenticación y roles
 export function RequiereRol({roles, children}) {
-    const {user, loading} = useAuth()
-    if (loading) return null
+    const {usuario, cargando} = useAuth()
+    if (cargando) return null
 
-    if(!user) { // Se necesita iniciar sesión
+    if(!usuario) { // Se necesita iniciar sesión
         return <Navigate to="/SICA/iniciar-sesion" replace />
     }
 

@@ -21,14 +21,13 @@ export default function Login(){
     const [error, setError] = useState('') // Manejo de errores
 
     useEffect(() => {
-        if(cargando) return null
-        if(!usuario) return null
-            
-        // Si el usuario ya ha iniciado sesión, se le redirige a la página principal   
-        if(usuario.rol === 'alumno'){
-            navigate('/SICA/alumnos/inicio', {replace: true})
-        }else{
-            navigate('/SICA/administradores/inicio', {replace: true})
+        if(!cargando && usuario) {
+            // Si el usuario ya ha iniciado sesión, se le redirige a la página principal   
+            if(usuario.rol === 'alumno'){
+                navigate('/SICA/alumnos/inicio', {replace: true})
+            }else{
+                navigate('/SICA/administradores/inicio', {replace: true})
+            }
         }
     }, [cargando, usuario, navigate])
 
@@ -48,13 +47,6 @@ export default function Login(){
             // La sesión es almacenada
             const {token} = datos
             login(token)
-
-            // El usuario es redirigido al sistema
-            if (pestanaActiva === 'alumno') {
-                navigate('/SICA/alumnos/inicio')
-            }else{
-                navigate('/SICA/administradores/inicio')
-            }
         }catch(error){
             console.error('Error al iniciar sesión:', error)
             setError(error.message || 'Error al iniciar sesión')

@@ -2,9 +2,9 @@ import {Navigate, Outlet} from "react-router-dom"
 import {useAuth} from "../auth/useAuth"
 
 // Componente que protege rutas basado en autenticación y roles
-export function RequiereRol({roles, children}) {
+export function RequiereRol({roles}) {
     const {usuario, cargando} = useAuth()
-    if (cargando) return null
+    if (cargando) return <div></div>
 
     if(!usuario) { // Se necesita iniciar sesión
         return <Navigate to="/SICA/iniciar-sesion" replace />
@@ -18,9 +18,5 @@ export function RequiereRol({roles, children}) {
         return <Navigate to="/SICA/iniciar-sesion" replace />
     }
 
-    if(!children) { // Renderizar rutas hijas
-        return <Outlet />
-    }
-
-    return children // Renderizar componente protegido
+    return <Outlet />
 }

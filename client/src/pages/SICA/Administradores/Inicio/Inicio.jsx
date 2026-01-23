@@ -7,55 +7,40 @@ import '../../../../assets/styles/global.css'
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
     const {usuario} = useAuth() // Usuario autenticado
-    const [mensaje, setMensaje] = useState('') // Mensaje de bienvenida
-    // Botones para acciones rápidas
-    const [boton1, setBoton1] = useState({})
-    const [boton2, setBoton2] = useState({})
-
-    useEffect(() => { // Se asigna un mensaje de bienvenida distinto dependiendo del rol
-        if(usuario.rol === 'superadmin'){
-            setMensaje('Este es el sistema de calificaciones, aquí podrás gestionar los usuarios del sistema, gestionar los grupos y subir las calificaciones de los alumnos')
-            setBoton1({
-                texto:'Agregar usuario', 
-                link:'/SICA/administradores/agregar-usuario'
-            })
-            setBoton2({
-                texto:'Ver usuarios', 
-                link:'/SICA/administradores/ver-usuarios'
-            })
-        }else if(usuario.rol==='editor'){
-            setMensaje('Este es el sistema de calificaciones, aquí podrás gestionar los alumnos del sistema, gestionar los grupos y subir las calificaciones de los alumnos')
-            setBoton1({
-                texto:'Subir calificaciones', 
-                link:'/SICA/administradores/calificaciones'
-            })
-            setBoton2({
-                texto:'Ver grupos', 
-                link:'/SICA/administradores/ver-grupos'
-            })
-        } else if(usuario.rol==='lector'){
-            setMensaje('Este es el sistema de calificaciones, aquí podrás consultar los alumnos del sistema, las calificaciones, y los grupos')
-            setBoton1({
-                texto:'Ver calificaciones', 
-                link:'/SICA/administradores/calificaciones'
-            })
-            setBoton2({
-                texto:'Ver usuarios', 
-                link:'/SICA/administradores/ver-usuarios'
-            })
+    
+    const configuracionPorRol = {
+        superadmin: {
+            mensaje: 'Este es el sistema de calificaciones, aquí podrás gestionar los usuarios del sistema, gestionar los grupos y subir las calificaciones de los alumnos',
+            boton1: { texto: 'Agregar usuario', link: '/SICA/administradores/agregar-usuario' },
+            boton2: { texto: 'Ver usuarios', link: '/SICA/administradores/ver-usuarios' }
+        },
+        editor: {
+            mensaje: 'Este es el sistema de calificaciones, aquí podrás gestionar los alumnos del sistema, gestionar los grupos y subir las calificaciones de los alumnos',
+            boton1: { texto: 'Subir calificaciones', link: '/SICA/administradores/calificaciones' },
+            boton2: { texto: 'Ver grupos', link: '/SICA/administradores/ver-grupos' }
+        },
+        lector: {
+            mensaje: 'Este es el sistema de calificaciones, aquí podrás consultar los alumnos del sistema, las calificaciones, y los grupos',
+            boton1: { texto: 'Ver calificaciones', link: '/SICA/administradores/calificaciones' },
+            boton2: { texto: 'Ver usuarios', link: '/SICA/administradores/ver-usuarios' }
         }
-    }, [usuario])
+    }
+
+    // Si usuario no existe, no renderizar nada aún
+    if (!usuario) return <div></div>
+
+    const configuracion = configuracionPorRol[usuario.rol] || {}
 
     return(
         <div className='contenedor-principal'>
             <MenuLateral/>
             <Bienvenida 
                 nombre={usuario.nombre}
-                mensaje={mensaje}
-                boton1={boton1.texto}
-                link1={boton1.link}
-                boton2={boton2.texto}
-                link2={boton2.link}
+                mensaje={configuracion.mensaje || ''}
+                boton1={configuracion.boton1?.texto || ''}
+                link1={configuracion.boton1?.link || '#'}
+                boton2={configuracion.boton2?.texto || ''}
+                link2={configuracion.boton2?.link || '#'}
             />
         </div>
     )

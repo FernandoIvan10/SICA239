@@ -7,6 +7,9 @@ import '../../../../assets/styles/global.css'
 export default function InicioAlumno(){
     const {usuario} = useAuth() // Usuario autenticado
 
+    // Si usuario no existe, no renderizar nada aún
+    if (!usuario) return <div></div>
+
     return(
         <div className="contenedor-principal">
             <MenuLateral/>

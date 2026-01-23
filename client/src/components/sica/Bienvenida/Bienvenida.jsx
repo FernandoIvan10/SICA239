@@ -14,19 +14,27 @@ export default function Bienvenida({
 }){
     return(
         <div className={`contenido-principal ${className ?? ""}`}>
-            <h2 className="bienvenida__titulo">¡Bienvenido, {nombre}!</h2>
-            <p className="bienvenida__mensaje">{mensaje}</p>
+                <h2 className="bienvenida__titulo">¡Bienvenido, {nombre && {nombre}}!</h2>
+            {mensaje &&
+                <p className="bienvenida__mensaje">{mensaje}</p>
+            }
             <div className="bienvenida__seccion-botones">
-                <Link 
-                    to={link1} 
-                    className="bienvenida__boton">
+                {link1 && boton1 &&
+                    <Link 
+                        to={link1} 
+                        className="bienvenida__boton"
+                    >
                         {boton1}
-                </Link>
-                <Link 
-                    to={link2} 
-                    className="bienvenida__boton">
+                    </Link>
+                }
+                {link2 && boton2 &&
+                    <Link 
+                        to={link2} 
+                        className="bienvenida__boton"
+                    >
                         {boton2}
-                </Link>
+                    </Link>
+                }
             </div>
         </div>
     )

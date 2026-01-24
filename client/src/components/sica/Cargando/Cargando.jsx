@@ -1,4 +1,4 @@
-import '../../assets/styles/global.css'
+import '../../../assets/styles/global.css'
 import './Cargando.css'
 
 // Componente que renderiza un indicador de carga

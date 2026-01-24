@@ -2,13 +2,14 @@ import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import Bienvenida from '../../../../components/sica/Bienvenida/Bienvenida'
 import { useAuth } from '../../../../auth/useAuth'
 import '../../../../assets/styles/global.css'
+import Cargando from '../../../../components/cargando/Cargando'
 
 // Página de inicio del SICA para alumnos
 export default function InicioAlumno(){
     const {usuario} = useAuth() // Usuario autenticado
 
     // Si usuario no existe, no renderizar nada aún
-    if (!usuario) return <div></div>
+    if (!usuario) return <Cargando/>
 
     return(
         <div className="contenedor-principal">

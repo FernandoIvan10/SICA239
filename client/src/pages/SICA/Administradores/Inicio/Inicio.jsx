@@ -1,8 +1,8 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import Bienvenida from '../../../../components/sica/Bienvenida/Bienvenida'
-import { useEffect, useState } from 'react'
 import { useAuth } from '../../../../auth/useAuth'
 import '../../../../assets/styles/global.css'
+import Cargando from '../../../../components/cargando/Cargando'
 
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
@@ -27,7 +27,7 @@ export default function InicioAdmin(){
     }
 
     // Si usuario no existe, no renderizar nada aún
-    if (!usuario) return <div></div>
+    if (!usuario) return <Cargando/>
 
     const configuracion = configuracionPorRol[usuario.rol] || {}
 

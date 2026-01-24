@@ -1,11 +1,12 @@
 import {Navigate, Outlet} from "react-router-dom"
 import {useAuth} from "../auth/useAuth"
+import Cargando from "../components/cargando/Cargando"
 
 // Componente para proteger rutas que requieren autenticación
 export function RequiereAuth() {
   const { usuario, cargando } = useAuth()
 
-  if (cargando) return null
+  if (cargando) return <Cargando mensaje="Verificando autenticación..." />
 
   if (!usuario) {
     return <Navigate to="/SICA/iniciar-sesion" replace />

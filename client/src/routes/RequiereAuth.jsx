@@ -1,6 +1,6 @@
 import {Navigate, Outlet} from "react-router-dom"
 import {useAuth} from "../auth/useAuth"
-import Cargando from "../components/cargando/Cargando"
+import Cargando from "../components/sica/Cargando/Cargando"
 
 // Componente para proteger rutas que requieren autenticación
 export function RequiereAuth() {

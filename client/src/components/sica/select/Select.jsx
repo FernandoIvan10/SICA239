@@ -7,6 +7,7 @@ export default function Select({
     value,
     onChange,
     options,
+    required
 }){
     return(
         <div className={className}>
@@ -14,6 +15,7 @@ export default function Select({
             <select 
                 value={value}
                 onChange={onChange}
+                required={required || false}
             >
                 {options.map((option) => (
                     <option value={option.value ?? option}>

@@ -7,7 +7,8 @@ export default function Input({
     type,
     placeholder,
     value,
-    onChange
+    onChange,
+    required
 }) {
     return(
         <div className={className}>
@@ -16,7 +17,8 @@ export default function Input({
                 type={type} 
                 placeholder={placeholder}
                 value={value}
-                onChange={onChange}/>
+                onChange={onChange}
+                required={required || false}/>
         </div>
     )
 }

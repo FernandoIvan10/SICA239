@@ -1,28 +1,26 @@
+import BarraNavegacion from '../../../components/sitio_web/BarraNavegacion/BarraNavegacion'
+import FormularioInicioSesion from '../../../components/sica/Formulario/FormularioInicioSesion'
 import { useAuth } from '../../../auth/useAuth'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import BarraNavegacion from '../../../components/sitio_web/BarraNavegacion/BarraNavegacion'
-import FormularioInicioSesion from '../../../components/sica/Formulario/FormularioInicioSesion'
 import { iniciarSesion } from '../../../api/auth.api'
 import { FaUserCircle } from 'react-icons/fa'
 import './Login.css'
 
 // Página para iniciar sesión
 export default function Login(){
-    const navigate = useNavigate()
-    const {usuario, cargando, login} = useAuth()
-
-    // Hooks
     const [pestanaActiva, setPestanaActiva] = useState('alumno') // Alternar entre pestañas
     const [usuarioAlumno, setUsuarioAlumno] = useState('')
     const [usuarioAdmin, setUsuarioAdmin] = useState('')
     const [contrasenaAlumno, setContrasenaAlumno] = useState('')
     const [contrasenaAdmin, setContrasenaAdmin] = useState('')
-    const [error, setError] = useState('') // Manejo de errores
+    const [error, setError] = useState('')
 
-    useEffect(() => {
+    const navigate = useNavigate()
+    const {usuario, cargando, login} = useAuth()
+
+    useEffect(() => { // Se redirige a su panel si el usuario ya ha iniciado sesión
         if(!cargando && usuario) {
-            // Si el usuario ya ha iniciado sesión, se le redirige a la página principal   
             if(usuario.rol === 'alumno'){
                 navigate('/SICA/alumnos/inicio', {replace: true})
             }else{

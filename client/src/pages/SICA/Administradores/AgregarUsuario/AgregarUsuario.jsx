@@ -1,140 +1,111 @@
-import {jwtDecode} from 'jwt-decode'
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import FormularioAlumno from '../../../../components/sica/FormularioAlumno/FormularioAlumno'
+import FormularioAdmin from '../../../../components/sica/FormularioAdmin/FormularioAdmin'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../../auth/useAuth'
+import { obtenerGrupos } from '../../../../api/grupos.api'
+import { guardarAlumno } from '../../../../api/alumnos.api'
+import { guardarAdministrador } from '../../../../api/admins.api'
+import { obtenerMaterias } from '../../../../api/materias.api'
 import '../../../../assets/styles/global.css'
 import './AgregarUsuario.css'
-import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para agregar usuarios 
 export default function AgregarUsuario(){
-    const navigate = useNavigate() // Para redirigir al usuario
-    const token = localStorage.getItem('token') // Token de inicio de sesión
-    const [rol, setRol] = useState('') // Tipo de usuario
-    const [tipoUsuario, setTipoUsuario] = useState('alumno') // Pestaña activa del formulario
     const [grupos, setGrupos] = useState([]) // Grupos de la BD
+    const [materias, setMaterias] = useState([]) // Materias de la BD
+    const [pestanaActiva, setPestanaActiva] = useState('alumno') // Pestaña activa del formulario
+    const [esperandoRespuesta, setEsperandoRespuesta] = useState(true)
+    const [error, setError] = useState(null)
+    const [exito, setExito] = useState(null)
+    
+    const navigate = useNavigate()
+    const {cargando, usuario} = useAuth()
 
-    // Hooks para el formulario de administradores
-    const [RFC, setRFC] = useState('')
-    const [nombreAdmin, setNombreAdmin] = useState('')
-    const [apellidoAdmin, setApellidoAdmin] = useState('')
-    const [rolAdmin, setRolAdmin] = useState('lector')
+    useEffect(() => { // Se necesitan los grupos y materias para asignarlos a los alumnos
+        const cargarGrupos = async () => {
+            try {
+                const respuesta = await obtenerGrupos()
+                const listaGrupos = [...(respuesta?.grupos ?? [])]
+                    .sort((a, b) => a.nombre.localeCompare(b.nombre))
 
-    // Hooks para el formulario de alumnos
-    const [matricula, setMatricula] = useState('')
-    const [nombreAlumno, setNombreAlumno] = useState('')
-    const [apellidoAlumno, setApellidoAlumno] = useState('')
-    const [grupo, setGrupo] = useState('')
-    const [materiasRecursadas, setMateriasRecursadas] = useState([])
-    const [materiaSeleccionada, setMateriaSeleccionada] = useState('')
-
-    useEffect(() => { // Se obtiene el tipo de usuario del token de inicio de sesión
-        try{
-            const tokenDecodificado = jwtDecode(token)
-            setRol(tokenDecodificado.rol)
-        }catch(error){
-            console.log(error)
-            localStorage.removeItem('token')
-            navigate('/SICA/iniciar-sesion')
+                setGrupos(listaGrupos)
+            } catch (error) {
+                console.error('Error al obtener grupos:', error)
+                setError(error.message || 'Error al obtener grupos')
+            }finally {
+                setEsperandoRespuesta(false)
+            }
         }
-    })
 
-    useEffect(() => { // Se obtienen los grupos de la BD para mostrarlos en el formulario
-        fetch('http://localhost:3000/api/grupos', {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        const cargarMaterias = async () => {
+            try{
+                const respuesta = await obtenerMaterias()
+                const listaMaterias = [...(respuesta?.materias ?? [])]
+                    .sort((a, b) => a.nombre.localeCompare(b.nombre))
+
+                setMaterias(listaMaterias)
+            } catch (error) {
+                console.error('Error al obtener materias:', error)
+                setError(error.message || 'Error al obtener materias')
             }
-        })
-        .then(async res => {
-            const data = await res.json()
-            if (!res.ok) {
-                alert(data.message || 'Error al obtener grupos')
-                setGrupos([])
-                return
-            }
-            return data
-        })
-        .then(data => {
-            let listaGrupos = data.grupos
-            listaGrupos.sort((a, b) => { // Los grupos deben estar ordenados por nombre
-                return a.nombre.localeCompare(b.nombre)
-            })
-            setGrupos(listaGrupos)
-        })
-        .catch(err => {
-            console.error('Error al obtener grupos:', err)
-            alert('No se pudo conectar con el servidor')
-            setGrupos([])
-        })
+        }
+        cargarGrupos()
+        cargarMaterias()
     }, [])
 
-    // Función para guardar el nuevo administrador en la BD
-    const agregarAdmin = () => {
-        fetch('http://localhost:3000/api/admins', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-        	rfc: RFC,
-		    nombre: nombreAdmin,
-            apellido: apellidoAdmin,
+    // Método para guardar el nuevo administrador en la BD
+    const agregarAdmin = async (RFC, nombre, apellido, rol) => {
+        setEsperandoRespuesta(true)
+        setError(null)
+        setExito(null)
+
+        const datosAdmin = {
+            rfc: RFC,
+            nombre: nombre,
+            apellido: apellido,
             contrasena: RFC, //La contraseña por default es el RFC
-            rol: rolAdmin
-	    })
-        }).then(async res => {
-            if(res.ok){
-                alert('Administrador agregado exitosamente')
-                // Se limpian los campos del formulario
-                setRFC('')
-                setNombreAdmin('')
-                setApellidoAdmin('')
-                setRolAdmin('lector')
-                return
-            }else{
-                const errorData = await res.json().catch(() => null)
-                console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.message || 'Ocurrió un error al guardar el administrador')
-                return
-            }
-        })
+            rol: rol
+        }
+
+        try{
+            await guardarAdministrador(datosAdmin)
+            setExito('Administrador guardado exitosamente')
+        }catch(error){
+            console.error('Error al guardar el administrador:', error)
+            setError(error.message || 'Ocurrió un error al guardar el administrador')
+        }finally{
+            setEsperandoRespuesta(false)
+        }
     }
 
-    // Función para guardar el nuevo alumno en la BD
-    const agregarAlumno = () => {
-        fetch('http://localhost:3000/api/alumnos', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-        	matricula: matricula,
-		    nombre: nombreAlumno,
-            apellido: apellidoAlumno,
+    // Método para guardar el nuevo alumno en la BD
+    const agregarAlumno = async (matricula, nombre, apellido, grupo, materiasRecursadas) => {
+        setEsperandoRespuesta(true)
+        setError(null)
+        setExito(null)
+
+        const datosAlumno = {
+            matricula: matricula,
+            nombre: nombre,
+            apellido: apellido,
             contrasena: matricula, //La contraseña por default es la matrícula
             grupoNombre: grupo,
             materiasRecursadas
-        })
-        }).then(async res => {
-            if(res.ok){
-                alert('Alumno agregado exitosamente')
-                // Se limpian los campos del formulario
-                setMatricula('')
-                setNombreAlumno('')
-                setApellidoAlumno('')
-                setGrupo('')
-                setMateriasRecursadas([])
-                setMateriaSeleccionada('')
-                return
-            }else{
-                const errorData = await res.json().catch(() => null)
-                console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.message || 'Ocurrió un error al guardar el alumno.')
-                return
-            }
-        })
+        }
+
+        try{
+            await guardarAlumno(datosAlumno)
+            setExito('Alumno guardado exitosamente')
+        }catch(error){
+            console.error('Error al guardar el alumno:', error)
+            setError(error.message || 'Ocurrió un error al guardar el alumno')
+        }finally{
+            setEsperandoRespuesta(false)
+        }
     }
 
     // Método para regresar a la lista de usuarios
@@ -142,236 +113,72 @@ export default function AgregarUsuario(){
         navigate('/SICA/administradores/ver-usuarios')
     }
 
-    // Los campos se cambian dependiendo de la pestaña seleccionada (alumno o administrador)
+    // El formulario cambia dependiendo de la pestaña seleccionada
     const renderFormulario = () => {
-        if (tipoUsuario === 'alumno') {
+        if (pestanaActiva === 'alumno') {
             return (
-                <form className="formulario-agregar-usuario">
-                    <h2>Agregar Alumno</h2>
-                    <div className="formulario-agregar-usuario-campo">
-                        <label className="formulario-agregar-usuario-label">Matrícula*:</label>
-                        <input
-                            className="formulario-agregar-usuario-input" 
-                            type="text" 
-                            placeholder="Ingrese la matrícula" 
-                            value={matricula}
-                            onChange={(e) => setMatricula(e.target.value)}
-                            required 
-                        />
-                    </div>
-                    <div className="formulario-agregar-usuario-campo">
-                        <label className="formulario-agregar-usuario-label">Nombre*:</label>
-                        <input 
-                            className="formulario-agregar-usuario-input"
-                            type="text" 
-                            placeholder="Ingrese el nombre" 
-                            value={nombreAlumno}
-                            onChange={(e) => setNombreAlumno(e.target.value)}
-                            required 
-                        />
-                    </div>
-                    <div className="formulario-agregar-usuario-campo">
-                        <label className="formulario-agregar-usuario-label">Apellido*:</label>
-                        <input
-                            className="formulario-agregar-usuario-input" 
-                            type="text" 
-                            placeholder="Ingrese el apellido" 
-                            value={apellidoAlumno}
-                            onChange={(e) => setApellidoAlumno(e.target.value)}
-                            required 
-                        />
-                    </div>
-                    <div className="formulario-agregar-usuario-campo">
-                        <label className="formulario-agregar-usuario-label">Grupo*:</label>
-                        <select
-                            className="formulario-agregar-usuario-select"
-                            type="text" 
-                            placeholder="Ingrese el ID del grupo" 
-                            value={grupo}
-                            onChange={(e) => setGrupo(e.target.value)}
-                            required 
-                        >
-                            <option value="">Seleccionar grupo</option>
-                                {grupos.map(grupo => (
-                                    <option key={grupo.id} value={grupo.nombre}>
-                                        {grupo.nombre}
-                                    </option>
-                                ))}
-                        </select>
-                    </div>
-                    <div className="formulario-agregar-usuario-campo-materias-recursadas">
-                        <label className="formulario-agregar-usuario-label">Materias recursadas:</label>
-                        <div className="formulario-agregar-usuario-materias-recursadas">
-                            {materiasRecursadas.map((item, index) => {
-                                const grupoObj = grupos.find(g => g._id === item.grupo)
-                                const materiaObj = grupoObj?.materias.find(m => m._id === item.materia)
-                                return (
-                                    <div key={index} className="formulario-agregar-usuario-materia-recursada">
-                                        {materiaObj?.nombre || "Materia desconocida"} - {grupoObj?.nombre || "Grupo desconocido"}
-                                        <button onClick={() => {
-                                            const nuevas = [...materiasRecursadas]
-                                            nuevas.splice(index, 1)
-                                            setMateriasRecursadas(nuevas)
-                                        }}>X</button>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                        <select
-                            className="formulario-agregar-usuario-select"
-                            value={materiaSeleccionada}
-                            onChange={(e) => setMateriaSeleccionada(e.target.value)}
-                        >
-                            <option value="">Seleccionar materia</option>
-                            {grupos.map(grupo => (
-                                grupo.materias.map(materia => (
-                                    <option
-                                        key={`${materia._id}-${grupo._id}`}
-                                        value={`${materia._id}-${grupo._id}`}
-                                    >
-                                        {materia.nombre} - {grupo.nombre}
-                                    </option>
-                                ))
-                            ))}
-                        </select>
-                        </div>
-                        <div className="formulario-agregar-usuario-contenedor-boton-agregar">
-                            <button
-                                type="button"
-                                className="formulario-agregar-usuario-boton-agregar"
-                                onClick={() => {
-                                    if (materiaSeleccionada) {
-                                        const [materia, grupo] = materiaSeleccionada.split("-")
-                                        const yaAgregada = materiasRecursadas.some(mr =>
-                                            mr.materia === materia && mr.grupo === grupo
-                                        )
-                                        if (!yaAgregada) {
-                                            setMateriasRecursadas([...materiasRecursadas, { materia, grupo }])
-                                            setMateriaSeleccionada("")
-                                        }
-                                    }
-                                }}
-                            >
-                                Agregar
-                            </button>
-                        </div>
-                    <div className="formulario-agregar-usuario-botones">
-                        <button 
-                            type="button" 
-                            className="boton-guardar"
-                            onClick={agregarAlumno}
-                        >
-                            Guardar
-                        </button>
-                        <button
-                            type="button"
-                            className="boton-cancelar"
-                            onClick={cancelar}
-                        >
-                            Cancelar
-                        </button>
-                    </div>
-                </form>
+                <FormularioAlumno
+                    grupos={grupos}
+                    materias={materias}
+                    titulo="Agregar Alumno"
+                    onSubmit={agregarAlumno}
+                    cancelar={cancelar}
+                    cargando={esperandoRespuesta}
+                    error={error}
+                    exito={exito}
+                />
             )
-        } else if (tipoUsuario === 'administrador') {
+        } else if (pestanaActiva === 'administrador') {
             return (
-                <form className="formulario-agregar-usuario">
-                    <h2>Agregar Administrador</h2>
-                    <div className="formulario-agregar-usuario-campo">
-                        <label className="formulario-agregar-usuario-label">RFC*:</label>
-                        <input
-                            className="formulario-agregar-usuario-input" 
-                            type="text" 
-                            placeholder="Ingrese el RFC" 
-                            value={RFC}
-                            onChange={(e) => setRFC(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="formulario-agregar-usuario-campo">
-                        <label className="formulario-agregar-usuario-label">Nombre*:</label>
-                        <input
-                            className="formulario-agregar-usuario-input"
-                            type="text" 
-                            placeholder="Ingrese el nombre" 
-                            value={nombreAdmin}
-                            onChange={(e) => setNombreAdmin(e.target.value)}
-                            required 
-                        />
-                    </div>
-                    <div className="formulario-agregar-usuario-campo">
-                        <label className="formulario-agregar-usuario-label">Apellido*:</label>
-                        <input
-                            className="formulario-agregar-usuario-input"
-                            type="text" 
-                            placeholder="Ingrese el apellido" 
-                            value={apellidoAdmin}
-                            onChange={(e) => setApellidoAdmin(e.target.value)}
-                            required 
-                        />
-                    </div>
-                    <div className="formulario-agregar-usuario-campo">
-                        <label className="formulario-agregar-usuario-label">Rol*:</label>
-                        <select 
-                            className="formulario-agregar-usuario-select"
-                            value={rolAdmin} 
-                            onChange={(e)=>setRolAdmin(e.target.value)} 
-                            required
-                        >
-                            <option value="superadmin">Superadmin</option>
-                            <option value="editor">Editor</option>
-                            <option value="lector">Lector</option>
-                        </select>
-                    </div>
-                    <div className="formulario-agregar-usuario-botones">
-                        <button 
-                            type="button" 
-                            className="boton-guardar"
-                            onClick={agregarAdmin}
-                        >
-                            Guardar
-                        </button>
-                        <button
-                            type="button"
-                            className="boton-cancelar"
-                            onClick={cancelar}
-                        >
-                            Cancelar
-                        </button>
-                    </div>
-                </form>
+                <FormularioAdmin
+                    titulo="Agregar Administrador"
+                    onSubmit={agregarAdmin}
+                    cancelar={cancelar}
+                    cargando={esperandoRespuesta}
+                    error={error}
+                    exito={exito}
+                />
             )
         }
     }
-
+    
+    if(cargando || !usuario){ // Mientras no hay usuario se muestra un mensaje de carga
+        return <MensajeCarga mensaje="Cargando usuario..."/>
+    }
+    
     if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
         return(
-            <MensajeCarga/>
+            <MensajeCarga mensaje="Cargando grupos..."/>
         )
     }
+
     return(
         <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Agregar Usuario</h1>
-                <div className="selector-tipo">
+                <div className="agregar-usuario__seccion-selector">
                     <button
-                        className={`btn-selector ${tipoUsuario === "alumno" ? "activo" : ""}`}
-                        onClick={() => setTipoUsuario("alumno")}
+                        className={`agregar-usuario__boton-selector ${pestanaActiva === "alumno" ? "activo" : ""}`}
+                        onClick={() => setPestanaActiva("alumno")}
                     >
                         Alumno
                     </button>
                     <button
-                        className={`btn-selector ${tipoUsuario === "administrador" ? "activo" : ""}`}
-                        onClick={() => setTipoUsuario("administrador")}
-                        disabled={rol === "editor"} // Los 'editores' no pueden agregar administradores
-                        style={rol === "editor" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+                        className={`agregar-usuario__boton-selector ${pestanaActiva === "administrador" ? "activo" : ""}`}
+                        onClick={() => setPestanaActiva("administrador")}
+                        disabled={usuario.rol === "editor"} // Los 'editores' no pueden agregar administradores
+                        style={usuario.rol === "editor" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
                     >
                         Administrador
                     </button>
                 </div>
                 {/* Renderiza el formulario según la pestaña activa */}
                 {renderFormulario()}
+                <MensajeEstado
+                    error={error}
+                    exito={exito}
+                />
             </div>
         </div>
     )

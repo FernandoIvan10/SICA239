@@ -1,5 +1,6 @@
 import './MensajeEstado.css'
 
+// Componente que renderiza mensajes de estado (error o éxito)
 export default function MensajeEstado({
     error,
     exito

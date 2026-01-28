@@ -1,6 +1,7 @@
 import Input from '../../sica/Input/Input'
 import '../../../assets/styles/global.css'
 import './FormularioInicioSesion.css'
+import MensajeEstado from '../MensajeEstado/MensajeEstado'
 
 // Componente que renderiza el formulario para iniciar sesión
 export default function FormularioInicioSesion({
@@ -33,7 +34,9 @@ export default function FormularioInicioSesion({
                     <button className="formulario-iniciar-sesion__boton">{boton.texto}</button>
             ))}
             </div>
-            {error && <p className="error">{error}</p>}
+            <MensajeEstado
+                error={error}
+            />
         </form>
     )
 }

@@ -29,32 +29,36 @@
     background-color: #f2f2f2;
 }
 
-.tabla-usuarios-boton-editar, .boton-reiniciar-contraseña {
+.tabla-usuarios__boton-editar, .tabla-usuarios__boton-reiniciar-contraseña {
     margin: 5px;
     padding: 8px 12px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    color: white;
 }
 
-.tabla-usuarios-boton-editar {
+.tabla-usuarios__boton-reiniciar-contraseña {
+    color: black;
+}
+
+.tabla-usuarios__boton-editar {
+    color: white;
     background-color: #007bff;
 }
 
-.tabla-usuarios-boton-editar:hover {
+.tabla-usuarios__boton-editar:hover {
     background-color: #0056b3;
 }
 
-.estado-alumno {
+.tabla-usuarios__estado-alumno {
   cursor: pointer;
   font-weight: 500;
 }
 
-.estado-alumno.alta {
+.tabla-usuarios__estado-alumno.alta {
   color: green;
 }
 
-.estado-alumno.baja {
+.tabla-usuarios__estado-alumno.baja {
   color: red;
 }

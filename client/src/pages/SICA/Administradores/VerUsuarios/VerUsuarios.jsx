@@ -1,97 +1,52 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { MdEdit } from 'react-icons/md'
 import { RiResetLeftLine } from 'react-icons/ri'
+import { cambiarEstadoAlumno, obtenerAlumnos, reiniciarContrasenaAlumno } from '../../../../api/alumnos.api'
+import { obtenerAdministradores, reiniciarContrasenaAdministrador } from '../../../../api/admins.api'
+import { useAuth } from '../../../../auth/useAuth'
 import './VerUsuarios.css'
-import { jwtDecode } from 'jwt-decode'
-import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para ver la lista de usuarios
 export default function VerUsuarios(){
-    const navigate = useNavigate() // Para redireccionar a los usuarios
-    const token = localStorage.getItem('token') // Token de inicio de sesión
-    const tokenDecodificado = jwtDecode(token)
     const [alumnos, setAlumnos] = useState([]) // Alumnos del sistema
     const [admins, setAdmins] = useState([]) // Administradores del sistema
-    const [usuarios, setUsuarios] = useState([]) // Lista completa de usuarios (alumnos y administradores)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [exito, setExito] = useState(null)
 
-    useEffect(() => { // Se obtienen los alumnos del backend
-        fetch('http://localhost:3000/api/alumnos', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(async res => {
-            const data = await res.json()
+    const navigate = useNavigate()
+    const {usuario, cargando} = useAuth() // usuario autenticado
 
-            if(!res.ok){
-                alert(data.message || 'Error al obtener alumnos')
-                setAlumnos([])
-                return
-            }
-
-            setAlumnos(data)
-        })
-        .catch(err => {
-            console.error('Error al obtener alumnos:', err)
-            alert('No se pudo conectar con el servidor.')
+    // Método para obtener los alumnos de la BD
+    const cargarAlumnos = async () => {
+        try{
+            const respuesta = await obtenerAlumnos()
+            setAlumnos(respuesta)
+        }catch(error){
+            console.error('Error al obtener alumnos:', error)
+            setError(error.message || 'Error al obtener alumnos')
             setAlumnos([])
-        })
-    }, [])
+        }
+    }
 
-    useEffect(() => { // Se obtienen los administradores del backend si el usuario es superadmin
-        const tokenDecodificado = jwtDecode(token)
-        if(tokenDecodificado.rol === 'superadmin'){
-            fetch('http://localhost:3000/api/admins', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(async res => {
-            const data = await res.json()
-            
-            if (!res.ok) {
-                alert(data.message || 'Error al obtener administradores')
-                setAdmins([])
-                return
-            }
-
-            setAdmins(data)
-        })
-        .catch(err => {
-            console.error('Error al obtener administradores:', err)
-            alert('No se pudo conectar con el servidor')
+    // Método para obtener los administradores de la BD
+    const cargarAdmins = async () => {
+        try{
+            const respuesta = await obtenerAdministradores()
+            setAdmins(respuesta)
+        }catch(error){
+            console.error('Error al obtener administradores:', error)
+            setError(error.message || 'Error al obtener administradores')
             setAdmins([])
-        })
         }
-    }, [])
+    }
 
-    useEffect(() => { // Se unen la lista de alumnos y la lista de administradores en una sola lista
-        let adminsConTipo = []
-        let alumnosConTipo = []
-        if(admins.length !== 0){
-            adminsConTipo = admins.map(a => ({ ...a, tipo: 'Administrador' }))
-        }
-        if(alumnos.length !== 0){
-            alumnosConTipo = alumnos.map(a => ({ ...a, tipo: 'Alumno' }))
-        }
-        let usuariosCombinados = [...adminsConTipo, ...alumnosConTipo]
-        if (tokenDecodificado.rol === 'lector') { // No se muestran los alumnos dados de baja para el admin lector
-            usuariosCombinados = usuariosCombinados.filter(u => u.activo)
-        }
-
-        usuariosCombinados.sort((a, b) => { // La lista de alumnos debe estar ordenada por grupo
-            if (a.tipo === 'Alumno' && b.tipo === 'Alumno') {
-                return a.grupoId.nombre.localeCompare(b.grupoId.nombre)
-            }
-            return 0
-        })
-
-        setUsuarios(usuariosCombinados)
-    }, [alumnos, admins])
-
-    // Método para redirigir al usuario a la página de edición del usuario seleccionado
+    // Método para redirigir a la página de edición del usuario seleccionado
     const redirigirAEdicion = (usuario) => {
         if (usuario.tipo === 'Alumno') {
         navigate(`/SICA/administradores/editar-alumno/${usuario._id}`)
@@ -101,131 +56,165 @@ export default function VerUsuarios(){
     }
 
     // Método para reiniciar la contraseña de un usuario (Que la contraseña sea su RFC o Matrícula)
-    const reiniciarContrasena = (usuario) => {
+    const reiniciarContrasena = async (usuario) => {
         const confirmacion = confirm( // El usuario debe confirmar el reinicio de contraseña
             `¿Estás seguro que quieres reiniciar la contraseña de ${usuario.nombre} (${usuario.tipo})?`
         )
         if (!confirmacion) return
-        
-        let url = ''
-        if (usuario.tipo === 'Alumno') {
-            url=`http://localhost:3000/api/alumnos/${usuario._id}/contrasena/reinicio`
-        } else if (usuario.tipo === "Administrador") {
-            url=`http://localhost:3000/api/admins/${usuario._id}/contrasena/reinicio`
-        }
 
-        fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`
+        try {
+            setLoading(true)
+
+            if (usuario.tipo === 'Alumno') {
+                await reiniciarContrasenaAlumno(usuario._id)
+            } else if (usuario.tipo === "Administrador") {
+                await reiniciarContrasenaAdministrador(usuario._id)
             }
-        })
-        .then(async res => {
-            const data = await res.json()
-            if(!res.ok){
-                console.error(await res.json().catch(()=>null))
-                alert(data.message || 'Ocurrió un error al reiniciar la contraseña')
-                return
-            }
-                alert('Contraseña reiniciada correctamente')
-        })
-        .catch(err => {
-            console.error('Error al reiniciar constraseña:', err)
-            alert('No se pudo conectar con el servidor')
-        })
+
+            setExito(`Contraseña de ${usuario.nombre} reiniciada correctamente`)
+        } catch (error) {
+            console.error('Error al reiniciar constraseña:', error)
+            setError(error.message || 'Ocurrió un error al reiniciar contraseña')
+        }finally {
+            setLoading(false)
+        }
     }
 
     // Método para dar de baja o de alta a un alumno
-    const cambiarEstado = (usuario) => {
+    const cambiarEstado = async (usuario) => {
         const confirmacion = confirm( // El usuario debe confirmar el cambio de estado
             `¿Estás seguro que quieres cambiar el estado de ${usuario.nombre}?`
         )
         if (!confirmacion) return
 
-        fetch(`http://localhost:3000/api/alumnos/${usuario._id}/estado`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(async res => {
-            const data = await res.json()
-            if(!res.ok){
-                console.error(await res.json().catch(()=>null))
-                alert(data.message || 'Ocurrió un error al cambiar el estado del alumno')
-                return
-            }
-                setUsuarios(prev =>
-                    prev.map(u =>
-                        u._id === usuario._id ? { ...u, activo: !u.activo } : u
-                    )
+        try{
+            setLoading(true)
+            await cambiarEstadoAlumno(usuario._id)
+            setAlumnos(prevAlumnos => 
+                prevAlumnos.map(alumno => 
+                    alumno._id === usuario._id
+                        ? {...alumno, activo: !alumno.activo}
+                        : alumno
                 )
-                alert('Estado cambiado correctamente')
+            )
+            setExito(`Estado de ${usuario.nombre} cambiado correctamente`)
+        }catch(error){
+            console.error('Error al cambiar estado del alumno:', error)
+            setError(error.message || 'Ocurrió un error al cambiar el estado del alumno')
+        }finally{
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => { // Se cargan los usuarios cuando el componente se monta
+        if(!cargando && usuario){
+            cargarAlumnos()
+            if(usuario.rol === 'superadmin'){ // Solo los superadministradores pueden ver a los administradores
+                cargarAdmins()
+            }
+            setLoading(false)
+        }
+    }, [usuario])
+
+    const usuarios = useMemo(() => { // Arreglo de usuarios (alumnos y administradores)
+        let adminsConTipo = admins.map(a => ({
+            ...a,
+            tipo: 'Administrador' 
+        }))
+
+        let alumnosConTipo = alumnos.map(a => ({
+            ...a,
+            tipo: 'Alumno' 
+        }))
+
+        let combinados = [...adminsConTipo, ...alumnosConTipo]
+
+        if(usuario.rol === 'lector'){ // Si el usuario es lector, solo se muestran los alumnos activos
+            combinados = combinados.filter(u => u.activo)
+        }
+
+        return combinados.sort((a, b) => {
+            if (a.tipo === 'Alumno' && b.tipo === 'Alumno') {
+                return a.grupoId.nombre.localeCompare(b.grupoId.nombre)
+            }
+            return 0
         })
-        .catch(err => {
-            console.error('Error al cambiar el estado del alumno:', err)
-            alert('No se pudo conectar con el servidor.')
-        })
+    }, [admins, alumnos, usuario.rol])
+
+    if(!usuario || cargando){ // Si no hay usuario autenticado o se está cargando, se muestra un mensaje de carga
+        return <MensajeCarga/>
     }
 
     if(usuarios.length === 0){ // Mientras no haya usuarios cargados se muestra un mensaje de carga
-        return(
-            <MensajeCarga/>
-        )
+        return <MensajeCarga mensaje="Obteniendo usuarios..."/>
     }
+
     return(
         <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
-                <h1>{tokenDecodificado.rol === "superadmin" ? "Lista de Usuarios" : "Lista de alumnos"}</h1>
+                <h1>{usuario.rol === "superadmin" ? "Lista de Usuarios" : "Lista de alumnos"}</h1>
+                <MensajeEstado 
+                    error={error} 
+                    exito={exito}
+                />
                 <table className="tabla-usuarios">
                     <thead>
                         <tr>
                             <th>#</th>
-                            {tokenDecodificado.rol === "superadmin" && <th>Tipo</th>}
-                            <th>{tokenDecodificado.rol === "superadmin" ? "Matrícula/RFC" : "Matrícula"}</th>
+                            {usuario.rol === "superadmin" && <th>Tipo</th>}
+                            <th>{usuario.rol === "superadmin" ? "Matrícula/RFC" : "Matrícula"}</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
-                            <th>{tokenDecodificado.rol === "superadmin" ? "Grupo/Rol" : "Grupo"}</th>
-                            {tokenDecodificado.rol !== "lector" && <th>Editar</th>}
-                            {tokenDecodificado.rol !== "lector" && <th>Reiniciar Contraseña</th>}
-                            {tokenDecodificado.rol !== "lector" && <th>Alta/Baja</th>}
+                            <th>{usuario.rol === "superadmin" ? "Grupo/Rol" : "Grupo"}</th>
+                            {usuario.rol !== "lector" && <th>Editar</th>}
+                            {usuario.rol !== "lector" && <th>Reiniciar Contraseña</th>}
+                            {usuario.rol !== "lector" && <th>Alta/Baja</th>}
                         </tr>
                     </thead>
                     <tbody>
-                        {usuarios.map((usuario, index) => (
-                            <tr key={usuario._id || usuario.id || index}>
+                        {usuarios.map((u, index) => (
+                            <tr key={u._id || u.id || index}>
                                 <td>{index + 1}</td>
-                                {tokenDecodificado.rol === "superadmin" && <td>{usuario.tipo}</td>}
-                                <td>{usuario.tipo === "Alumno" ? usuario.matricula : usuario.rfc}</td>
-                                <td>{usuario.nombre}</td>
-                                <td>{usuario.apellido}</td>
-                                <td>{usuario.tipo === "Alumno" ? usuario.grupoId.nombre : usuario.rol}</td>
-                                {tokenDecodificado.rol !== "lector" && 
+                                {usuario.rol === "superadmin" && <td>{u.tipo}</td>}
+                                <td>{u.tipo === "Alumno" ? u.matricula : u.rfc}</td>
+                                <td>{u.nombre}</td>
+                                <td>{u.apellido}</td>
+                                <td>{u.tipo === "Alumno" ? u.grupoId.nombre : u.rol}</td>
+                                {usuario.rol !== "lector" && 
                                     <td>
-                                        <MdEdit className="tabla-usuarios-boton-editar" onClick={() => redirigirAEdicion(usuario)}/>
+                                        <MdEdit 
+                                            className="tabla-usuarios__boton-editar" 
+                                            onClick={() => redirigirAEdicion(u)}
+                                            disabled={loading}
+                                        />
                                     </td>
                                 }
-                                {tokenDecodificado.rol !== "lector" && 
+                                {usuario.rol !== "lector" && 
                                     <td>
-                                        <RiResetLeftLine className="boton-reiniciar-contrasena" onClick={() => reiniciarContrasena(usuario)}/>
+                                        <RiResetLeftLine
+                                            className="tabla-usuarios__boton-reiniciar-contraseña"
+                                            onClick={() => reiniciarContrasena(u)}
+                                            disabled={loading}
+                                        />
                                     </td>
                                 }
-                                {tokenDecodificado.rol !== "lector" && (
+                                {usuario.rol !== "lector" && (
                                     <td
                                         onClick={() => {
-                                            if (usuario.tipo === "Alumno") {
-                                                cambiarEstado(usuario)
+                                            if (u.tipo === "Alumno") {
+                                                cambiarEstado(u)
                                             }
                                         }}
-                                        className={`estado-alumno ${
-                                            usuario.tipo === "Alumno"
-                                                ? (usuario.activo ? "baja" : "alta")
+                                        className={`tabla-usuarios__estado-alumno ${
+                                            u.tipo === "Alumno"
+                                                ? (u.activo ? "baja" : "alta")
                                                 : ""
                                         }`}
+                                        disabled={loading}
                                     >
-                                        {usuario.tipo === "Alumno"
-                                            ? (usuario.activo ? "Dar de baja" : "Dar de alta")
+                                        {u.tipo === "Alumno"
+                                            ? (u.activo ? "Dar de baja" : "Dar de alta")
                                             : ""}
                                     </td>
                                 )}

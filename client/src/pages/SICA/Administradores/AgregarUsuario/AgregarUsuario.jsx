@@ -25,37 +25,33 @@ export default function AgregarUsuario(){
     const navigate = useNavigate()
     const {cargando, usuario} = useAuth()
 
-    useEffect(() => { // Se necesitan los grupos y materias para asignarlos a los alumnos
-        const cargarGrupos = async () => {
-            try {
-                const respuesta = await obtenerGrupos()
-                const listaGrupos = [...(respuesta?.grupos ?? [])]
-                    .sort((a, b) => a.nombre.localeCompare(b.nombre))
+    // Método para obtener los grupos de la BD
+    const cargarGrupos = async () => {
+        try {
+            const respuesta = await obtenerGrupos()
+            const listaGrupos = [...(respuesta?.grupos ?? [])]
+                .sort((a, b) => a.nombre.localeCompare(b.nombre))
 
-                setGrupos(listaGrupos)
-            } catch (error) {
-                console.error('Error al obtener grupos:', error)
-                setError(error.message || 'Error al obtener grupos')
-            }finally {
-                setEsperandoRespuesta(false)
-            }
+            setGrupos(listaGrupos)
+        } catch (error) {
+            console.error('Error al obtener grupos:', error)
+            setError(error.message || 'Error al obtener grupos')
         }
+    }
 
-        const cargarMaterias = async () => {
-            try{
-                const respuesta = await obtenerMaterias()
-                const listaMaterias = [...(respuesta?.materias ?? [])]
-                    .sort((a, b) => a.nombre.localeCompare(b.nombre))
+    // Método para obtener las materias de la BD
+    const cargarMaterias = async () => {
+        try{
+            const respuesta = await obtenerMaterias()
+            const listaMaterias = [...(respuesta?.materias ?? [])]
+                .sort((a, b) => a.nombre.localeCompare(b.nombre))
 
-                setMaterias(listaMaterias)
-            } catch (error) {
-                console.error('Error al obtener materias:', error)
-                setError(error.message || 'Error al obtener materias')
-            }
+            setMaterias(listaMaterias)
+        } catch (error) {
+            console.error('Error al obtener materias:', error)
+            setError(error.message || 'Error al obtener materias')
         }
-        cargarGrupos()
-        cargarMaterias()
-    }, [])
+    }
 
     // Método para guardar el nuevo administrador en la BD
     const agregarAdmin = async (RFC, nombre, apellido, rol) => {
@@ -141,7 +137,13 @@ export default function AgregarUsuario(){
             )
         }
     }
-    
+
+    useEffect(() => { // Se necesitan los grupos y materias para asignarlos a los alumnos
+        cargarGrupos()
+        cargarMaterias()
+        setEsperandoRespuesta(false)
+    }, [])
+
     if(cargando || !usuario){ // Mientras no hay usuario se muestra un mensaje de carga
         return <MensajeCarga mensaje="Cargando usuario..."/>
     }

@@ -14,7 +14,8 @@ export default function FormularioAdmin({
     onSubmit,
     cancelar,
     cargando,
-    exito
+    exito,
+    rfcDisabled
 }){
     const [RFCAdmin, setRFCAdmin] = useState(RFC || '')
     const [nombreAdmin, setNombreAdmin] = useState(nombre || '')
@@ -47,6 +48,7 @@ export default function FormularioAdmin({
                 value={RFCAdmin}
                 onChange={(e) => setRFCAdmin(e.target.value)}
                 required={true}
+                disabled={rfcDisabled || false}
             />
             <Input
                 className="formulario-admin__campo"

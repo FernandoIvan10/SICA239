@@ -3,21 +3,23 @@ import '../../../assets/styles/global.css'
 // Componente que renderiza un campo básico de entrada de datos
 export default function Input({
     className,
-    texto,
+    label,
     type,
     placeholder,
     value,
     onChange,
-    required
+    required,
+    disabled
 }) {
     return(
         <div className={className}>
-            <label>{texto}</label>
+            <label>{label}</label>
             <input 
                 type={type} 
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
+                disabled={disabled || false}
                 required={required || false}/>
         </div>
     )

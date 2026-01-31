@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import '../../../assets/styles/global.css'
 import './FormularioGrupo.css'
 import Input from '../../sica/Input/Input'
-import Select from '../../sica/select/select'
+import Select from '../../../components/sica/Select/Select'
 import AccionesFormulario from '../AccionesFormulario/AccionesFormulario'
 
 // Componente que renderiza el formulario para los grupos
@@ -53,7 +53,7 @@ export default function FormularioGrupo({
             <div className="formulario-grupo">
                 <Input
                     className="formulario-grupo__campo"
-                    texto="Nombre del Grupo*:"
+                    label="Nombre del Grupo*:"
                     type="text"
                     placeholder="Escribe el nombre del grupo"
                     value={nombreGrupo}
@@ -61,7 +61,7 @@ export default function FormularioGrupo({
                 />
                 <Select
                     className="formulario-grupo__campo"
-                    texto="Semestre del Grupo*:"
+                    label="Semestre del Grupo*:"
                     value={semestreGrupo}
                     onChange={(e) => setSemestreGrupo(e.target.value)}
                     options={[

@@ -21,7 +21,7 @@ export default function FormularioInicioSesion({
             {campos.map((campo)=>(
                     <Input
                         className = "formulario-iniciar-sesion__campo"
-                        texto = {campo.texto}
+                        label = {campo.label}
                         type = {campo.type}
                         placeholder = {campo.placeholder}
                         value = {campo.value}

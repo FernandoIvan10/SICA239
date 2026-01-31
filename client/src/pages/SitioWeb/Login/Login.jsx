@@ -80,13 +80,13 @@ export default function Login(){
                             onSubmit={ingresar}
                             icono={<FaUserCircle/>}
                             campos={[{
-                                texto:"Número de control:",
+                                label:"Número de control:",
                                 type:"text",
                                 placeholder:"Ingrese su número de control",
                                 value:usuarioAlumno,
                                 onChange:(e)=>setUsuarioAlumno(e.target.value),
                             },{
-                                texto:"Contraseña:",
+                                label:"Contraseña:",
                                 type:"password",
                                 placeholder:"Ingrese su contraseña",
                                 value:contrasenaAlumno,
@@ -103,13 +103,13 @@ export default function Login(){
                             onSubmit={ingresar}
                             icono={<FaUserCircle/>}
                             campos={[{
-                                texto:"Usuario:",
+                                label:"Usuario:",
                                 type:"text",
                                 placeholder:"Ingrese su usuario",
                                 value:usuarioAdmin,
                                 onChange:(e)=>setUsuarioAdmin(e.target.value),
                             },{
-                                texto:"Contraseña:",
+                                label:"Contraseña:",
                                 type:"password",
                                 placeholder:"Ingrese su contraseña",
                                 value:contrasenaAdmin,

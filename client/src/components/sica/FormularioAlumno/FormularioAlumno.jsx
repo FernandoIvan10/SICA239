@@ -48,7 +48,7 @@ export default function FormularioAlumno({
             <h2>{titulo}</h2>
             <Input
                 className="formulario-alumno__campo"
-                texto="Matrícula*:"
+                label="Matrícula*:"
                 type="text"
                 placeholder="Ingrese la matrícula"
                 value={matriculaAlumno}
@@ -57,7 +57,7 @@ export default function FormularioAlumno({
             />
             <Input
                 className="formulario-alumno__campo"
-                texto="Nombre*:"
+                label="Nombre*:"
                 type="text"
                 placeholder="Ingrese el nombre"
                 value={nombreAlumno}
@@ -66,7 +66,7 @@ export default function FormularioAlumno({
             />
             <Input
                 className="formulario-alumno__campo"
-                texto="Apellido*:"
+                label="Apellido*:"
                 type="text"
                 placeholder="Ingrese el apellido"
                 value={apellidoAlumno}
@@ -75,7 +75,7 @@ export default function FormularioAlumno({
             />
             <Select
                 className="formulario-alumno__campo"
-                texto="Grupo*:"
+                label="Grupo*:"
                 options={[
                     {value: "", label: "Seleccionar grupo"},
                     ...grupos.map(
@@ -111,7 +111,7 @@ export default function FormularioAlumno({
                 </div>
                 <Select
                     className="formulario-alumno__campo"
-                    texto="Agregar materia recursada:"
+                    label="Agregar materia recursada:"
                     options={[
                         {value: "", label: "Seleccionar materia"},
                         ...materias.flatMap(materia => 

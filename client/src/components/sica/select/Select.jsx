@@ -3,7 +3,7 @@ import '../../../assets/styles/global.css'
 // Componente que renderiza una lista desplegable
 export default function Select({
     className,
-    texto,
+    label,
     value,
     onChange,
     options,
@@ -11,7 +11,7 @@ export default function Select({
 }){
     return(
         <div className={className}>
-            <label>{texto}</label>
+            <label>{label}</label>
             <select 
                 value={value}
                 onChange={onChange}

@@ -11,6 +11,17 @@ export function obtenerAdministradores() {
 }
 
 /**
+ * Obtiene un administrador por su ID
+ * @param {string} id 
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function obtenerAdministradorPorId(id) {
+    return httpFetch(`api/admins/${id}`, {
+        method: 'GET',
+    })
+}
+
+/**
  * Guarda un nuevo administrador en la base de datos
  * @param {Object} datos
  * @param {string} datos.rfc
@@ -23,6 +34,22 @@ export function obtenerAdministradores() {
 export function guardarAdministrador(datos) {
     return httpFetch('api/admins', {
         method: 'POST',
+        body: JSON.stringify(datos),
+    })
+}
+
+/**
+ * Actualiza los datos de un administrador
+ * @param {string} id ID del administrador
+ * @param {Object} datos
+ * @param {string} datos.nombre
+ * @param {string} datos.apellido
+ * @param {string} datos.rol
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function editarAdministrador(id, datos) {
+    return httpFetch(`api/admins/${id}`, {
+        method: 'PUT',
         body: JSON.stringify(datos),
     })
 }

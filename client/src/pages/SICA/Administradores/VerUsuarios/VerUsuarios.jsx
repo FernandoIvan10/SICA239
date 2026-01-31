@@ -15,7 +15,7 @@ import './VerUsuarios.css'
 export default function VerUsuarios(){
     const [alumnos, setAlumnos] = useState([]) // Alumnos del sistema
     const [admins, setAdmins] = useState([]) // Administradores del sistema
-    const [loading, setLoading] = useState(true)
+    const [esperandoRespuesta, setEsperandoRespuesta] = useState(true)
     const [error, setError] = useState(null)
     const [exito, setExito] = useState(null)
 
@@ -63,7 +63,7 @@ export default function VerUsuarios(){
         if (!confirmacion) return
 
         try {
-            setLoading(true)
+            setEsperandoRespuesta(true)
 
             if (usuario.tipo === 'Alumno') {
                 await reiniciarContrasenaAlumno(usuario._id)
@@ -76,7 +76,7 @@ export default function VerUsuarios(){
             console.error('Error al reiniciar constraseña:', error)
             setError(error.message || 'Ocurrió un error al reiniciar contraseña')
         }finally {
-            setLoading(false)
+            setEsperandoRespuesta(false)
         }
     }
 
@@ -88,7 +88,7 @@ export default function VerUsuarios(){
         if (!confirmacion) return
 
         try{
-            setLoading(true)
+            setEsperandoRespuesta(true)
             await cambiarEstadoAlumno(usuario._id)
             setAlumnos(prevAlumnos => 
                 prevAlumnos.map(alumno => 
@@ -102,7 +102,7 @@ export default function VerUsuarios(){
             console.error('Error al cambiar estado del alumno:', error)
             setError(error.message || 'Ocurrió un error al cambiar el estado del alumno')
         }finally{
-            setLoading(false)
+            setEsperandoRespuesta(false)
         }
     }
 
@@ -112,7 +112,7 @@ export default function VerUsuarios(){
             if(usuario.rol === 'superadmin'){ // Solo los superadministradores pueden ver a los administradores
                 cargarAdmins()
             }
-            setLoading(false)
+            setEsperandoRespuesta(false)
         }
     }, [usuario])
 
@@ -186,7 +186,7 @@ export default function VerUsuarios(){
                                         <MdEdit 
                                             className="tabla-usuarios__boton-editar" 
                                             onClick={() => redirigirAEdicion(u)}
-                                            disabled={loading}
+                                            disabled={esperandoRespuesta}
                                         />
                                     </td>
                                 }
@@ -195,7 +195,7 @@ export default function VerUsuarios(){
                                         <RiResetLeftLine
                                             className="tabla-usuarios__boton-reiniciar-contraseña"
                                             onClick={() => reiniciarContrasena(u)}
-                                            disabled={loading}
+                                            disabled={esperandoRespuesta}
                                         />
                                     </td>
                                 }
@@ -211,7 +211,7 @@ export default function VerUsuarios(){
                                                 ? (u.activo ? "baja" : "alta")
                                                 : ""
                                         }`}
-                                        disabled={loading}
+                                        disabled={esperandoRespuesta}
                                     >
                                         {u.tipo === "Alumno"
                                             ? (u.activo ? "Dar de baja" : "Dar de alta")

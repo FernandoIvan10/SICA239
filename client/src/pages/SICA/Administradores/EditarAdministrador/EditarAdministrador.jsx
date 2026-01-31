@@ -6,7 +6,6 @@ import { editarAdministrador, obtenerAdministradorPorId } from '../../../../api/
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../../../../auth/useAuth'
-import './EditarAdministrador.css'
 import '../../../../assets/styles/global.css'
 
 // Página del SICA para editar usuarios administradores

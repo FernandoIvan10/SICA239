@@ -24,3 +24,14 @@ export function guardarGrupo(datos) {
         body: JSON.stringify(datos),
     })
 }
+
+/**
+ * Elimina un grupo por su ID.
+ * @param {string} id 
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function eliminarGrupo(id) {
+    return httpFetch(`api/grupos/${id}`, {
+        method: 'DELETE',
+    })
+}

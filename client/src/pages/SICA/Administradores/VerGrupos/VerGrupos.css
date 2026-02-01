@@ -29,7 +29,7 @@
     background-color: #f2f2f2;
 }
 
-.tabla-grupos-boton-editar, .tabla-grupos-boton-eliminar {
+.tabla-grupos__boton-editar, .tabla-grupos__boton-eliminar {
     margin: 5px;
     padding: 8px 12px;
     border: none;
@@ -38,18 +38,33 @@
     color: white;
 }
 
-.tabla-grupos-boton-editar {
+.tabla-grupos__boton-editar {
     background-color: #007bff;
 }
 
-.tabla-grupos-boton-eliminar {
+.tabla-grupos__boton-eliminar {
     background-color: #dc3545;
 }
 
-.tabla-grupos-boton-editar:hover {
+.tabla-grupos__boton-editar:hover {
     background-color: #0056b3;
 }
 
-.tabla-grupos-boton-eliminar:hover {
+.tabla-grupos__boton-eliminar:hover {
     background-color: #c82333;
+}
+
+.tabla-grupos__boton-agregar {
+    font-family: 'Roboto';
+    background-color: #28a745;
+    color: white;
+    padding: 0.7rem 1.4rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.tabla-grupos__boton-agregar:hover {
+    background-color: #218838;
 }

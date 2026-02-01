@@ -1,84 +1,73 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
+import {obtenerGrupos, eliminarGrupo} from '../../../../api/grupos.api'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
-import { jwtDecode } from 'jwt-decode'
+import { useAuth } from '../../../../auth/useAuth'
 import './VerGrupos.css'
-import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del sica para ver la lista de grupos
 export default function VerGrupos(){
-    const navigate = useNavigate() // Para redireccionar a los usuarios
-    const token = localStorage.getItem('token') // Token de inicio de sesión
-    const tokenDecodificado = jwtDecode(token) // Datos del token
     const [grupos, setGrupos] = useState([]) // Grupos del sistema
+    const [esperandoRespuesta, setEsperandoRespuesta] = useState(true)
+    const [exito, setExito] = useState(null)
+    const [error, setError] = useState(null)
 
-    useEffect(() => { // Se obtienen los grupos del backend
-        obtenerGrupos()
-    }, [navigate])
+    const navigate = useNavigate()
+    const {cargando, usuario} = useAuth()
 
     // Método para obtener los grupos del backend
-    const obtenerGrupos = () => {
+    const cargarGrupos = async () => {
         try{
-            fetch('http://localhost:3000/api/grupos',{
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(async res => {
-                const data = await res.json()
+            const respuesta = await obtenerGrupos()
 
-                if (!res.ok) {
-                    console.error(`Error ${res.status}`, await res.json().catch(()=>null))
-                    alert(data.message || 'Ocurrió un error al obtener los grupos')
-                    return
-                }
-                // El grupo de egresados no debe aparecer en esta pantalla
-                const gruposFiltrados = data.grupos.filter(g => g.nombre !== "Egresados")
+            // El grupo de egresados no debe aparecer en esta pantalla
+            const gruposFiltrados = respuesta.grupos.filter(g => g.nombre !== "Egresados")
 
-                gruposFiltrados.sort((a, b) => { // La lista de grupos debe estar ordenada por nombre
-                    return a.nombre.localeCompare(b.nombre)
-                })
-
-                setGrupos(gruposFiltrados)
+            gruposFiltrados.sort((a, b) => { // La lista de grupos debe estar ordenada por nombre
+                return a.nombre.localeCompare(b.nombre)
             })
-        }catch (err) {
-            console.error('Error al obtener grupos:', err)
-            alert('No se pudo conectar al servidor.')
+
+            setGrupos(gruposFiltrados)
+        }catch(error){
+            console.error('Error al cargar los grupos:', error)
+            setError(error.message || 'No se pudo cargar la lista de grupos.')
         }
     }
 
     // Método para eliminar un grupo
-    const eliminarGrupo = async (idGrupo) => {
+    const quitarGrupo = async (id) => {
         const confirmar = window.confirm('¿Estás seguro de que quieres eliminar este grupo? (Esta acción es irreversible)') // Se avierte al usuario que eliminar el grupo es irreversible
         if (!confirmar) return
-        try {
-            const respuesta = await fetch(`http://localhost:3000/api/grupos/${idGrupo}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            })
 
-            const data = await respuesta.json()
-            if(!respuesta.ok){
-                console.error(`Error ${respuesta.status}`, data)
-                alert(data.message || 'Ocurrió un error al eliminar el grupo.')
-                return
-            }
-                alert('Grupo eliminado correctamente')
-		        obtenerGrupos() // Se vuelve a cargar la lista de grupos
-        } catch (error) {
+        try{
+            await eliminarGrupo(id)
+            cargarGrupos() // Se recarga la lista de grupos
+            setExito('Grupo eliminado correctamente')
+        }catch(error){
             console.error('Error al eliminar el grupo:', error)
-            alert('No se pudo conectar al servidor.')
+            setError(error.message || 'No se pudo eliminar el grupo.')
         }
+    }
+
+    useEffect(() => { // Se obtienen los grupos del backend
+        if(cargando || !usuario) return
+
+        cargarGrupos()
+        setEsperandoRespuesta(false)
+    }, [])
+
+    if(cargando || !usuario){ // Mientras se está cargando el usuario se muestra un mensaje de carga
+        return(
+            <MensajeCarga mensaje="Cargando..."/>
+        )
     }
 
     if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
         return(
-            <MensajeCarga/>
+            <MensajeCarga mensaje="Obteniendo grupos..."/>
         )
     }
     
@@ -86,14 +75,18 @@ export default function VerGrupos(){
         <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
-                <h1>{tokenDecodificado.rol !== "lector" ? "Gestionar Grupos" : "Lista de Grupos"}</h1>
+                <h1>{usuario.rol !== "lector" ? "Gestionar Grupos" : "Lista de Grupos"}</h1>
+                <MensajeEstado
+                    exito={exito}
+                    error={error}
+                />
                 <table className="tabla-grupos">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Nombre del Grupo</th>
                             <th>Materias</th>
-                            {tokenDecodificado.rol !== "lector" && <th>Acciones</th>}
+                            {usuario.rol !== "lector" && <th>Acciones</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -102,15 +95,17 @@ export default function VerGrupos(){
                                 <td>{index + 1}</td>
                                 <td>{grupo.nombre}</td>
                                 <td>{grupo.materias.map((materia) => materia.nombre).join(', ')}</td>
-                                {tokenDecodificado.rol !== "lector" && 
+                                {usuario.rol !== "lector" && 
                                     <td>
                                         <MdEdit 
-                                            className="tabla-grupos-boton-editar"
+                                            className="tabla-grupos__boton-editar"
                                             onClick={() => navigate("/SICA/administradores/editar-grupo", { state: { grupo } })}
+                                            disabled={esperandoRespuesta}
                                         />
                                         <MdDelete 
-                                            className="tabla-grupos-boton-eliminar"
-                                            onClick={() => eliminarGrupo(grupo._id)}
+                                            className="tabla-grupos__boton-eliminar"
+                                            onClick={() => quitarGrupo(grupo._id)}
+                                            disabled={esperandoRespuesta}
                                         />
                                     </td>
                                 }
@@ -118,10 +113,11 @@ export default function VerGrupos(){
                         ))}
                     </tbody>
                 </table>
-                {tokenDecodificado.rol !== "lector" && 
+                {usuario.rol !== "lector" && 
                     <button
-                        className="boton-guardar"
+                        className="tabla-grupos__boton-agregar"
                         onClick={() => navigate("/SICA/administradores/agregar-grupo")}
+                        disabled={esperandoRespuesta}
                     >
                         Agregar Grupo
                     </button>

@@ -17,7 +17,8 @@ export default function FormularioAlumno({
     onSubmit,
     cancelar,
     cargando,
-    exito
+    exito,
+    matriculaDisabled
 }) {
     const [matriculaAlumno, setMatriculaAlumno] = useState(matricula || '')
     const [nombreAlumno, setNombreAlumno] = useState(nombre || '')
@@ -54,6 +55,7 @@ export default function FormularioAlumno({
                 value={matriculaAlumno}
                 onChange={(e) => setMatriculaAlumno(e.target.value)}
                 required={true}
+                disabled={matriculaDisabled || false}
             />
             <Input
                 className="formulario-alumno__campo"

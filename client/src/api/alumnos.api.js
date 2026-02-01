@@ -11,6 +11,17 @@ export function obtenerAlumnos() {
 }
 
 /**
+ * Obtiene un alumno por su ID.
+ * @param {string} id 
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function obtenerAlumnoPorId(id) {
+    return httpFetch(`api/alumnos/${id}`, {
+        method: 'GET',
+    })
+}
+
+/**
  * Guarda un nuevo alumno en la base de datos
  * @param {Object} datos
  * @param {string} datos.matricula
@@ -23,6 +34,24 @@ export function obtenerAlumnos() {
 export function guardarAlumno(datos) {
     return httpFetch('api/alumnos', {
         method: 'POST',
+        body: JSON.stringify(datos),
+    })
+}
+
+/**
+ * Edita un alumno existente
+ * @param {string} id 
+ * @param {Object} datos 
+ * @param {string} datos.matricula
+ * @param {string} datos.nombre
+ * @param {string} datos.apellido
+ * @param {string} datos.grupo
+ * @param {Array} datos.materiasRecursadas (Opcional)
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function editarAlumno(id, datos) {
+    return httpFetch(`api/alumnos/${id}`, {
+        method: 'PUT',
         body: JSON.stringify(datos),
     })
 }

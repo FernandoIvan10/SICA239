@@ -1,103 +1,97 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import FormularioAlumno from '../../../../components/sica/FormularioAlumno/FormularioAlumno'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
+import { obtenerGrupos } from '../../../../api/grupos.api'
+import { obtenerMaterias } from '../../../../api/materias.api'
+import { editarAlumno, obtenerAlumnoPorId } from '../../../../api/alumnos.api'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import './EditarAlumno.css'
-import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import { useAuth } from '../../../../auth/useAuth'
 
 // Página del SICA para editar alumnos
 export default function EditarAlumno() {
-    const navigate = useNavigate() // Para redireccionar a los usuarios
-    const token = localStorage.getItem('token') // Token de inicio de sesión
-    const { id } = useParams() // ID enviado por parámetro
+    const [grupos, setGrupos] = useState([]) // Grupos del backend
+    const [materias, setMaterias] = useState([]) // Materias del backend
     const [alumno, setAlumno] = useState(null) // Contiene todos los datos del formulario
-    const [grupos, setGrupos] = useState([]) // Contiene los grupos del backend
     const [materiasRecursadas, setMateriasRecursadas] = useState([]) // Materias que el alumno está recursando
-    const [materiaSeleccionada, setMateriaSeleccionada] = useState('') // Materia recursada seleccionada
-    
-    useEffect(() => { // Se obtienen los grupos de la BD para mostrarlos en el formulario
-        fetch('http://localhost:3000/api/grupos', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(async res => {
-            const data = await res.json()
-            if (!res.ok) {
-                alert(data.message || 'Error al obtener grupos')
-                setGrupos([])
-                return
-            }
-            return data
-        })
-        .then(data => {
-            let listaGrupos = data.grupos
-            listaGrupos.sort((a, b) => { // Los grupos deben estar ordenados por nombre
-                return a.nombre.localeCompare(b.nombre)
-            })
+    const [esperandoRespuesta, setEsperandoRespuesta] = useState(false)
+    const [exito, setExito] = useState(null)
+    const [error, setError] = useState(null)
+
+    const {cargando} = useAuth() // Usuario autenticado
+    const navigate = useNavigate()
+    const { id } = useParams()
+
+    // Método para obtener los grupos de la BD
+    const cargarGrupos = async () => {
+        try{
+            const respuesta = await obtenerGrupos()
+            const listaGrupos = [...(respuesta?.grupos ?? [])]
+                .sort((a, b) => a.nombre.localeCompare(b.nombre))
+
             setGrupos(listaGrupos)
-        })
-        .catch(err => {
-            console.error('Error al obtener grupos:', err)
-            alert('No se pudo conectar con el servidor')
+        }catch(error){
+            console.error('Error al obtener grupos:', error)
+            setError(error.message || 'Ocurrió un error al cargar los grupos.')
             setGrupos([])
-        })
-    }, [])
+        }
+    }
 
-    useEffect(() => { // Se obtienen los datos del alumno a editar
-        fetch(`http://localhost:3000/api/alumnos/${id}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(async res => {
-            const data = await res.json()
-            if(!res.ok){
-                alert(data.message || 'Error al obtener alumno.')
-                return
-            }
+    // Método para obtener las materias de la BD
+    const cargarMaterias = async () => {
+        try{
+            const respuesta = await obtenerMaterias()
+            const listaMaterias = [...(respuesta?.materias ?? [])]
+                .sort((a, b) => a.nombre.localeCompare(b.nombre))
+            setMaterias(listaMaterias)
+        }catch(error){
+            console.error('Error al obtener materias:', error)
+            setError(error.message || 'Ocurrió un error al cargar las materias.')
+        }
+    }
 
-            const grupo = grupos.find(g => g._id === data.grupoId)
+    // Método para obtener los datos del alumno a editar
+    const cargarAlumno = async (id) => {
+        try{
+            const respuesta = await obtenerAlumnoPorId(id)
+
+            const grupo = grupos.find(g => g._id === respuesta.grupoId)
+
             setAlumno({
-                matricula: data.matricula,
-                nombre: data.nombre,
-                apellido: data.apellido,
-                grupoNombre: grupo ? grupo.nombre : '' // Se necesita el nombre del grupo en el formulario
+                matricula: respuesta.matricula,
+                nombre: respuesta.nombre,
+                apellido: respuesta.apellido,
+                grupo: grupo ? grupo.nombre : ''
             })
-            setMateriasRecursadas(data.materiasRecursadas || [])
-        })
-        .catch(err => {
-            console.error('Error al obtener alumno:', err)
-            alert('No se pudo conectar con el servidor.')
-        })
-    }, [id, grupos])
+            setMateriasRecursadas(respuesta.materiasRecursadas || [])
+        }catch(error){
+            console.error('Error al obtener alumno:', error)
+            setError(error.message || 'Error al obtener alumno')
+        }
+    }
 
     // Método para editar el alumno con los nuevos datos
-    const guardarCambios = () => {
-        if(!alumno.nombre.trim() || !alumno.apellido.trim() || !alumno.grupoNombre.trim()){ // Se deben rellenar todos los campos obligatorios del formulario
-            alert('Faltan campos son obligatorios')
-            return
+    const guardarCambios = async (matricula, nombre, apellido, grupo, materiasRecursadas) => {
+        try{
+            setEsperandoRespuesta(true)
+            setError(null)
+            setExito(null)
+
+            await editarAlumno(id, {
+                nombre: nombre,
+                apellido: apellido,
+                grupo: grupo,
+                materiasRecursadas: materiasRecursadas
+            })
+            setExito('Alumno actualizado correctamente')
+            navigate('/SICA/administradores/ver-usuarios')
+        }catch(error){
+            console.error('Error al editar alumno:', error)
+            setError(error.message || 'Ocurrió un error al actualizar el alumno')
+        }finally{
+            setEsperandoRespuesta(false)
         }
-
-        const {nombre, apellido, grupoNombre} = alumno // Se obtienen los nuevos datos del formulario
-
-        fetch(`http://localhost:3000/api/alumnos/${id}`, {
-            method: 'PUT',
-            headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({nombre, apellido, grupoNombre, materiasRecursadas})
-        }).then(async res => {
-            if(res.ok){
-                alert('Alumno actualizado correctamente')
-                navigate('/SICA/administradores/ver-usuarios')
-            } else {
-                const errorData = await res.json().catch(() => null)
-                console.error(`Error ${res.status}`, errorData)
-                 alert(errorData?.message || 'Ocurrió un error al actualizar el alumno')
-            }
-        })
     }
 
     // Método para regresar a la lista de usuarios
@@ -105,127 +99,47 @@ export default function EditarAlumno() {
         navigate('/SICA/administradores/ver-usuarios')
     }
 
-    if (!alumno) { // Mientras no se carguen los datos del alumno se muestra un mensaje de carga
+    useEffect(() => { // Se obtienen los grupos y materias de la BD para mostrarlos en el formulario
+        cargarGrupos()
+        cargarMaterias()
+    }, [])
+
+    useEffect(() => { // Se obtienen los datos del alumno a editar
+        if(grupos.length === 0 || materias.length === 0) return // Esperar a que se carguen los grupos y materias
+        
+        cargarAlumno(id)
+        setEsperandoRespuesta(false)
+    }, [id, grupos, materias])
+
+    if (!alumno || cargando) { // Mientras no se carguen los datos del alumno se muestra un mensaje de carga
         return(
             <MensajeCarga/>
         )
     }
+
     return (
         <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Editar Alumno</h1>
-                <form className="formulario-editar-alumno">
-                    <div className="formulario-editar-alumno-campo">
-                        <label className="formulario-editar-alumno-label">Matrícula*:</label>
-                        <input
-                            className="formulario-editar-alumno-input"
-                            type="text"
-                            value={alumno.matricula}
-                            readOnly
-                        />
-                    </div>
-                    <div className="formulario-editar-alumno-campo">
-                        <label className="formulario-editar-alumno-label">Nombre*:</label>
-                        <input
-                            className="formulario-editar-alumno-input"
-                            type="text"
-                            value={alumno.nombre}
-                            onChange={(e) => setAlumno({ ...alumno, nombre: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div className="formulario-editar-alumno-campo">
-                        <label className="formulario-editar-alumno-label">Apellido*:</label>
-                        <input
-                            className="formulario-editar-alumno-input"
-                            type="text"
-                            value={alumno.apellido}
-                            onChange={(e) => setAlumno({ ...alumno, apellido: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div className="formulario-editar-alumno-campo">
-                        <label className="formulario-editar-alumno-label">Grupo*:</label>
-                        <select
-                            className="formulario-editar-alumno-select"
-                            value={alumno.grupoNombre}
-                            onChange={(e) => setAlumno({ ...alumno, grupoNombre: e.target.value })}
-                            required
-                        >
-                            <option value="">Seleccionar grupo</option>
-                            {grupos.map((g) => (
-                                <option key={g._id} value={g.nombre}>
-                                    {g.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="formulario-editar-alumno-campo-materias-recursadas">
-                        <label className="formulario-editar-alumno-label">Materias recursadas:</label>
-                        <div className="formulario-editar-alumno-materias-recursadas">
-                            {materiasRecursadas.map((item, index) => {
-                                const grupoObj = grupos.find(g => g._id === item.grupo)
-                                const materiaObj = grupoObj?.materias.find(m => m._id === item.materia)
-                                return (
-                                    <div key={index} className="formulario-editar-alumno-materia-recursada">
-                                        {materiaObj?.nombre || "Materia desconocida"} - {grupoObj?.nombre || "Grupo desconocido"}
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const nuevas = [...materiasRecursadas]
-                                                nuevas.splice(index, 1)
-                                                setMateriasRecursadas(nuevas)
-                                            }}
-                                        >
-                                            X
-                                        </button>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                        <select
-                            className="formulario-editar-alumno-select"
-                            value={materiaSeleccionada}
-                            onChange={(e) => setMateriaSeleccionada(e.target.value)}
-                        >
-                            <option value="">Seleccionar materia</option>
-                            {grupos.map(grupo =>
-                                grupo.materias.map(materia => (
-                                    <option key={`${materia._id}-${grupo._id}`} value={`${materia._id}-${grupo._id}`}>
-                                        {materia.nombre} - {grupo.nombre}
-                                    </option>
-                                ))
-                            )}
-                        </select>
-                    </div>
-                    <div className="formulario-editar-alumno-contenedor-boton-agregar">
-                        <button
-                            type="button"
-                            className="formulario-editar-alumno-boton-agregar"
-                            onClick={() => {
-                                if (materiaSeleccionada) {
-                                    const [materia, grupo] = materiaSeleccionada.split("-")
-                                    const existe = materiasRecursadas.some(m => m.materia === materia && m.grupo === grupo)
-                                    if (!existe) {
-                                        setMateriasRecursadas([...materiasRecursadas, { materia, grupo }])
-                                    }
-                                    setMateriaSeleccionada("")
-                                }
-                            }}
-                        >
-                            Agregar
-                        </button>
-                    </div>
-                    <div className="formulario-editar-alumno-botones">
-                    <button type="button" className="boton-guardar" onClick={guardarCambios}>
-                        Guardar
-                    </button>
-                    <button type="button" className="boton-cancelar" onClick={cancelar}>
-                        Cancelar
-                    </button>
-                    </div>
-                </form>
+                <MensajeEstado
+                    error={error}
+                    exito={exito}
+                />
+                <FormularioAlumno
+                    grupos={grupos}
+                    materias={materias}
+                    matricula={alumno.matricula}
+                    nombre={alumno.nombre}
+                    apellido={alumno.apellido}
+                    grupo={alumno.grupo}
+                    materiasRecursadas={materiasRecursadas}
+                    onSubmit={guardarCambios}
+                    cancelar={cancelar}
+                    cargando={esperandoRespuesta}
+                    exito={exito}
+                    matriculaDisabled={true}
+                />
             </div>
         </div>
     )

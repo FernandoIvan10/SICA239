@@ -13,7 +13,9 @@ export default function FormularioGrupo({
     materias,
     tituloFormulario,
     guardar,
-    cancelar
+    cancelar,
+    cargando,
+    exito
 }) {
     const [enfocado, setEnfocado] = useState(false) // Indica si el campo de nueva materia está enfocado
     const [sugerencias, setSugerencias] = useState([]) // Sugerencias de materias al escribir una nueva materia
@@ -21,15 +23,6 @@ export default function FormularioGrupo({
     const [nombreGrupo, setNombreGrupo] = useState(nombre || '')
     const [semestreGrupo, setSemestreGrupo] = useState(semestre || 'Semestre 1')
     const [materiasGrupo, setMateriasGrupo] = useState(materias || [])
-
-    useEffect(() => { // Se muestran sugerencias al escribir una nueva materia
-        if (!enfocado) return setSugerencias([]) // Si no está enfocado no se muestran sugerencias
-
-        const nuevasSugerencias = materiasGlobales.filter(m => 
-            m.toLowerCase().includes(nuevaMateria.toLowerCase()) && !materiasGrupo.includes(m)
-        )
-        setSugerencias(nuevasSugerencias)
-    }, [nuevaMateria, enfocado])
 
     // Método para agregar una materia a la lista
     const agregarMateria = () => {
@@ -47,10 +40,34 @@ export default function FormularioGrupo({
         setMateriasGrupo((prev) => prev.filter((_, i) => i !== index))
     }
 
+    useEffect(() => { // Se muestran sugerencias al escribir una nueva materia
+        if (!enfocado) return setSugerencias([]) // Si no está enfocado no se muestran sugerencias
+
+        const nuevasSugerencias = materiasGlobales.filter(m => 
+            m.toLowerCase().includes(nuevaMateria.toLowerCase()) && !materiasGrupo.includes(m)
+        )
+        setSugerencias(nuevasSugerencias)
+    }, [nuevaMateria, enfocado, materiasGrupo])
+
+    useEffect(() => { // Se resetean los campos si hay un éxito al guardar
+        if (exito) {
+            setNombreGrupo('')
+            setSemestreGrupo('Semestre 1')
+            setMateriasGrupo([])
+            setNuevaMateria('')
+        }
+    }, [exito])
+
     return (
-        <div className="contenido-principal">
+        <>
             <h1 className="formulario-grupo__titulo">{tituloFormulario}</h1>
-            <div className="formulario-grupo">
+            <form 
+                className="formulario-grupo"
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    guardar(nombreGrupo, semestreGrupo, materiasGrupo)
+                }}
+            >
                 <Input
                     className="formulario-grupo__campo"
                     label="Nombre del Grupo*:"
@@ -58,6 +75,7 @@ export default function FormularioGrupo({
                     placeholder="Escribe el nombre del grupo"
                     value={nombreGrupo}
                     onChange={(e) => setNombreGrupo(e.target.value)}
+                    required={true}
                 />
                 <Select
                     className="formulario-grupo__campo"
@@ -80,7 +98,7 @@ export default function FormularioGrupo({
                         {materiasGrupo.map((materia, index) => (
                             <div key={index} className="formulario-grupo__materia">
                                 {materia}
-                                <button onClick={() => eliminarMateria(index)}>X</button>
+                                <button type="button" onClick={() => eliminarMateria(index)}>X</button>
                             </div>
                         ))}
                     </div>
@@ -93,7 +111,7 @@ export default function FormularioGrupo({
                             onFocus={() => setEnfocado(true)}
                             onBlur={() => setTimeout(() => setEnfocado(false), 150)}
                         />
-                        <button onClick={agregarMateria}>Agregar</button>
+                        <button type="button" onClick={agregarMateria}>Agregar</button>
                         {enfocado && sugerencias.length > 0 && (
                             <ul className="formulario-grupo__sugerencias-materias">
                                 {sugerencias.map((s, index) => (
@@ -114,8 +132,9 @@ export default function FormularioGrupo({
                 <AccionesFormulario
                     guardar={() => guardar(nombreGrupo, semestreGrupo, materiasGrupo)}
                     cancelar={cancelar}
+                    cargando={cargando}
                 />
-            </div>
-        </div>
+            </form>
+        </>
     )
 }

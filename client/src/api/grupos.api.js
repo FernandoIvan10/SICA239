@@ -9,3 +9,18 @@ export function obtenerGrupos() {
         method: 'GET',
     })
 }
+
+/**
+ * Guarda un nuevo grupo.
+ * @param {Object} datos
+ * @param {string} datos.nombre
+ * @param {string} datos.semestre
+ * @param {Array<Object>} datos.materias
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function guardarGrupo(datos) {
+    return httpFetch('api/grupos', {
+        method: 'POST',
+        body: JSON.stringify(datos),
+    })
+}

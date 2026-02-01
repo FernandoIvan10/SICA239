@@ -1,80 +1,88 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
 import FormularioGrupo from '../../../../components/sica/FormularioGrupo/FormularioGrupo'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
+import {guardarGrupo} from '../../../../api/grupos.api'
+import {obtenerMaterias} from '../../../../api/materias.api'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../../auth/useAuth'
 import '../../../../assets/styles/global.css'
 
 // Página del SICA para agregar grupos
 export default function AgregarGrupo() {
+    const [materias, setMaterias] = useState(null)
+    const [esperandoRespuesta, setEsperandoRespuesta] = useState(true)
+    const [exito, setExito] = useState(null)
+    const [error, setError] = useState(null)
+
+    const {cargando} = useAuth() // Usuario autenticado
     const navigate = useNavigate() // Para redirigir al usuario
-    const [materias, setMaterias] = useState([])
-    const token = localStorage.getItem('token') // Token de inicio de sesión
-
-    useEffect(() => { // Se obtienen las materias
-        const fetchMaterias = async () => {
-            try {
-                const res = await fetch(`http://localhost:3000/api/materias`, {
-                headers: { Authorization: `Bearer ${token}` },
-                })
-                const data = await res.json()
-                if (res.ok){
-                    setMaterias(data.materias.map(m => m.nombre))
-                } else {
-                    const errorData = await res.json().catch(() => null)
-                    console.error(`Error ${res.status}`, errorData)
-                    alert(errorData?.message || 'Ocurrió un error al obtener las materias')
-                    return
-                }
-            } catch (error){
-                console.log('Error en fetch:', error)
-                alert('No se pudo conectar con el servidor.')
-                setMaterias([]);
-            }
+    
+    // Método para obtener las materias de la BD
+    const cargarMaterias = async () => {
+        try{
+            const respuesta = await obtenerMaterias()
+            setMaterias(respuesta.materias.map(m => m.nombre))
+        }catch(error){
+            console.log('Error en fetch:', error)
+            setError(error.message || 'No se pudo conectar con el servidor.')
+            setMaterias([])
         }
-    fetchMaterias()
-    }, [])
-
-    // Función para guardar el grupo y las materias en la BD
-    const guardarGrupo = (nombreGrupo, semestreGrupo, materiasGrupo) => {
-    	const materiasFormateadas = materiasGrupo.map(nombre => ({ nombre })) //Formato correcto para la API
-        fetch('http://localhost:3000/api/grupos', { // Guarda el grupo en la BD
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-        		nombre: nombreGrupo,
-                semestre: semestreGrupo,
-		        materias: materiasFormateadas
-	        })
-        }).then(async res => {
-            if(res.ok){
-                alert('Grupo guardado exitosamente.')
-                return
-            }else{
-                const errorData = await res.json().catch(() => null)
-                console.error(`Error ${res.status}`, errorData)
-                alert(errorData?.message || 'Ocurrió un error al guardar el grupo.')
-                return
-            }
-        })
     }
 
-    // Método para cancelar la creación del nuevo grupo
+    // Función para guardar el grupo y las materias en la BD
+    const agregarGrupo = async (nombreGrupo, semestreGrupo, materiasGrupo) => {
+        try{
+            setEsperandoRespuesta(true)
+            setError(null)
+            setExito(null)
+
+            await guardarGrupo({
+                nombre: nombreGrupo,
+                semestre: semestreGrupo,
+                materias: materiasGrupo.map(nombre => ({ nombre }))
+            })
+            setExito('Grupo guardado exitosamente.')
+        }catch(error){
+            console.error('Error al guardar el grupo:', error)
+            setError(error.message || 'Ocurrió un error al guardar el grupo.')
+        }finally{
+            setEsperandoRespuesta(false)
+        }
+    }
+
+    // Método para regresar a la vista de ver grupos
     const cancelar = () => {
         navigate('/SICA/administradores/ver-grupos')
+    }
+
+    useEffect(() => { // Se obtienen las materias
+        cargarMaterias()
+        setEsperandoRespuesta(false)
+    }, [])
+
+    if(cargando || materias === null){ // Si los datos están cargando se muestra un mensaje de carga
+        return <MensajeCarga/>
     }
 
     return (
         <div className="contenedor-principal">
             <MenuLateral/>
-            <FormularioGrupo
-                tituloFormulario = "Agregar Nuevo Grupo"
-                guardar = {guardarGrupo}
-                cancelar = {cancelar}
-                materiasGlobales = {materias}
-            />
+            <div className="contenido-principal">
+                <FormularioGrupo
+                    tituloFormulario = "Agregar Nuevo Grupo"
+                    guardar = {agregarGrupo}
+                    cancelar = {cancelar}
+                    materiasGlobales = {materias}
+                    cargando={esperandoRespuesta}
+                    exito={exito}
+                />
+                <MensajeEstado
+                    exito={exito}
+                    error={error}
+                />
+            </div>
         </div>
     )
 }

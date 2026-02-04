@@ -29,7 +29,7 @@ export function obtenerCalificaciones(filtros = {}) {
  * @param {string} datos.alumnoId
  * @param {string} datos.materiaId
  * @param {string} datos.grupoId
- * @param {string} datos.parcialInput
+ * @param {string} datos.parcial
  * @param {number} datos.nota
  * @returns {Promise<Response>} Respuesta del servidor
  */

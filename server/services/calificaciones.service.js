@@ -68,7 +68,7 @@ async function capturarCalificacion(data){
         })
     }else{ // Si la calificación existe entonces se actualiza
         const parcialExistente = calificacion.parciales.find(
-            p => p.parcial === parcialInput
+            p => p.parcial === parcial
         )
 
         if(parcialExistente){

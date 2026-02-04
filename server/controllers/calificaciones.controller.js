@@ -10,7 +10,7 @@ const registrarCalificacion = async (req, res) => {
             alumnoId: req.body.alumnoId,
             materiaId: req.body.materiaId,
             grupoId: req.body.grupoId,
-            parcial: req.body.parcialInput,
+            parcial: req.body.parcial,
             nota: req.body.nota
         }
 

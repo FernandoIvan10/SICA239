@@ -2,10 +2,23 @@ import { httpFetch } from './http'
 
 /**
  * Obtiene la lista de alumnos del sistema.
+ * @param {Object} filtros Filtros opcionales para la consulta
+ * @param {string} filtros.grupoId ID del grupo para filtrar alumnos
  * @returns {Promise<Response>} Respuesta del servidor
  */
-export function obtenerAlumnos() {
-    return httpFetch('api/alumnos', {
+export function obtenerAlumnos(filtros = {}) {
+    const params = new URLSearchParams()
+
+    Object.entries(filtros).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            params.append(key, value)
+        }
+    })
+
+    const query = params.toString()
+    const url = query ? `api/alumnos?${query}` : 'api/alumnos'
+
+    return httpFetch(url, {
         method: 'GET',
     })
 }

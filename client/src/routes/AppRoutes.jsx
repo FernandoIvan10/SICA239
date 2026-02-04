@@ -4,7 +4,7 @@ import { RequiereAuth } from "./RequiereAuth"
 import Inicio from "../pages/SitioWeb/Inicio/Inicio"
 import InicioAdmin from "../pages/SICA/Administradores/Inicio/Inicio"
 import InicioAlumno from "../pages/SICA/Alumnos/Inicio/Inicio"
-import SubirCalificaciones from "../pages/SICA/Administradores/SubirCalificaciones/SubirCalificaciones"
+import CapturarCalificaciones from "../pages/SICA/Administradores/CapturarCalificaciones/CapturarCalificaciones"
 import Login from "../pages/SitioWeb/Login/Login"
 import AgregarUsuario from "../pages/SICA/Administradores/AgregarUsuario/AgregarUsuario"
 import EnCurso from "../pages/SICA/Alumnos/EnCurso/EnCurso"
@@ -64,7 +64,7 @@ export default function AppRoutes(){
             <Route element={<RequiereRol roles={['superadmin', 'editor', 'lector']} />}>
                 <Route path="/SICA/administradores/gestionar-horarios" element={<SubirHorarios/>}/>
                 <Route path="/SICA/administradores/inicio" element={<InicioAdmin/>}/>
-                <Route path="/SICA/administradores/calificaciones" element={<SubirCalificaciones/>}/>
+                <Route path="/SICA/administradores/calificaciones" element={<CapturarCalificaciones/>}/>
                 <Route path="/SICA/administradores/ver-grupos" element={<VerGrupos/>}/>
                 <Route path="/SICA/administradores/ver-usuarios" element={<VerUsuarios/>}/>
             </Route>

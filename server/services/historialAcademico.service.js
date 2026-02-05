@@ -34,8 +34,9 @@ async function guardarHistorialAcademico(){
         }
     
         await historial.save()
-        await Calificacion.deleteMany({}) // Borra todas las calificaciones del semestre actual
     }
+    
+    await Calificacion.deleteMany({}) // Borra todas las calificaciones del semestre actual
 }
 
 module.exports = {

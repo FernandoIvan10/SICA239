@@ -11,6 +11,17 @@ export function obtenerGrupos() {
 }
 
 /**
+ * Obtiene un grupo por su ID.
+ * @param {string} id 
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function obtenerGrupoPorId(id) {
+    return httpFetch(`api/grupos/${id}`, {
+        method: 'GET',
+    })
+}
+
+/**
  * Guarda un nuevo grupo.
  * @param {Object} datos
  * @param {string} datos.nombre
@@ -21,6 +32,22 @@ export function obtenerGrupos() {
 export function guardarGrupo(datos) {
     return httpFetch('api/grupos', {
         method: 'POST',
+        body: JSON.stringify(datos),
+    })
+}
+
+/**
+ * Edita un grupo existente.
+ * @param {string} id 
+ * @param {Object} datos 
+ * @param {string} datos.nombre
+ * @param {string} datos.semestre
+ * @param {Array<Object>} datos.materias
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function editarGrupo(id, datos) {
+    return httpFetch(`api/grupos/${id}`, {
+        method: 'PUT',
         body: JSON.stringify(datos),
     })
 }

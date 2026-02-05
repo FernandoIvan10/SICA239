@@ -57,7 +57,7 @@ export default function AppRoutes(){
                 <Route path="/SICA/administradores/agregar-grupo" element={<AgregarGrupo/>}/>
                 <Route path="/SICA/administradores/agregar-usuario" element={<AgregarUsuario/>}/>
                 <Route path="/SICA/administradores/editar-alumno/:id" element={<EditarAlumno/>}/>
-                <Route path="/SICA/administradores/editar-grupo" element={<EditarGrupo/>}/>
+                <Route path="/SICA/administradores/editar-grupo/:id" element={<EditarGrupo/>}/>
                 <Route path="/SICA/administradores/migrar-alumnos" element={<MigrarAlumnos/>}/>
             </Route>
 

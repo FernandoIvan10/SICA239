@@ -52,6 +52,11 @@ export default function VerGrupos(){
         }
     }
 
+    // Método para redirigir a la página de edición de un grupo
+    const redirigirAEdicion = (id) => {
+        navigate(`/SICA/administradores/editar-grupo/${id}`)
+    }
+
     useEffect(() => { // Se obtienen los grupos del backend
         if(cargando || !usuario) return
 
@@ -99,7 +104,7 @@ export default function VerGrupos(){
                                     <td>
                                         <MdEdit 
                                             className="tabla-grupos__boton-editar"
-                                            onClick={() => navigate("/SICA/administradores/editar-grupo", { state: { grupo } })}
+                                            onClick={() => redirigirAEdicion(grupo._id)}
                                             disabled={esperandoRespuesta}
                                         />
                                         <MdDelete 

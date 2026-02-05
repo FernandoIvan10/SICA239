@@ -6,7 +6,8 @@ const {
     actualizarGrupo,
     obtenerGrupos,
     eliminarGrupo,
-    migrarAlumnos
+    migrarAlumnos,
+    obtenerGrupoPorId
 } = require('../controllers/grupos.controller')
 
 const router = express.Router()
@@ -26,6 +27,10 @@ router
 
 router
     .route('/:id')
+        .get( // Obtener grupo por ID
+            verificarRol(['superadmin','editor']),
+            obtenerGrupoPorId
+        )
         .put( // Modificar grupo
             verificarRol(['superadmin', 'editor']),
             actualizarGrupo

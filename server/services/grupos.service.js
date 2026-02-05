@@ -134,6 +134,25 @@ async function listarGrupos(){
         .exec()
 }
 
+// Función para consultar un grupo por ID
+async function consultarGrupo(id){
+    if(!id) { // El ID es obligatorio
+        const error = new Error('ID de grupo es obligatorio')
+        error.code = 'ID_OBLIGATORIO'
+        throw error
+    }
+
+    const grupo = await Grupo.findById(id).populate('materias', 'nombre')
+
+    if(!grupo){ // El grupo debe existir
+        const error = new Error('Grupo no encontrado')
+        error.code = 'GRUPO_NO_ENCONTRADO'
+        throw error
+    }
+
+    return grupo
+}
+
 // Función para eliminar un grupo
 async function quitarGrupo(id){
     if(!id) { // El ID es obligatorio
@@ -209,5 +228,6 @@ module.exports = {
     modificarGrupo,
     listarGrupos,
     quitarGrupo,
-    cambiarGrupoAlumnos
+    cambiarGrupoAlumnos,
+    consultarGrupo
 }

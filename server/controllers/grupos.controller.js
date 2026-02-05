@@ -3,7 +3,8 @@ const {
     modificarGrupo,
     listarGrupos,
     quitarGrupo,
-    cambiarGrupoAlumnos
+    cambiarGrupoAlumnos,
+    consultarGrupo
 } = require("../services/grupos.service")
 
 // Función para agregar un nuevo grupo
@@ -76,6 +77,29 @@ const obtenerGrupos = async (req, res) => {
     }
 }
 
+// Función para obtener un grupo por su ID
+const obtenerGrupoPorId = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const grupo = await consultarGrupo(id)
+        
+        return res.status(200).json(grupo)
+    } catch (error) {
+        switch (error.code) {
+            case 'ID_OBLIGATORIO':
+                return res.status(400).json({ message: error.message })
+
+            case 'GRUPO_NO_ENCONTRADO':
+                return res.status(404).json({ message: error.message })
+
+            default:
+                console.error(error)
+                return res.status(500).json({ message: 'Error interno del servidor' })
+        }
+    }
+}
+
 // Función para eliminar un grupo
 const eliminarGrupo = async (req, res) => {
     try {
@@ -133,5 +157,6 @@ module.exports = {
     actualizarGrupo,
     obtenerGrupos,
     eliminarGrupo,
-    migrarAlumnos
+    migrarAlumnos,
+    obtenerGrupoPorId
 }

@@ -56,28 +56,40 @@ export default function GestionarHorarios(){
     // Método para subir el horario de un grupo
     const subirHorario = async (grupoId, file) => {
         try{
+            setError(null)
+            setExito(null)
+            setEsperandoRespuesta(true)
+
             const formData = new FormData()
             formData.append('imagen', file)
             formData.append('grupoId', grupoId)
 
-            const respuesta = await guardarHorario(formData)
+            await guardarHorario(formData)
             cargarHorarios()
             setExito('Horario establecido exitosamente')
         }catch(error){
             console.error('Error al subir el horario:', error)
             setError(error.message || 'Ocurrió un error al subir el horario') 
+        }finally{
+            setEsperandoRespuesta(false)
         }
     }
 
     // Método para eliminar un horario
     const quitarHorario = async (horarioId) => {
         try{
+            setError(null)
+            setExito(null)
+            setEsperandoRespuesta(true)
+
             await eliminarHorario(horarioId)
             cargarHorarios()
             setExito('Horario eliminado exitosamente')
         }catch(error){
             console.error('Error al eliminar el horario:', error)
             setError(error.message || 'Ocurrió un error al eliminar el horario') 
+        }finally{
+            setEsperandoRespuesta(false)
         }
     }
 

@@ -62,3 +62,21 @@ export function eliminarGrupo(id) {
         method: 'DELETE',
     })
 }
+
+/**
+ * Migra alumnos de un grupo a otro.
+ * @param {Object} datos
+ * @param {string} datos.grupoOrigenId ID del grupo de origen
+ * @param {string} datos.grupoDestinoId ID del grupo de destino
+ * @param {Array<string>} datos.alumnosIds IDs de los alumnos a migrar
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function migrarAlumnos(datos) {
+    return httpFetch(`api/grupos/${datos.grupoOrigenId}/migraciones`, {
+        method: 'POST',
+        body: JSON.stringify({
+            grupoDestino: datos.grupoDestinoId,
+            alumnos: datos.alumnosIds,
+        }),
+    })
+}

@@ -1,73 +1,52 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
+import Select from '../../../../components/sica/Select/Select'
+import { obtenerGrupos, migrarAlumnos } from '../../../../api/grupos.api'
+import { obtenerAlumnos } from '../../../../api/alumnos.api'
 import { useEffect, useState } from 'react'
+import { useAuth } from '../../../../auth/useAuth'
 import './MigrarAlumnos.css'
 import '../../../../assets/styles/global.css'
-import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página del SICA para migrar los alumnos de un grupo (sin calificaciones) a otro
 export default function MigrarAlumnos() {
-    const token = localStorage.getItem('token') // Token de inicio de sesión
     const [grupos, setGrupos] = useState([]) // Grupos del sistema
     const [grupoOrigen, setGrupoOrigen] = useState('') // Grupo donde se encuentran los alumnos a migrar
     const [grupoDestino, setGrupoDestino] = useState('') // Grupo a donde serán migrados los alumnos
-    const [alumnos, setAlumnos] = useState([]) // Alumnos del grupo seleccionado
+    const [alumnos, setAlumnos] = useState([]) // Alumnos del grupo origen
     const [seleccionados, setSeleccionados] = useState([]) // Alumnos seleccionados para migrarlos
-    const [mensaje, setMensaje] = useState('') // Mensaje de éxito o error
-    const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga la migración
+    const [esperandoRespuesta, setEsperandoRespuesta] = useState(false)
+    const [exito, setExito] = useState(null)
+    const [error, setError] = useState(null)
 
-    useEffect(() => { // Se obtienen los grupos del backend
-        fetch('http://localhost:3000/api/grupos', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(async res => {
-            const data = await res.json()
-            if (!res.ok) {
-                console.error(`Error ${res.status}`, await res.json().catch(() => null))
-                alert(data.message || 'Error al obtener grupos')
-                setGrupos([])
-                return
-            }
-            return data
-        })
-        .then(data => {
-            let listaGrupos = data.grupos
-            listaGrupos.sort((a, b) => { // Los grupos deben estar ordenados por nombre
-                return a.nombre.localeCompare(b.nombre)
-            })
+    const {cargando} = useAuth()
+
+    // Método para obtener los grupos de la BD
+    const cargarGrupos = async () => {
+        try {
+            const respuesta = await obtenerGrupos()
+            const listaGrupos = [...(respuesta?.grupos ?? [])]
+                .sort((a, b) => a.nombre.localeCompare(b.nombre))
+
             setGrupos(listaGrupos)
-        })
-        .catch(err => {
-            console.error('Error al obtener grupos:', err)
-            alert('No se pudo conectar con el servidor')
-            setGrupos([])
-        })
-    }, [])
-
-    useEffect(() => { // Se obtienen los alumnos del grupo seleccionado
-        if(grupoOrigen){
-            fetch(`http://localhost:3000/api/alumnos?grupoId=${grupoOrigen}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(async res => {
-                const data = await res.json()
-                if(!res.ok){
-                    alert(data.message || 'Error al obtener alumnos')
-                }
-                
-                setAlumnos(data)
-            })
-            .catch(error => {
-                console.error('Error de red al obtener alumnos:', error)
-                alert('No se pudo conectar con el servidor')
-            })
+        } catch (error) {
+            console.error('Error al obtener grupos:', error)
+            setError(error.message || 'Error al obtener grupos')
         }
-    }, [grupoOrigen])
+    }
+
+    // Método para obtener los alumnos de un grupo
+    const cargarAlumnosGrupo = async (grupoId) => {
+        try{
+            const respuesta = await obtenerAlumnos({ grupoId })
+            setAlumnos(respuesta)
+        }catch(error){
+            console.error('Error al cargar los alumnos del grupo:', error)
+            setError(error.message || 'Error al cargar los alumnos del grupo')
+            setAlumnos([])
+        }
+    }
 
     // Método para modificar la lista de alumnos seleccionados
     const manejarCheckbox = (id) => { 
@@ -80,25 +59,13 @@ export default function MigrarAlumnos() {
 
     // Método para migrar de grupo los alumnos seleccionados
     const migrar = async () => {
-        setCargando(true)
-        setMensaje('')
+        setEsperandoRespuesta(true)
+        setError(null)
+        setExito(null)
+        
         try {
-            const res = await fetch(`http://localhost:3000/api/grupos/${grupoOrigen}/migraciones`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    grupoDestino,
-                    alumnos: seleccionados,
-                }),
-            })
-
-            const data = await res.json()
-
-            if (!res.ok) throw new Error(data.message || 'Error al migrar alumnos')
-            setMensaje(data.message)
+            await migrarAlumnos({ grupoOrigenId: grupoOrigen, grupoDestinoId: grupoDestino, alumnosIds: seleccionados })
+            setExito('Alumnos migrados exitosamente')
 
             // Limpia el estado
             setSeleccionados([])
@@ -106,13 +73,24 @@ export default function MigrarAlumnos() {
             setGrupoDestino('')
             setAlumnos([])
         } catch (error) {
-            setMensaje(error.message)
+            console.error('Error al migrar los alumnos:', error)
+            setError(error.message || 'Ocurrió un error al migrar los alumnos')
         } finally {
-            setCargando(false)
+            setEsperandoRespuesta(false)
         }
     }
 
-    if(grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
+    useEffect(() => { // Se obtienen los grupos del backend
+        cargarGrupos()
+    }, [])
+
+    useEffect(() => { // Se obtienen los alumnos del grupo seleccionado
+        if(!grupoOrigen) return
+        
+        cargarAlumnosGrupo(grupoOrigen)
+    }, [grupoOrigen])
+
+    if(cargando || grupos.length === 0){ // Mientras no haya grupos cargados se muestra un mensaje de carga
        return(
         <MensajeCarga/>
        ) 
@@ -123,36 +101,45 @@ export default function MigrarAlumnos() {
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Migrar alumnos entre grupos</h1>
-                <div className="migrar-alumnos-campo">
-                    <label className="migrar-alumnos-campo-label">Grupo origen:</label>
-                    <select className="migrar-alumnos-campo-select" value={grupoOrigen} onChange={e => setGrupoOrigen(e.target.value)}>
-                        <option value="">Selecciona</option>
-                        {grupos.map(g => (
-                            <option key={g._id} value={g._id}>{g.nombre}</option>
-                        ))}
-                    </select>
-                </div>
-                <div className="migrar-alumnos-campo">
-                    <label className="migrar-alumnos-campo-label">Grupo destino:</label>
-                    <select className="migrar-alumnos-campo-select" value={grupoDestino} onChange={e => setGrupoDestino(e.target.value)}>
-                        <option value="">Selecciona</option>
-                        {grupos
+                <Select
+                    className="migrar-alumnos__campo"
+                    label="Grupo origen:"
+                    value={grupoOrigen}
+                    onChange={e => setGrupoOrigen(e.target.value)}
+                    options={[
+                        { value: '', label: 'Selecciona' },
+                        ...grupos.map(
+                            g => ({ 
+                                value: g._id,
+                                label: g.nombre 
+                            })
+                        )
+                    ]}
+                    required
+                />
+                <Select
+                    className="migrar-alumnos__campo"
+                    label="Grupo destino:"
+                    value={grupoDestino}
+                    onChange={e => setGrupoDestino(e.target.value)}
+                    options={[
+                        { value: '', label: 'Selecciona' },
+                        ...grupos
                             .filter(g => g._id !== grupoOrigen)
-                            .map(g => (
-                                <option key={g._id} value={g._id}>{g.nombre}</option>
-                            ))}
-                    </select>
-                </div>
-
+                            .map(g => ({ value: g._id, label: g.nombre }))
+                    ]}
+                    required
+                />
+                
                 {alumnos.length > 0 && (
-                    <div className="migrar-alumnos-contenedor-lista-alumnos">
+                    <div className="migrar-alumnos__contenedor-lista-alumnos">
                         <h2>Selecciona alumnos a migrar:</h2>
-                        <ul className="migrar-alumnos-lista-alumnos">
+                        <ul className="migrar-alumnos__lista-alumnos">
                             {alumnos.map(a => (
-                                <li className="migrar-alumnos-alumno" key={a._id}>
-                                    <label className="migrar-alumnos-alumno-label">{a.nombre} {a.apellido}</label>
+                                <li className="migrar-alumnos__alumno" key={a._id}>
+                                    <label>{a.nombre} {a.apellido}</label>
                                     <input
-                                        className="migrar-alumnos-alumno-checkbox"
+                                        className="migrar-alumnos__alumno-checkbox"
                                         type="checkbox"
                                         checked={seleccionados.includes(a._id)}
                                         onChange={() => manejarCheckbox(a._id)}
@@ -162,16 +149,19 @@ export default function MigrarAlumnos() {
                         </ul>
                     </div>
                 )}
-                <div className="migrar-alumnos-contenedor-botones">
+                <div className="migrar-alumnos__contenedor-botones">
                     <button
-                        className="boton-guardar"
+                        className="migrar-alumnos__boton"
                         onClick={migrar}
-                        disabled={cargando || !grupoOrigen || !grupoDestino || seleccionados.length === 0}
+                        disabled={esperandoRespuesta || !grupoOrigen || !grupoDestino || seleccionados.length === 0}
                     >
-                        {cargando ? 'Migrando...' : 'Migrar alumnos'}
+                        {esperandoRespuesta ? 'Migrando...' : 'Migrar alumnos'}
                     </button>
                 </div>
-                {mensaje && <p>{mensaje}</p>}
+                <MensajeEstado
+                    exito={exito}
+                    error={error}
+                />
             </div>
         </div>
     )

@@ -1,49 +1,59 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
-import { useEffect } from 'react'
-import { jwtDecode } from 'jwt-decode'
-import { useState } from 'react'
-import '../../../../assets/styles/global.css'
 import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
+import { obtenerCalificacionesAlumno } from '../../../../api/alumnos.api'
+import { useEffect } from 'react'
+import { useState } from 'react'
+import { useAuth } from '../../../../auth/useAuth'
+import '../../../../assets/styles/global.css'
 
 // Página de inicio del SICA para consultar las calificaciones del semestre en curso
 export default function EnCurso(){
-    const token = localStorage.getItem('token') // Token de inicio de sesión
-    const tokenDecodificado = jwtDecode(token) // Datos del token
     const [parciales, setParciales] = useState([]) // Parciales hasta el momento
     const [calificaciones, setCalificaciones] = useState([]) // Calificaciones hasta el momento
+    const [esperandoRespuesta, setEsperandoRespuesta] = useState(true) 
+    const [error, setError] = useState(null)
+    
+    const {cargando, usuario} = useAuth() // Usuario autenticado
+
+    // Método para cargar las calificaciones del alumno
+    const cargarCalificacionesAlumno = async () => {
+        try{
+            const respuesta = await obtenerCalificacionesAlumno(usuario.id)
+            setParciales(respuesta.parciales)
+            setCalificaciones(respuesta.calificaciones)
+        }catch(error){
+            console.error('Error al cargar las calificaciones del alumno:', error)
+            setError(error.message || 'Error al cargar las calificaciones del alumno.')
+        }
+    }
 
     useEffect(()=>{ // Se obtienen las calificaciones del alumno
-        fetch(`http://localhost:3000/api/alumnos/${tokenDecodificado.id}/calificaciones`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        }).then(async res => {
-            const data = await res.json()
-            if(!res.ok){
-                alert(data.message || 'Error al obtener calificaciones.')
-                return
-            }
-            
-            setParciales(data.parciales)
-            setCalificaciones(data.calificaciones)
-        }).catch(err => {
-            console.error('Error al obtener las calificaciones:', err)
-            alert('No se pudo conectar con el servidor.')
-        })
-    },[])
+        if(!cargando && usuario){
+            cargarCalificacionesAlumno()
+            setEsperandoRespuesta(false)
+        }
+    },[cargando, usuario])
 
-    if(calificaciones.length === 0){ // Mientras no haya calificaciones cargadas se muestra un mensaje de carga
+    if(
+        cargando
+        || !usuario
+        || esperandoRespuesta
+    ){ // Mientras se espera la respuesta del servidor, se muestra un mensaje de carga
         return(
             <MensajeCarga/>
         )
     }
+
     return(
         <div className="contenedor-principal">
             <MenuLateral/>
             <div className="contenido-principal">
                 <h1>Calificaciones Parciales</h1>
+                <MensajeEstado
+                    error={error}
+                    exito={null}
+                />
                 <table className="tabla-calificaciones">
                     <thead>
                         <tr>

@@ -90,3 +90,14 @@ export function cambiarEstadoAlumno(id) {
         method: 'PUT',
     })
 }
+
+/**
+ * Obtiene las calificaciones parciales de un alumno
+ * @param {string} id ID del alumno
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function obtenerCalificacionesAlumno(id) {
+    return httpFetch(`api/alumnos/${id}/calificaciones`, {
+        method: 'GET',
+    })
+}

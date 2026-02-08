@@ -112,3 +112,14 @@ export function obtenerHistorialAcademicoAlumno(id) {
         method: 'GET',
     })
 }
+
+/**
+ * Obtiene los horarios de un alumno
+ * @param {string} id ID del alumno
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function obtenerHorariosAlumno(id) {
+    return httpFetch(`api/alumnos/${id}/horarios`, {
+        method: 'GET',
+    })
+}

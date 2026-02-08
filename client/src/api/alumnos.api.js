@@ -101,3 +101,14 @@ export function obtenerCalificacionesAlumno(id) {
         method: 'GET',
     })
 }
+
+/**
+ * Obtiene el historial académico de un alumno
+ * @param {string} id ID del alumno
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function obtenerHistorialAcademicoAlumno(id) {
+    return httpFetch(`api/alumnos/${id}/historial-academico`, {
+        method: 'GET',
+    })
+}

@@ -1,49 +1,58 @@
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
+import { obtenerHistorialAcademicoAlumno } from '../../../../api/alumnos.api'
 import { useEffect } from 'react'
-import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
+import { useAuth } from '../../../../auth/useAuth'
 import '../../../../assets/styles/global.css'
 import './Historial.css'
-import MensajeCarga from '../../../../components/sica/MensajeCarga/MensajeCarga'
 
 // Página de inicio del SICA para alumnos
 export default function Historial(){
-    const token = localStorage.getItem('token') // Token de inicio de sesión
-    const tokenDecodificado = jwtDecode(token) // Datos del token
     const [historial, setHistorial] = useState([]) // Historial académico
+    const [esperandoRespuesta, setEsperandoRespuesta] = useState(true)
+    const [error, setError] = useState(null)
+
+    const {cargando, usuario} = useAuth() // Usuario autenticado
+
+    // Método para cargar el historial académico del alumno
+    const cargarHistorialAcademicoAlumno = async (id) => {
+        try{
+            const respuesta = await obtenerHistorialAcademicoAlumno(id)
+            setHistorial(respuesta[0].calificaciones)
+        }catch(error){
+            console.error('Error al cargar el historial académico del alumno:', error)
+            setError(error.message || 'Error al cargar el historial académico del alumno.')
+        }
+    }
 
     useEffect(() => { // Se obtiene el historial académico del alumno
-        fetch(`http://localhost:3000/api/alumnos/${tokenDecodificado.id}/historial-academico`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        }).then(async res => {
-            const data = await res.json()
-            if(!res.ok){
-                alert(data.message || 'Error al obtener el historial académico')
-                return
-            }
-            
-            setHistorial(data[0].calificaciones)
-        }).catch(err => {
-            console.error('Error al obtener el historial académico:', err)
-            alert('No se pudo conectar con el servidor.')
-        })
-    }, [])
+        if(!cargando && usuario){
+            cargarHistorialAcademicoAlumno(usuario.id)
+            setEsperandoRespuesta(false)
+        }
+    }, [cargando, usuario])
 
-    if(historial.length === 0){ // Mientras no hayan calificaciones cargadas se muestra un mensaje de carga
+    if(
+        cargando
+        || !usuario
+        || esperandoRespuesta
+    ){ // Mientras se espera la respuesta del servidor, se muestra un mensaje de carga
         return(
             <MensajeCarga/>
         )
     }
+
     return (
         <div className="contenedor-principal">
             <MenuLateral />
             <div className="contenido-principal">
             <h1>Historial Académico</h1>
-
+            <MensajeEstado
+                error = {error}
+                exito = {null}
+            />
             {/** Agrupar por semestre */}
             {Object.entries(
                 historial.reduce((acc, cal) => {

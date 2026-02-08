@@ -54,7 +54,7 @@ async function autenticarUsuario(data){
 
     // Se genera un token de sesión
     const token = jwt.sign(
-        {id:user._id, rol, requiereCambioContrasena: user.requiereCambioContrasena},
+        {id:user._id, rol, nombre: user.nombre, requiereCambioContrasena: user.requiereCambioContrasena},
         process.env.CLAVE_SECRETA,
         {expiresIn:'3h'} // Tiempo de expiración
     )

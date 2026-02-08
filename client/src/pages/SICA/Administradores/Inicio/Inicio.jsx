@@ -6,7 +6,7 @@ import Cargando from '../../../../components/sica/Cargando/Cargando'
 
 // Página de inicio del SICA para administradores
 export default function InicioAdmin(){
-    const {usuario} = useAuth() // Usuario autenticado
+    const {cargando, usuario} = useAuth() // Usuario autenticado
     
     const configuracionPorRol = {
         superadmin: {
@@ -27,7 +27,7 @@ export default function InicioAdmin(){
     }
 
     // Si usuario no existe, no renderizar nada aún
-    if (!usuario) return <Cargando/>
+    if (cargando || !usuario) return <Cargando/>
 
     const configuracion = configuracionPorRol[usuario.rol] || {}
 

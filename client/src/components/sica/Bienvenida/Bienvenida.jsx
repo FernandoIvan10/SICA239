@@ -14,7 +14,7 @@ export default function Bienvenida({
 }){
     return(
         <div className={`contenido-principal ${className ?? ""}`}>
-                <h2 className="bienvenida__titulo">¡Bienvenido, {nombre && {nombre}}!</h2>
+                <h2 className="bienvenida__titulo">¡Bienvenido, {nombre}!</h2>
             {mensaje &&
                 <p className="bienvenida__mensaje">{mensaje}</p>
             }

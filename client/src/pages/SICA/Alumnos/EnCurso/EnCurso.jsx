@@ -17,9 +17,9 @@ export default function EnCurso(){
     const {cargando, usuario} = useAuth() // Usuario autenticado
 
     // Método para cargar las calificaciones del alumno
-    const cargarCalificacionesAlumno = async () => {
+    const cargarCalificacionesAlumno = async (id) => {
         try{
-            const respuesta = await obtenerCalificacionesAlumno(usuario.id)
+            const respuesta = await obtenerCalificacionesAlumno(id)
             setParciales(respuesta.parciales)
             setCalificaciones(respuesta.calificaciones)
         }catch(error){
@@ -30,7 +30,7 @@ export default function EnCurso(){
 
     useEffect(()=>{ // Se obtienen las calificaciones del alumno
         if(!cargando && usuario){
-            cargarCalificacionesAlumno()
+            cargarCalificacionesAlumno(usuario.id)
             setEsperandoRespuesta(false)
         }
     },[cargando, usuario])

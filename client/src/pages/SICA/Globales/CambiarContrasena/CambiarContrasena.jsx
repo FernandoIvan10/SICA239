@@ -1,66 +1,57 @@
-import { useState, useEffect } from 'react'
-import {jwtDecode} from 'jwt-decode'
-import { useNavigate } from 'react-router-dom'
 import MenuLateral from '../../../../components/sica/MenuLateral/MenuLateral'
+import MensajeEstado from '../../../../components/sica/MensajeEstado/MensajeEstado'
+import Input from '../../../../components/sica/Input/Input'
+import { editarContrasenaAlumno } from '../../../../api/alumnos.api'
+import { editarContrasenaAdministrador } from '../../../../api/admins.api'
+import { useState} from 'react'
+import { useAuth } from '../../../../auth/useAuth'
 import '../../../../assets/styles/global.css'
 
 // Página del SICA para cambiar la contraseña del usuario
 export default function CambiarContrasena() {
-
-  const navigate = useNavigate() // Para redirigir al usuario
-  const token = localStorage.getItem('token') // Token de inicio de sesión
-  const [rol, setRol] = useState(null) // Tipo de usuario
   const [contrasenaAntigua, setContrasenaAntigua] = useState('')
   const [contrasenaNueva, setContrasenaNueva] = useState('')
-  const [mensaje, setMensaje] = useState('') // Mensaje de éxito o error
-  const [cargando, setCargando] = useState(false) // Para bloquear campos y botones mientras carga
-  const tokenDecodificado = jwtDecode(token)
+  const [esperandoRespuesta, setEsperandoRespuesta] = useState(false)
+  const [exito, setExito] = useState(null)
+  const [error, setError] = useState(null)
 
-  useEffect(() => { // Se obtiene el tipo de usuario del token de inicio de sesión
-    try {
-      setRol(tokenDecodificado.rol)
-    } catch(error) {
-      console.log(error)
-      localStorage.removeItem('token')
-      navigate('/SICA/iniciar-sesion')
-    }
-  }, [navigate])
+  const {cargando, usuario} = useAuth() // Usuario autenticado
 
   // Método para cambiar la contraseña del usuario activo
   const cambiarContrasena = async (e) => {
     e.preventDefault()
-    setMensaje('')
-    setCargando(true)
+    if(cargando || !usuario) return
+    
+    if(!contrasenaAntigua || !contrasenaNueva){
+      setError('Ambos campos son obligatorios.')
+      return
+    }
 
-    const url =
-      rol === 'alumno'
-        ? `http://localhost:3000/api/alumnos/${tokenDecodificado.id}/contrasena`
-        : `http://localhost:3000/api/admins/${tokenDecodificado.id}/contrasena`
+    if(contrasenaNueva.length < 6){
+      setError('La contraseña nueva debe tener al menos 6 caracteres.')
+      return
+    }
+    
+    if(contrasenaNueva === contrasenaAntigua){
+      setError('La contraseña nueva no puede ser igual a la antigua.')
+      return
+    }
 
-    try {
-      const res = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ contrasenaAntigua, contrasenaNueva }),
-      })
+    try{
+      setEsperandoRespuesta(true)
+      setError(null)
+      setExito(null)
 
-      const data = await res.json()
+      usuario.rol === 'alumno' 
+        ? await editarContrasenaAlumno(usuario.id, { contrasenaAntigua, contrasenaNueva })
+        : await editarContrasenaAdministrador(usuario.id, { contrasenaAntigua, contrasenaNueva })
 
-      if(!res.ok){
-        alert(data.message || 'Error al cambiar contraseña')
-        return
-      }
-
-      setMensaje('Contraseña actualizada correctamente.')
-      setTimeout(() => navigate('/SICA/iniciar-sesion'), 2000)
-    } catch (error) {
-      console.error(error.message)
-      alert('No se pudo conectar con el servidor.')
-    } finally {
-      setCargando(false)
+      setExito('Contraseña actualizada exitosamente')
+    }catch(error){
+      console.error('Error al cambiar contraseña:', error)
+      setError(error.message || 'Error al cambiar contraseña.')
+    }finally{
+      setEsperandoRespuesta(false)
     }
   }
 
@@ -69,39 +60,33 @@ export default function CambiarContrasena() {
       <MenuLateral/>
       <div className="contenido-principal">
         <h1>Cambio de contraseña</h1>
-        <form className="formulario-cambiar-contrasena" onSubmit={cambiarContrasena}>
-          <div className="formulario-cambiar-contrasena-campo">
-            <label className="formulario-cambiar-contrasena-label" htmlFor="contrasenaAntigua">Contraseña antigua:</label>
-            <input
-              id="contrasenaAntigua"
-              className="formulario-cambiar-contrasena-input"
-              type="password"
-              value={contrasenaAntigua}
-              onChange={(e) => setContrasenaAntigua(e.target.value)}
-              minLength={6}
-              required
-              disabled={cargando}
-              autoFocus
-            />
-          </div>
-          <div className="formulario-cambiar-contrasena-campo">
-            <label className="formulario-cambiar-contrasena-label" htmlFor="contrasenaNueva">Contraseña nueva:</label>
-            <input
-              id="contrasenaNueva"
-              className="formulario-cambiar-contrasena-input"
-              type="password"
-              value={contrasenaNueva}
-              onChange={(e) => setContrasenaNueva(e.target.value)}
-              minLength={6}
-              required
-              disabled={cargando}
-            />
-          </div>
-          <button className="boton-guardar" type="submit" disabled={cargando}>
-            {cargando ? 'Guardando...' : 'Actualizar contraseña'}
+        <form className="formulario-contrasena" onSubmit={cambiarContrasena}>
+          <Input
+            className="formulario-contrasena__campo"
+            label="Contraseña antigua"
+            type="password"
+            value={contrasenaAntigua}
+            onChange={(e) => setContrasenaAntigua(e.target.value)}
+            required
+            disabled={esperandoRespuesta}
+          />
+          <Input
+            className="formulario-contrasena__campo"
+            label="Contraseña nueva"
+            type="password"
+            value={contrasenaNueva}
+            onChange={(e) => setContrasenaNueva(e.target.value)}
+            required
+            disabled={esperandoRespuesta}
+          />
+          <button className="boton--guardar" type="submit" disabled={esperandoRespuesta}>
+            {esperandoRespuesta ? 'Guardando...' : 'Actualizar contraseña'}
           </button>
         </form>
-        {mensaje && <p>{mensaje}</p>}
+        <MensajeEstado
+          exito={exito} 
+          error={error}
+        />
       </div>
     </div>
   )

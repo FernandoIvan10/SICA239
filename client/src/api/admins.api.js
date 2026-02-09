@@ -39,6 +39,20 @@ export function guardarAdministrador(datos) {
 }
 
 /**
+ * Edita un administrador existente
+ * @param {string} id 
+ * @param {Object} datos
+ * @param {string} datos.contrasenaNueva 
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function primerCambioContrasenaAdministrador(id, datos) {
+    return httpFetch(`api/admins/${id}/contrasena/primer-cambio`, {
+        method: 'PUT',
+        body: JSON.stringify(datos),
+    })
+}
+
+/**
  * Actualiza los datos de un administrador
  * @param {string} id ID del administrador
  * @param {Object} datos

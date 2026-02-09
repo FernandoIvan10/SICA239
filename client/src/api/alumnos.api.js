@@ -70,6 +70,20 @@ export function editarAlumno(id, datos) {
 }
 
 /**
+ * Cambia la contraseña de un alumno en su primer cambio
+ * @param {string} id
+ * @param {Object} datos
+ * @param {string} datos.contrasenaNueva
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function primerCambioContrasenaAlumno(id, datos) {
+    return httpFetch(`api/alumnos/${id}/contrasena/primer-cambio`, {
+        method: 'PUT',
+        body: JSON.stringify(datos),
+    })
+}
+
+/**
  * Edita la contraseña de un alumno
  * @param {string} id 
  * @param {Object} datos 

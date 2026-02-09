@@ -276,7 +276,7 @@ export default function CapturarCalificaciones(){
                 </table>
                 {usuario.rol !== "lector" && 
                     <button
-                        className="tabla-calificaciones__boton-guardar"
+                        className="boton--guardar"
                         onClick={() => guardarCalificaciones(grupoSeleccionado, parcialSeleccionado, alumnos, materias)}
                         disabled={esperandoRespuesta}
                     >

@@ -97,7 +97,7 @@ tbody{
     text-align: center;
 }
 
-.formulario-cambiar-contrasena{
+.formulario-contrasena{
     background-color: white;
     padding: 20px;
     padding-top: 1px;
@@ -107,13 +107,13 @@ tbody{
     margin: 0;
 }
 
-.formulario-cambiar-contrasena-campo{
+.formulario-contrasena__campo{
     display: flex;
     flex-direction: column;
     margin-bottom: 1.5rem;
 }
 
-.formulario-cambiar-contrasena-label {
+.formulario-contrasena__campo label {
   font-family: 'Roboto';
   display: block;
   font-weight: bold;
@@ -122,7 +122,7 @@ tbody{
   font-size: 16px;
 }
 
-.formulario-cambiar-contrasena-input {
+.formulario-contrasena__campo input {
   font-family: 'Roboto';
   padding: 0.6rem;
   font-size: 1rem;
@@ -131,6 +131,41 @@ tbody{
   border-radius: 4px;
   margin: 0;
   margin-top: 0.3rem;
+}
+
+.boton--guardar{
+    font-family: 'Roboto';
+    background-color: #28a745;
+    color: white;
+    padding: 0.7rem 1.4rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.boton--guardar:hover{
+    background-color: #218838;
+}
+
+.boton--guardar:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.boton--cancelar{
+    font-family: 'Roboto';
+    background-color: #dc3545;
+    color: white;
+    padding: 0.7rem 1.4rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.boton--cancelar:hover{
+    background-color: #c82333;
 }
 
 @media (max-width: 767px) {

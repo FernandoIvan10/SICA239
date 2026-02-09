@@ -87,7 +87,7 @@ export default function PrimerCambioContrasena() {
               autoFocus
             />
           </div>
-          <button className="boton-guardar" type="submit" disabled={cargando}>
+          <button className="boton--guardar" type="submit" disabled={cargando}>
             {cargando ? 'Guardando...' : 'Actualizar contraseña'}
           </button>
         </form>

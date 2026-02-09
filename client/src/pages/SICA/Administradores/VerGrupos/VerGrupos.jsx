@@ -120,7 +120,7 @@ export default function VerGrupos(){
                 </table>
                 {usuario.rol !== "lector" && 
                     <button
-                        className="tabla-grupos__boton-agregar"
+                        className="boton--guardar"
                         onClick={() => navigate("/SICA/administradores/agregar-grupo")}
                         disabled={esperandoRespuesta}
                     >

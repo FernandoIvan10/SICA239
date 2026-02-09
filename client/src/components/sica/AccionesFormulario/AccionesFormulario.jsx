@@ -9,14 +9,14 @@ export default function AccionesFormulario({
     return (
         <div className="acciones-formulario">
             <button 
-                className="acciones-formulario__boton acciones-formulario__boton--guardar"
+                className="boton--guardar"
                 type="submit"
                 disabled={cargando || false}
             >
                 Guardar
             </button>
             <button
-                className="acciones-formulario__boton acciones-formulario__boton--cancelar"
+                className="boton--cancelar"
                 onClick={cancelar}
                 disabled={cargando || false}
             >

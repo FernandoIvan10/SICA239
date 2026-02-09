@@ -151,7 +151,7 @@ export default function MigrarAlumnos() {
                 )}
                 <div className="migrar-alumnos__contenedor-botones">
                     <button
-                        className="migrar-alumnos__boton"
+                        className="boton--guardar"
                         onClick={migrar}
                         disabled={esperandoRespuesta || !grupoOrigen || !grupoDestino || seleccionados.length === 0}
                     >

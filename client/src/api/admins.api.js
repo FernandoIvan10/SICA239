@@ -64,3 +64,18 @@ export function reiniciarContrasenaAdministrador(id) {
         method: 'PUT',
     })
 }
+
+/**
+ * Edita la contraseña de un administrador
+ * @param {string} id 
+ * @param {Object} datos 
+ * @param {string} datos.contrasenaAntigua
+ * @param {string} datos.contrasenaNueva
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function editarContrasenaAdministrador(id, datos) {
+    return httpFetch(`api/admins/${id}/contrasena`, {
+        method: 'PUT',
+        body: JSON.stringify(datos),
+    })
+}

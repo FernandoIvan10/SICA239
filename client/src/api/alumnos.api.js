@@ -70,6 +70,21 @@ export function editarAlumno(id, datos) {
 }
 
 /**
+ * Edita la contraseña de un alumno
+ * @param {string} id 
+ * @param {Object} datos 
+ * @param {string} datos.contrasenaAntigua
+ * @param {string} datos.contrasenaNueva
+ * @returns {Promise<Response>} Respuesta del servidor
+ */
+export function editarContrasenaAlumno(id, datos) {
+    return httpFetch(`api/alumnos/${id}/contrasena`, {
+        method: 'PUT',
+        body: JSON.stringify(datos),
+    })
+}
+
+/**
  * Reinicia la contraseña de un alumno a su valor por defecto (Matrícula)
  * @param {string} id ID del alumno
  * @returns {Promise<Response>} Respuesta del servidor

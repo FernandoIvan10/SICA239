@@ -1,6 +1,6 @@
 # Sistema de Consulta de Calificaciones - CBTa 239
 
-Sistema diseñado para facilitar la consulta de calificaciones de los alumnos del Centro de Bachillerato Tecnológico Agropecuario n.º 239 (CBTa 239). Permite a los estudiantes acceder a sus calificaciones de forma segura y eficiente.
+Sistema diseñado para facilitar la consulta de calificaciones de los alumnos del Centro de Bachillerato Tecnológico Agropecuario n.º 239 (CBTa 239).
 
 ## Características principales
 
@@ -33,20 +33,44 @@ Para desplegar este sistema, asegúrate de tener instalados los siguientes compo
    cd SICA239
    ```
 
-2. Instala las dependencias necesarias para el backend:
+2. Instala las dependencias necesarias para el frontend:
 
    ```bash
-   cd server
+   cd client
    npm install
    ```
 
-3. Configura las variables de entorno. Crea un archivo `.env` en el directorio `server` con el siguiente contenido:
+3. Configura las variables de entorno del frontend. Crea un archivo `.env.production` en el directorio `client` con el siguiente contenido:
+
+   > **VITE_API_URL** — URL del servidor backend  
+
+   Ejemplo de archivo `.env.production`:
+
+   ```env
+   VITE_API_URL=http://localhost:3000
+   ```
+
+4. Genera los archivos estáticos del frontend con el siguiente comando:
+
+   ```bash
+   npm run build
+   ```
+
+5. Instala las dependencias necesarias para el backend:
+
+   ```bash
+   cd ../server
+   npm install
+   ```
+
+6. Configura las variables de entorno. Crea un archivo `.env` en el directorio `server` con el siguiente contenido:
 
    > **MONGO_URI** — dirección de conexión a tu base de datos MongoDB.  
    > **CLAVE_SECRETA** — clave de seguridad creada por el administrador para cifrar los tokens de inicio de sesión.  
    > **CLOUDINARY_CLOUD_NAME** — nombre de tu cuenta de Cloudinary.  
    > **CLOUDINARY_API_KEY** — clave pública de tu cuenta de Cloudinary.  
-   > **CLOUDINARY_API_SECRET** — clave privada de tu cuenta de Cloudinary.  
+   > **CLOUDINARY_API_SECRET** — clave privada de tu cuenta de Cloudinary.   
+   > **PORT** — Puerto del servidor backend.
 
    Ejemplo de archivo `.env`:
 
@@ -56,30 +80,28 @@ Para desplegar este sistema, asegúrate de tener instalados los siguientes compo
    CLOUDINARY_CLOUD_NAME=<tu-cloud-name>
    CLOUDINARY_API_KEY=<tu-api-key>
    CLOUDINARY_API_SECRET=<tu-api-secret>
+   PORT=<tu-puerto-backend>
    ```
 
-4. Genera los archivos estáticos del frontend:
+7. Inicia el servidor backend (esto también servirá los archivos del frontend):
 
    ```bash
-   cd ../client
-   npm install
-   npm run build
+   npm run start
    ```
 
-5. Inicia el servidor backend (esto también servirá los archivos del frontend):
-
-   ```bash
-   cd ../server
-   npm start
-   ```
-
-6. Accede al sistema desde tu navegador en `http://localhost:3000`.
+6. Accede al sistema desde tu navegador en `http://localhost:<tu-puerto-backend>`.
 
 ## Nota importante: Configuración inicial
 
-En la **primera vez que se enciende el servidor**, el sistema solicitará en la consola los datos del usuario superadministrador. Este proceso asegura que los datos del administrador principal sean configurados de manera segura.
+Antes de **encender el servidor por primera vez**, deberás ejecutar los scripts para crear el usuario superadministrador y el grupo de egresados.
+Esto se logra ejecutando los siguientes comandos dentro de la carpeta `server`:
 
-Por favor, sigue las instrucciones que aparecerán en la consola para completar este paso. Una vez configurado, este superadministrador tendrá control total sobre el sistema.
+   ```bash
+   npm run seed:egresados
+   npm run seed:admin
+   ```
+
+Por favor, sigue las instrucciones que aparecerán en la consola para registrar al superadministrador. Una vez configurado, este superadministrador tendrá control total sobre el sistema.
 
 ## Licencia
 

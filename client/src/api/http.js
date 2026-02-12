@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const API_URL = import.meta.env.VITE_API_URL || ''
 
 // Función para realizar solicitudes HTTP (API Fetch)
 export async function httpFetch(endpoint, options = {}) {

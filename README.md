@@ -83,13 +83,21 @@ Para desplegar este sistema, asegúrate de tener instalados los siguientes compo
    PORT=<tu-puerto-backend>
    ```
 
-7. Inicia el servidor backend (esto también servirá los archivos del frontend):
+7. Inicia el servidor frontend:
 
    ```bash
+   cd ../client
+   npm run preview
+   ```
+
+8. En otra terminal, inicia el servidor backend:
+
+   ```bash
+   cd server
    npm run start
    ```
 
-6. Accede al sistema desde tu navegador en `http://localhost:<tu-puerto-backend>`.
+6. Accede al sistema desde tu navegador en `http://localhost:4173/`.
 
 ## Nota importante: Configuración inicial
 

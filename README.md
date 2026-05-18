@@ -2,6 +2,8 @@
 
 Sistema diseñado para facilitar la consulta de calificaciones de los alumnos del Centro de Bachillerato Tecnológico Agropecuario n.º 239 (CBTa 239).
 
+![Demo](./client/src/assets/img/demo.gif)
+
 ## Características principales
 
 - **Autenticación segura**: Acceso protegido mediante credenciales para garantizar la privacidad de los datos.
